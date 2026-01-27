@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WG Sphere Grid - 企業スフィア盤</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050812; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif; overflow: hidden; }
+
+    /* ログイン画面 */
+    #login-screen {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(135deg, #050812 0%, #0A1628 50%, #051020 100%);
+      display: flex; justify-content: center; align-items: center; z-index: 10000;
+    }
+    #login-screen.hidden { display: none; }
+    .login-box {
+      background: rgba(10, 22, 40, 0.95); border: 1px solid rgba(74, 122, 184, 0.4);
+      border-radius: 20px; padding: 48px 56px; text-align: center;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(74, 122, 184, 0.15);
+      backdrop-filter: blur(10px);
+    }
+    .login-logo {
+      width: 88px; height: 88px; margin: 0 auto 24px;
+      background: radial-gradient(circle at 30% 30%, #FFE066, #B88A08);
+      border-radius: 50%; display: flex; justify-content: center; align-items: center;
+      font-size: 36px; box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), inset 0 -4px 12px rgba(0,0,0,0.2);
+    }
+    .login-box h1 { color: #FFD700; font-size: 26px; letter-spacing: 4px; margin-bottom: 8px; font-weight: 600; }
+    .login-box .subtitle { color: #8899aa; font-size: 14px; margin-bottom: 32px; letter-spacing: 1px; }
+    .login-box input[type="password"] {
+      width: 100%; padding: 16px 24px; background: rgba(20, 40, 60, 0.6);
+      border: 1px solid rgba(74, 122, 184, 0.25); border-radius: 12px;
+      color: #fff; font-size: 16px; text-align: center; letter-spacing: 4px; margin-bottom: 16px;
+      transition: all 0.2s ease;
+    }
+    .login-box input[type="password"]:focus { outline: none; border-color: #FFD700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.15); background: rgba(20, 40, 60, 0.8); }
+    .login-box input[type="password"]::placeholder { letter-spacing: 0; color: #556677; }
+    .login-box button {
+      width: 100%; padding: 16px; background: linear-gradient(135deg, #B88A08, #FFD700);
+      border: none; border-radius: 12px; color: #000; font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s ease; letter-spacing: 1px;
+    }
+    .login-box button:hover { background: linear-gradient(135deg, #FFD700, #FFE44D); box-shadow: 0 8px 32px rgba(255, 215, 0, 0.35); transform: translateY(-1px); }
+    .login-error { color: #E64D66; font-size: 13px; margin-top: 16px; min-height: 20px; }
+    .login-hint { color: #556677; font-size: 11px; margin-top: 24px; }
+
+    #logout-btn {
+      position: absolute; bottom: 20px; right: 20px; background: rgba(60, 70, 90, 0.4);
+      border: 1px solid rgba(100, 110, 130, 0.4); color: #8899aa; padding: 10px 18px;
+      border-radius: 8px; cursor: pointer; font-size: 12px; z-index: 100; transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+    #logout-btn:hover { background: rgba(230, 77, 102, 0.25); border-color: rgba(230, 77, 102, 0.5); color: #E64D66; }
+
+    #main-content { display: none; }
+    #main-content.visible { display: block; }
+    #container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
+    canvas { display: block; cursor: default; }
+    canvas.dragging { cursor: grabbing; }
+    canvas.can-drag { cursor: grab; }
+    canvas.panning { cursor: move; }
+
+    /* ツールチップ */
+    #tooltip {
+      position: absolute; display: none; background: rgba(8, 14, 28, 0.96);
+      border: 1px solid rgba(74, 122, 184, 0.4); border-radius: 12px; padding: 16px 20px;
+      color: #fff; font-size: 12px; max-width: 300px; pointer-events: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1); z-index: 1000;
+      backdrop-filter: blur(12px);
+    }
+    #tooltip h3 { color: #FFD700; font-size: 15px; margin-bottom: 8px; font-weight: 600; }
+    #tooltip .state { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 10px; margin-bottom: 10px; font-weight: 500; }
+    #tooltip .state.MASTERED { background: rgba(255,215,0,0.2); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
+    #tooltip .state.UNLOCKED { background: rgba(51,230,128,0.2); color: #33E680; border: 1px solid rgba(51,230,128,0.3); }
+    #tooltip .state.ELIGIBLE { background: rgba(255,215,0,0.15); color: #FFD700; border: 1px solid rgba(255,215,0,0.25); }
+    #tooltip .state.LOCKED { background: rgba(100,100,120,0.25); color: #8899aa; border: 1px solid rgba(100,100,120,0.3); }
+    #tooltip .description { color: #aabbcc; margin-bottom: 10px; line-height: 1.5; }
+    #tooltip .requirements { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(74, 122, 184, 0.2); }
+    #tooltip .requirements h4 { color: #B88A08; font-size: 11px; margin-bottom: 6px; font-weight: 500; }
+    #tooltip .sphere-item { display: inline-block; margin: 3px 6px 3px 0; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 500; }
+    #tooltip .effect { color: #4DCC80; margin-top: 10px; font-size: 12px; padding-top: 10px; border-top: 1px solid rgba(74, 122, 184, 0.2); }
+
+    /* 情報パネル */
+    #legend, #gates {
+      position: absolute; background: rgba(8, 14, 28, 0.92);
+      border: 1px solid rgba(74, 122, 184, 0.3); border-radius: 16px;
+      padding: 20px 24px; color: #fff; font-size: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); backdrop-filter: blur(12px);
+    }
+    #legend { top: 20px; right: 20px; min-width: 240px; }
+    #gates { top: 20px; left: 20px; max-width: 280px; }
+    #legend h2, #gates h2 { color: #FFD700; font-size: 15px; margin-bottom: 16px; font-weight: 600; letter-spacing: 0.5px; }
+    #legend h3, #gates h3 { color: #B88A08; font-size: 11px; margin: 16px 0 10px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    #gates .subtitle { color: #8899aa; font-size: 12px; margin-bottom: 16px; }
+    #gates ul { list-style: none; color: #aabbcc; line-height: 2; }
+    #gates li { display: flex; align-items: center; }
+    #gates li::before { content: ""; width: 6px; height: 6px; background: #4A7AB8; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+    .legend-item { display: flex; align-items: center; margin: 8px 0; }
+    .legend-dot { width: 18px; height: 18px; border-radius: 50%; margin-right: 12px; flex-shrink: 0; }
+    .legend-sphere { width: 14px; height: 14px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; box-shadow: 0 0 8px currentColor; }
+    .legend-text { flex: 1; }
+    .legend-text .label { color: #fff; font-weight: 500; }
+    .legend-text .desc { color: #8899aa; font-size: 10px; margin-top: 2px; }
+
+    /* ズームコントロール */
+    #zoom-controls {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 8px; background: rgba(8, 14, 28, 0.9);
+      border: 1px solid rgba(74, 122, 184, 0.3); border-radius: 12px; padding: 8px 16px;
+      backdrop-filter: blur(12px); z-index: 100;
+    }
+    #zoom-controls button {
+      width: 36px; height: 36px; background: rgba(74, 122, 184, 0.2);
+      border: 1px solid rgba(74, 122, 184, 0.3); border-radius: 8px;
+      color: #fff; font-size: 18px; cursor: pointer; transition: all 0.15s ease;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #zoom-controls button:hover { background: rgba(74, 122, 184, 0.4); border-color: rgba(74, 122, 184, 0.5); }
+    #zoom-controls button:active { transform: scale(0.95); }
+    #zoom-level { color: #8899aa; font-size: 12px; min-width: 48px; text-align: center; font-weight: 500; }
+    #zoom-controls .divider { width: 1px; height: 24px; background: rgba(74, 122, 184, 0.3); margin: 0 4px; }
+
+    /* 編集ボタン */
+    #editor-toggle {
+      position: absolute; bottom: 20px; left: 20px; background: rgba(255, 215, 0, 0.15);
+      border: 1px solid rgba(255, 215, 0, 0.4); color: #FFD700; padding: 12px 24px;
+      border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500;
+      transition: all 0.2s ease; backdrop-filter: blur(8px);
+    }
+    #editor-toggle:hover { background: rgba(255, 215, 0, 0.25); border-color: rgba(255, 215, 0, 0.6); }
+    #editor-toggle.active { background: rgba(255, 215, 0, 0.3); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
+
+    /* 編集パネル */
+    #editor-panel {
+      position: absolute; top: 0; right: -500px; width: 500px; height: 100vh;
+      background: rgba(8, 14, 28, 0.98); border-left: 1px solid rgba(74, 122, 184, 0.3);
+      padding: 24px; overflow-y: auto; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000;
+      backdrop-filter: blur(20px);
+    }
+    #editor-panel.open { right: 0; }
+    #editor-panel h2 {
+      color: #FFD700; font-size: 20px; margin-bottom: 24px; display: flex;
+      justify-content: space-between; align-items: center; font-weight: 600;
+    }
+    #editor-panel .close-btn {
+      background: rgba(100, 110, 130, 0.3); border: none; color: #8899aa;
+      width: 36px; height: 36px; border-radius: 8px; font-size: 20px; cursor: pointer;
+      transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;
+    }
+    #editor-panel .close-btn:hover { background: rgba(230, 77, 102, 0.3); color: #E64D66; }
+
+    .editor-section {
+      margin-bottom: 24px; padding: 20px; background: rgba(74, 122, 184, 0.08);
+      border-radius: 12px; border: 1px solid rgba(74, 122, 184, 0.15);
+    }
+    .editor-section h3 {
+      color: #FFD700; font-size: 13px; margin-bottom: 16px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .editor-section h3::before {
+      content: ""; width: 4px; height: 16px; background: linear-gradient(180deg, #FFD700, #B88A08);
+      border-radius: 2px;
+    }
+
+    .node-list { max-height: 200px; overflow-y: auto; margin-bottom: 12px; }
+    .node-list::-webkit-scrollbar { width: 6px; }
+    .node-list::-webkit-scrollbar-track { background: rgba(74, 122, 184, 0.1); border-radius: 3px; }
+    .node-list::-webkit-scrollbar-thumb { background: rgba(74, 122, 184, 0.3); border-radius: 3px; }
+    .node-list-item {
+      display: flex; align-items: center; padding: 12px 14px; margin: 6px 0;
+      background: rgba(74, 122, 184, 0.1); border-radius: 10px; cursor: pointer;
+      transition: all 0.15s ease; border: 1px solid transparent;
+    }
+    .node-list-item:hover { background: rgba(74, 122, 184, 0.2); }
+    .node-list-item.selected { background: rgba(255, 215, 0, 0.15); border-color: rgba(255, 215, 0, 0.4); }
+    .node-list-item .node-dot { width: 14px; height: 14px; border-radius: 50%; margin-right: 12px; box-shadow: 0 0 8px currentColor; }
+    .node-list-item .node-name { color: #fff; flex: 1; font-size: 13px; font-weight: 500; }
+    .node-list-item .node-ring { color: #8899aa; font-size: 11px; margin-right: 10px; background: rgba(74, 122, 184, 0.2); padding: 2px 8px; border-radius: 4px; }
+    .node-list-item .node-state { font-size: 10px; padding: 3px 8px; border-radius: 5px; font-weight: 500; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; color: #8899aa; font-size: 11px; margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px 14px; background: rgba(20, 30, 50, 0.6);
+      border: 1px solid rgba(74, 122, 184, 0.25); border-radius: 10px; color: #fff; font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: #FFD700; background: rgba(20, 30, 50, 0.8);
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    }
+    .form-group select { cursor: pointer; }
+    .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+
+    .sphere-editor { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .sphere-tag {
+      display: flex; align-items: center; padding: 8px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 500; border: 1px solid transparent;
+    }
+    .sphere-tag input {
+      width: 40px; padding: 4px 6px; margin-left: 8px; text-align: center;
+      font-size: 12px; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .ring-list { margin-bottom: 16px; }
+    .ring-item {
+      display: flex; align-items: center; gap: 10px; margin: 8px 0; padding: 12px;
+      background: rgba(74, 122, 184, 0.1); border-radius: 10px;
+    }
+    .ring-item input { flex: 1; }
+    .ring-item .ring-radius { width: 80px; text-align: center; }
+    .ring-item .delete-ring {
+      background: rgba(230, 77, 102, 0.2); border: 1px solid rgba(230, 77, 102, 0.3);
+      color: #E64D66; width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+      font-size: 16px; transition: all 0.15s ease; display: flex; align-items: center; justify-content: center;
+    }
+    .ring-item .delete-ring:hover { background: rgba(230, 77, 102, 0.4); }
+    .ring-item .delete-ring:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .btn {
+      padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer;
+      font-size: 13px; font-weight: 600; transition: all 0.2s ease;
+    }
+    .btn-primary { background: linear-gradient(135deg, #B88A08, #FFD700); color: #000; }
+    .btn-primary:hover { background: linear-gradient(135deg, #FFD700, #FFE44D); box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3); }
+    .btn-secondary { background: rgba(74, 122, 184, 0.25); color: #fff; border: 1px solid rgba(74, 122, 184, 0.4); }
+    .btn-secondary:hover { background: rgba(74, 122, 184, 0.4); }
+    .btn-danger { background: rgba(230, 77, 102, 0.2); color: #E64D66; border: 1px solid rgba(230, 77, 102, 0.4); }
+    .btn-danger:hover { background: rgba(230, 77, 102, 0.35); }
+    .btn-small { padding: 8px 16px; font-size: 12px; }
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+
+    .drag-hint {
+      position: absolute; bottom: 80px; left: 20px; background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.25); color: #FFD700; padding: 10px 18px;
+      border-radius: 10px; font-size: 12px; display: none; backdrop-filter: blur(8px);
+    }
+    .drag-hint.visible { display: block; }
+
+    #export-section { margin-top: 8px; }
+    #export-section h3 { color: #B88A08; font-size: 13px; margin-bottom: 16px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">⚡</div>
+      <h1>WONDERFUL GROWTH</h1>
+      <div class="subtitle">企業スフィア盤 - 社内限定</div>
+      <input type="password" id="password-input" placeholder="パスワードを入力" autocomplete="off">
+      <button onclick="attemptLogin()">ログイン</button>
+      <div class="login-error" id="login-error"></div>
+      <div class="login-hint">※ 社内メンバー用アクセスキー</div>
+    </div>
+  </div>
+
+  <div id="main-content">
+    <div id="container"><canvas id="canvas"></canvas></div>
+    <div id="tooltip"></div>
+    <button id="logout-btn" onclick="logout()">ログアウト</button>
+
+    <div id="gates">
+      <h2>WONDERFUL GROWTH</h2>
+      <div class="subtitle">企業スフィア盤</div>
+      <h3>基盤ゲート達成条件</h3>
+      <ul>
+        <li>現預金：固定費4ヶ月分以上</li>
+        <li>粗利率：40%以上</li>
+        <li>稼働率：100%</li>
+        <li>採用：契約済みBacklogのみ</li>
+        <li>オフィス：賃料 ≤ 粗利15%</li>
+      </ul>
+    </div>
+
+    <div id="legend">
+      <h2>ノード状態</h2>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFF5CC, #FFD700); box-shadow: 0 0 14px #FFD700;"></div>
+        <div class="legend-text"><span class="label">定着</span><br><span class="desc">習得完了・定着済み</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #66E699, #33E680); box-shadow: 0 0 12px #33E680;"></div>
+        <div class="legend-text"><span class="label">解放済</span><br><span class="desc">習得中・実施中</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFE066, #FFD700); box-shadow: 0 0 10px rgba(255,215,0,0.6);"></div>
+        <div class="legend-text"><span class="label">解放可</span><br><span class="desc">条件クリア・解放可能</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #3A3E48, #2A2E38); border: 1px solid #4A4E58;"></div>
+        <div class="legend-text"><span class="label">未解放</span><br><span class="desc">条件未達成</span></div>
+      </div>
+      <h3>必要スフィア</h3>
+      <div class="legend-item"><div class="legend-sphere" style="background: #3399E6; color: #3399E6;"></div><div class="legend-text"><span class="label">人材</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #E6B333; color: #E6B333;"></div><div class="legend-text"><span class="label">資金</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #4DCC80; color: #4DCC80;"></div><div class="legend-text"><span class="label">実績</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #9966CC; color: #9966CC;"></div><div class="legend-text"><span class="label">時間</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #E68033; color: #E68033;"></div><div class="legend-text"><span class="label">信頼</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #66B3E6; color: #66B3E6;"></div><div class="legend-text"><span class="label">技術</span></div></div>
+    </div>
+
+    <div id="zoom-controls">
+      <button onclick="zoomIn()" title="拡大">+</button>
+      <span id="zoom-level">100%</span>
+      <button onclick="zoomOut()" title="縮小">−</button>
+      <div class="divider"></div>
+      <button onclick="resetView()" title="リセット">⟲</button>
+      <button onclick="fitToScreen()" title="全体表示">⊡</button>
+    </div>
+
+    <button id="editor-toggle" onclick="toggleEditor()">編集モード</button>
+    <div id="drag-hint" class="drag-hint">ノードをドラッグして移動できます</div>
+
+    <div id="editor-panel">
+      <h2>スフィア盤エディタ<button class="close-btn" onclick="toggleEditor()">×</button></h2>
+
+      <div class="editor-section">
+        <h3>リング管理</h3>
+        <div class="ring-list" id="ring-list"></div>
+        <button class="btn btn-secondary btn-small" onclick="addNewRing()">+ リング追加</button>
+      </div>
+
+      <div class="editor-section">
+        <h3>ノード一覧</h3>
+        <div class="node-list" id="node-list"></div>
+        <button class="btn btn-secondary btn-small" onclick="addNewNode()">+ ノード追加</button>
+      </div>
+
+      <div class="editor-section" id="node-editor" style="display: none;">
+        <h3>ノード編集</h3>
+        <div class="form-row">
+          <div class="form-group"><label>ID</label><input type="text" id="edit-id"></div>
+          <div class="form-group"><label>リング</label><select id="edit-ring"></select></div>
+        </div>
+        <div class="form-group"><label>ラベル（スペースで改行）</label><input type="text" id="edit-label"></div>
+        <div class="form-row">
+          <div class="form-group"><label>状態</label>
+            <select id="edit-state">
+              <option value="LOCKED">未解放</option>
+              <option value="ELIGIBLE">解放可</option>
+              <option value="UNLOCKED">解放済</option>
+              <option value="MASTERED">定着</option>
+            </select>
+          </div>
+          <div class="form-group"><label>角度 (度)</label><input type="number" id="edit-angle" min="-180" max="180"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>重要度</label>
+            <select id="edit-importance">
+              <option value="STANDARD">標準</option>
+              <option value="MAJOR">重要</option>
+              <option value="MINOR">小</option>
+            </select>
+          </div>
+          <div class="form-group"><label>形状</label>
+            <select id="edit-shape">
+              <option value="circle">円</option>
+              <option value="hexagon">六角形</option>
+              <option value="diamond">菱形</option>
+              <option value="octagon">八角形</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>説明</label><textarea id="edit-description"></textarea></div>
+        <div class="form-group"><label>効果</label><input type="text" id="edit-effect"></div>
+        <div class="form-group"><label>必要スフィア</label><div class="sphere-editor" id="sphere-editor"></div></div>
+        <div class="form-group"><label>接続元</label><select id="edit-parent"></select></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveNode()">保存</button>
+          <button class="btn btn-danger" onclick="deleteNode()">削除</button>
+          <button class="btn btn-secondary" onclick="cancelEdit()">キャンセル</button>
+        </div>
+      </div>
+
+      <div id="export-section" class="editor-section">
+        <h3>データ管理</h3>
+        <div class="btn-group">
+          <button class="btn btn-secondary btn-small" onclick="exportData()">エクスポート</button>
+          <button class="btn btn-secondary btn-small" onclick="importData()">インポート</button>
+          <button class="btn btn-secondary btn-small" onclick="downloadImage()">画像保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 認証
+    const ACCESS_PASSWORD = 'wg2024';
+    const AUTH_KEY = 'wg_sphere_auth';
+    const AUTH_EXPIRY_DAYS = 7;
+
+    function checkAuth() {
+      const d = localStorage.getItem(AUTH_KEY);
+      if (!d) return false;
+      try {
+        const { hash, expiry } = JSON.parse(d);
+        if (Date.now() > expiry) { localStorage.removeItem(AUTH_KEY); return false; }
+        return hash === simpleHash(ACCESS_PASSWORD);
+      } catch { return false; }
+    }
+    function simpleHash(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h &= h; } return h.toString(36); }
+    function attemptLogin() {
+      const inp = document.getElementById('password-input');
+      if (inp.value === ACCESS_PASSWORD) {
+        localStorage.setItem(AUTH_KEY, JSON.stringify({ hash: simpleHash(ACCESS_PASSWORD), expiry: Date.now() + AUTH_EXPIRY_DAYS * 86400000 }));
+        showMainContent();
+      } else { document.getElementById('login-error').textContent = 'パスワードが正しくありません'; inp.value = ''; inp.focus(); }
+    }
+    function logout() { if (confirm('ログアウトしますか？')) { localStorage.removeItem(AUTH_KEY); location.reload(); } }
+    function showMainContent() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-content').classList.add('visible'); initApp(); }
+    document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') attemptLogin(); });
+    if (checkAuth()) showMainContent(); else document.getElementById('password-input').focus();
+
+    // CONFIG
+    let CONFIG = {
+      width: 1920, height: 1080,
+      rings: [
+        { id: "R30", label: "年商 3,000万", radius: 180 },
+        { id: "R60", label: "年商 6,000万", radius: 300 },
+        { id: "R100", label: "年商 1億", radius: 420 },
+      ],
+      sphereTypes: {
+        "人材": { color: "#3399E6" }, "資金": { color: "#E6B333" }, "実績": { color: "#4DCC80" },
+        "時間": { color: "#9966CC" }, "信頼": { color: "#E68033" }, "技術": { color: "#66B3E6" },
+      },
+      nodes: [
+        { id: "CORE", label: "WG\nCORE", ring: "CORE", angleDeg: 0, state: "MASTERED", importance: "MAJOR", shape: "octagon", sizeMultiplier: 1.4, description: "企業の核心", effect: "全ノード解放", requirements: [] },
+        { id: "HIRE_3", label: "採用\n〜3名", ring: "R30", angleDeg: -45, state: "ELIGIBLE", importance: "STANDARD", shape: "circle", description: "最初の採用", effect: "キャパ+30%", requirements: [{ type: "資金", count: 2 }, { type: "実績", count: 1 }] },
+        { id: "OFFICE_15", label: "オフィス\n賃料≤15%", ring: "R30", angleDeg: 15, state: "ELIGIBLE", importance: "STANDARD", shape: "diamond", description: "適正コスト", effect: "固定費最適化", requirements: [{ type: "資金", count: 1 }] },
+        { id: "PRODUCTIZE", label: "型化\n研修商品", ring: "R30", angleDeg: 75, state: "ELIGIBLE", importance: "MAJOR", shape: "hexagon", sizeMultiplier: 1.15, description: "サービス標準化", effect: "再現性+50%", requirements: [{ type: "技術", count: 2 }, { type: "時間", count: 1 }] },
+        { id: "BACKOFFICE", label: "バック\nオフィス", ring: "R30", angleDeg: 150, state: "ELIGIBLE", importance: "STANDARD", shape: "circle", description: "管理基盤整備", effect: "管理効率+20%", requirements: [{ type: "資金", count: 1 }, { type: "人材", count: 1 }] },
+        { id: "WELFARE", label: "福利厚生\n導入", ring: "R60", angleDeg: -60, state: "LOCKED", importance: "STANDARD", shape: "circle", description: "満足度向上", effect: "定着率+15%", requirements: [{ type: "資金", count: 2 }, { type: "信頼", count: 1 }] },
+        { id: "HIRE_MORE", label: "採用\n追加", ring: "R60", angleDeg: -15, state: "LOCKED", importance: "MAJOR", shape: "circle", sizeMultiplier: 1.15, description: "人材確保", effect: "キャパ+50%", requirements: [{ type: "資金", count: 3 }, { type: "人材", count: 1 }, { type: "実績", count: 2 }] },
+        { id: "SEC_PREP", label: "セキュリティ\n認証準備", ring: "R60", angleDeg: 45, state: "LOCKED", importance: "STANDARD", shape: "diamond", description: "認証準備", effect: "大企業対応", requirements: [{ type: "技術", count: 2 }, { type: "時間", count: 2 }] },
+        { id: "SALES_PROCESS", label: "営業\nプロセス", ring: "R60", angleDeg: 115, state: "LOCKED", importance: "MAJOR", shape: "hexagon", sizeMultiplier: 1.15, description: "営業体系化", effect: "受注効率+40%", requirements: [{ type: "実績", count: 2 }, { type: "技術", count: 1 }] },
+        { id: "NEW_BIZ", label: "新規事業\n×1", ring: "R100", angleDeg: -30, state: "LOCKED", importance: "MAJOR", shape: "octagon", sizeMultiplier: 1.2, description: "新領域進出", effect: "収益多角化", requirements: [{ type: "資金", count: 5 }, { type: "人材", count: 2 }, { type: "実績", count: 3 }] },
+        { id: "FUNCTION_SPLIT", label: "専任機能\n分離", ring: "R100", angleDeg: 30, state: "LOCKED", importance: "STANDARD", shape: "circle", description: "専任体制", effect: "専門性深化", requirements: [{ type: "人材", count: 3 }, { type: "資金", count: 2 }] },
+        { id: "SEC_GET", label: "認証\n本取得", ring: "R100", angleDeg: 90, state: "LOCKED", importance: "MAJOR", shape: "diamond", sizeMultiplier: 1.15, description: "認証取得", effect: "大型案件獲得", requirements: [{ type: "技術", count: 3 }, { type: "時間", count: 3 }, { type: "資金", count: 2 }] },
+        { id: "LEAD_DEV", label: "リード\n育成", ring: "R100", angleDeg: 160, state: "LOCKED", importance: "MAJOR", shape: "circle", sizeMultiplier: 1.15, description: "リーダー育成", effect: "持続可能性", requirements: [{ type: "人材", count: 2 }, { type: "時間", count: 3 }, { type: "信頼", count: 2 }] },
+      ],
+      edges: [
+        { from: "CORE", to: "HIRE_3", type: "MAIN" }, { from: "CORE", to: "OFFICE_15", type: "MAIN" },
+        { from: "CORE", to: "PRODUCTIZE", type: "MAIN" }, { from: "CORE", to: "BACKOFFICE", type: "MAIN" },
+        { from: "HIRE_3", to: "WELFARE", type: "OPTIONAL" }, { from: "HIRE_3", to: "HIRE_MORE", type: "MAIN" },
+        { from: "HIRE_MORE", to: "FUNCTION_SPLIT", type: "MAIN" }, { from: "FUNCTION_SPLIT", to: "LEAD_DEV", type: "MAIN" },
+        { from: "PRODUCTIZE", to: "SALES_PROCESS", type: "MAIN" }, { from: "SALES_PROCESS", to: "NEW_BIZ", type: "MAIN" },
+        { from: "SALES_PROCESS", to: "SEC_PREP", type: "OPTIONAL" }, { from: "SEC_PREP", to: "SEC_GET", type: "MAIN" },
+        { from: "BACKOFFICE", to: "SEC_PREP", type: "CROSS_DOMAIN" },
+      ],
+      nodeSizes: { MAJOR: 55, STANDARD: 45, MINOR: 35 }
+    };
+
+    let canvas, ctx, tooltip;
+    let baseScale = 1, userZoom = 1, cx, cy;
+    let panX = 0, panY = 0;
+    let nodePositions = [];
+    let selectedNodeId = null;
+    let isEditorOpen = false;
+    let isDragging = false;
+    let isPanning = false;
+    let dragNode = null;
+    let lastPanPos = null;
+
+    function initApp() {
+      canvas = document.getElementById('canvas');
+      ctx = canvas.getContext('2d');
+      tooltip = document.getElementById('tooltip');
+      window.addEventListener('resize', resize);
+      canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('mousedown', handleMouseDown);
+      canvas.addEventListener('mouseup', handleMouseUp);
+      canvas.addEventListener('mouseleave', handleMouseLeave);
+      canvas.addEventListener('wheel', handleWheel, { passive: false });
+      resize();
+    }
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = window.innerWidth, h = window.innerHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      baseScale = Math.min(w / CONFIG.width, h / CONFIG.height) * 0.85;
+      cx = w / 2; cy = h / 2;
+      draw();
+    }
+
+    function getScale() { return baseScale * userZoom; }
+
+    function zoomIn() { userZoom = Math.min(userZoom * 1.25, 4); updateZoomDisplay(); draw(); }
+    function zoomOut() { userZoom = Math.max(userZoom / 1.25, 0.25); updateZoomDisplay(); draw(); }
+    function resetView() { userZoom = 1; panX = 0; panY = 0; updateZoomDisplay(); draw(); }
+    function fitToScreen() {
+      const maxRadius = Math.max(...CONFIG.rings.map(r => r.radius));
+      const w = window.innerWidth, h = window.innerHeight;
+      const targetScale = Math.min(w, h) / (maxRadius * 2 + 200);
+      userZoom = targetScale / baseScale;
+      userZoom = Math.max(0.25, Math.min(4, userZoom));
+      panX = 0; panY = 0;
+      updateZoomDisplay(); draw();
+    }
+    function updateZoomDisplay() {
+      document.getElementById('zoom-level').textContent = Math.round(userZoom * 100) + '%';
+    }
+
+    function handleWheel(e) {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      const newZoom = Math.max(0.25, Math.min(4, userZoom * delta));
+      // ズーム中心をマウス位置に
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      const worldX = (mx - cx - panX) / getScale();
+      const worldY = (my - cy - panY) / getScale();
+      userZoom = newZoom;
+      panX = mx - cx - worldX * getScale();
+      panY = my - cy - worldY * getScale();
+      updateZoomDisplay(); draw();
+    }
+
+    function findNodeAt(x, y) {
+      for (const { node, x: nx, y: ny, size } of nodePositions) {
+        if (Math.sqrt((x - nx) ** 2 + (y - ny) ** 2) < size * 1.2) return node;
+      }
+      return null;
+    }
+
+    function handleMouseMove(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+
+      if (isPanning && lastPanPos) {
+        panX += x - lastPanPos.x;
+        panY += y - lastPanPos.y;
+        lastPanPos = { x, y };
+        draw();
+        return;
+      }
+
+      if (isDragging && dragNode && dragNode.ring !== 'CORE') {
+        const scale = getScale();
+        const dx = (x - cx - panX) / scale, dy = (y - cy - panY) / scale;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        let angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+        dragNode.angleDeg = Math.round(angleDeg);
+        let closestRing = CONFIG.rings[0];
+        let minDiff = Infinity;
+        for (const ring of CONFIG.rings) {
+          const diff = Math.abs(dist - ring.radius);
+          if (diff < minDiff) { minDiff = diff; closestRing = ring; }
+        }
+        dragNode.ring = closestRing.id;
+        draw();
+        if (isEditorOpen) { updateNodeList(); populateNodeEditor(dragNode); }
+        return;
+      }
+
+      const hovered = findNodeAt(x, y);
+      if (hovered) {
+        if (isEditorOpen && hovered.ring !== 'CORE') { canvas.classList.add('can-drag'); } else { canvas.classList.remove('can-drag'); }
+        showTooltip(hovered, e.clientX, e.clientY);
+      } else {
+        canvas.classList.remove('can-drag');
+        hideTooltip();
+      }
+    }
+
+    function handleMouseDown(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      const node = findNodeAt(x, y);
+
+      if (isEditorOpen && node && node.ring !== 'CORE') {
+        isDragging = true;
+        dragNode = node;
+        canvas.classList.add('dragging');
+        canvas.classList.remove('can-drag');
+        selectNode(node.id);
+      } else if (e.button === 1 || (e.button === 0 && e.altKey) || (e.button === 0 && !node)) {
+        // ミドルクリック、Alt+クリック、または空白エリアでパン
+        isPanning = true;
+        lastPanPos = { x, y };
+        canvas.classList.add('panning');
+      }
+    }
+
+    function handleMouseUp(e) {
+      if (isDragging) {
+        isDragging = false;
+        dragNode = null;
+        canvas.classList.remove('dragging');
+        draw();
+      }
+      if (isPanning) {
+        isPanning = false;
+        lastPanPos = null;
+        canvas.classList.remove('panning');
+      }
+    }
+
+    function handleMouseLeave() {
+      hideTooltip();
+      if (isDragging) { isDragging = false; dragNode = null; canvas.classList.remove('dragging'); draw(); }
+      if (isPanning) { isPanning = false; lastPanPos = null; canvas.classList.remove('panning'); }
+    }
+
+    // 描画
+    function draw() {
+      const w = canvas.width / (window.devicePixelRatio || 1), h = canvas.height / (window.devicePixelRatio || 1);
+      ctx.fillStyle = '#050812'; ctx.fillRect(0, 0, w, h);
+      drawStars(w, h); drawGlow(); drawRings(); drawEdges();
+      nodePositions = [];
+      CONFIG.nodes.forEach(n => { const p = drawNode(n); nodePositions.push({ node: n, ...p }); });
+    }
+
+    function drawStars(w, h) {
+      let seed = 54321;
+      const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+      [[100, 0.5, 1.5, 0.2, 0.4], [50, 1, 2, 0.3, 0.6], [20, 2, 3, 0.5, 0.8]].forEach(([c, s1, s2, o1, o2]) => {
+        for (let i = 0; i < c; i++) {
+          const x = rnd() * w, y = rnd() * h;
+          if (Math.sqrt((x - cx) ** 2 + (y - cy) ** 2) < 150 * getScale()) continue;
+          const sz = s1 + rnd() * (s2 - s1), op = o1 + rnd() * (o2 - o1);
+          ctx.beginPath(); ctx.arc(x, y, sz, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${op})`; ctx.fill();
+        }
+      });
+    }
+
+    function drawGlow() {
+      const scale = getScale();
+      const r = 500 * scale;
+      const g = ctx.createRadialGradient(cx + panX, cy + panY, 0, cx + panX, cy + panY, r);
+      g.addColorStop(0, 'rgba(20,36,66,0.6)'); g.addColorStop(0.5, 'rgba(20,36,66,0.3)'); g.addColorStop(1, 'rgba(20,36,66,0)');
+      ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+    }
+
+    function drawRings() {
+      const scale = getScale();
+      CONFIG.rings.forEach((ring, i) => {
+        const r = ring.radius * scale;
+        const intensity = 1 - i * 0.15;
+        ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(74,122,184,${0.15 * intensity})`; ctx.lineWidth = 6; ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(74,122,184,${0.4 + 0.3 * intensity})`; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.font = `${12 * Math.min(1, scale / baseScale)}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+        ctx.fillStyle = `rgba(180,200,220,${0.5 + 0.3 * intensity})`;
+        ctx.textAlign = 'left'; ctx.fillText(ring.label, cx + panX + r + 15, cy + panY + 4);
+      });
+    }
+
+    function getNodePos(node) {
+      const scale = getScale();
+      if (node.ring === 'CORE') return { x: cx + panX, y: cy + panY };
+      const ring = CONFIG.rings.find(r => r.id === node.ring);
+      const r = ring ? ring.radius * scale : 180 * scale;
+      const rad = (node.angleDeg * Math.PI) / 180;
+      return { x: cx + panX + r * Math.cos(rad), y: cy + panY + r * Math.sin(rad) };
+    }
+
+    function drawEdges() {
+      const map = new Map(); CONFIG.nodes.forEach(n => map.set(n.id, getNodePos(n)));
+      CONFIG.edges.forEach(e => {
+        const a = map.get(e.from), b = map.get(e.to); if (!a || !b) return;
+        const isMain = e.type === 'MAIN', isCross = e.type === 'CROSS_DOMAIN';
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(58,96,144,${isMain ? 0.3 : 0.15})`; ctx.lineWidth = isMain ? 8 : 5; ctx.lineCap = 'round'; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = isCross ? 'rgba(184,138,8,0.6)' : `rgba(74,122,184,${isMain ? 0.8 : 0.5})`;
+        ctx.lineWidth = isMain ? 3 : 1.5;
+        if (e.type === 'OPTIONAL') ctx.setLineDash([6, 4]); else ctx.setLineDash([]);
+        ctx.stroke(); ctx.setLineDash([]);
+      });
+    }
+
+    function drawNode(node) {
+      const scale = getScale();
+      const pos = getNodePos(node);
+      const baseSize = CONFIG.nodeSizes[node.importance] || 45;
+      const size = baseSize * (node.sizeMultiplier || 1) * scale;
+      let fill, stroke, glow;
+      switch (node.state) {
+        case 'MASTERED': fill = '#4A3D1A'; stroke = '#FFE680'; glow = 'rgba(255,215,0,0.6)'; break;
+        case 'UNLOCKED': fill = '#1A3D2A'; stroke = '#33E680'; glow = 'rgba(51,230,128,0.5)'; break;
+        case 'ELIGIBLE': fill = '#3D3520'; stroke = '#FFD700'; glow = 'rgba(255,215,0,0.4)'; break;
+        default: fill = '#252830'; stroke = '#4A4E58'; glow = null;
+      }
+      if (node.id === selectedNodeId) {
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * 1.6, 0, Math.PI * 2);
+        ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
+      }
+      if (glow) {
+        const g = ctx.createRadialGradient(pos.x, pos.y, size * 0.5, pos.x, pos.y, size * 1.4);
+        g.addColorStop(0, glow); g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * 1.4, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+      }
+      ctx.beginPath();
+      if (node.shape === 'circle') ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+      else if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, size, 6, Math.PI / 6);
+      else if (node.shape === 'diamond') drawPoly(pos.x, pos.y, size, 4, 0);
+      else if (node.shape === 'octagon') drawPoly(pos.x, pos.y, size, 8, Math.PI / 8);
+      const fg = ctx.createRadialGradient(pos.x - size * 0.3, pos.y - size * 0.3, 0, pos.x, pos.y, size);
+      fg.addColorStop(0, lighten(fill, 0.3)); fg.addColorStop(1, fill);
+      ctx.fillStyle = fg; ctx.fill();
+      ctx.strokeStyle = stroke; ctx.lineWidth = node.state === 'MASTERED' ? 4 : 3; ctx.stroke();
+      ctx.font = `600 ${11 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif`;
+      ctx.fillStyle = node.state === 'LOCKED' ? '#666' : '#fff';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const lines = node.label.split('\n'), lh = 13 * scale, startY = pos.y - ((lines.length - 1) * lh) / 2;
+      lines.forEach((l, i) => ctx.fillText(l, pos.x, startY + i * lh));
+      if (node.state === 'LOCKED') { ctx.font = `${10 * scale}px sans-serif`; ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillText('🔒', pos.x + size * 0.6, pos.y - size * 0.6); }
+      if (node.requirements?.length && node.ring !== 'CORE') drawReqs(node, pos, size);
+      return { x: pos.x, y: pos.y, size };
+    }
+
+    function drawReqs(node, pos, size) {
+      const scale = getScale();
+      const dx = pos.x - (cx + panX), dy = pos.y - (cy + panY), dist = Math.sqrt(dx * dx + dy * dy);
+      const dirX = dist > 0 ? dx / dist : 0, dirY = dist > 0 ? dy / dist : 1;
+      const off = size + 15 * scale, lx = pos.x + dirX * off, ly = pos.y + dirY * off;
+      const ss = 6 * scale, sp = 14 * scale, tw = node.requirements.length * sp;
+      let sx = lx - tw / 2; if (dirX > 0.5) sx = lx; else if (dirX < -0.5) sx = lx - tw;
+      node.requirements.forEach((r, i) => {
+        const rx = sx + i * sp + ss / 2, ry = ly;
+        const c = CONFIG.sphereTypes[r.type]?.color || '#888';
+        ctx.beginPath(); ctx.arc(rx, ry, ss, 0, Math.PI * 2); ctx.fillStyle = c; ctx.fill();
+        ctx.font = `600 ${8 * scale}px sans-serif`; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(r.count.toString(), rx, ry);
+      });
+    }
+
+    function drawPoly(x, y, r, sides, rot = 0) {
+      ctx.moveTo(x + r * Math.cos(rot), y + r * Math.sin(rot));
+      for (let i = 1; i <= sides; i++) { const a = rot + (i * 2 * Math.PI) / sides; ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); }
+      ctx.closePath();
+    }
+
+    function lighten(hex, amt) {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      if (!m) return hex;
+      return `rgb(${Math.min(255, parseInt(m[1], 16) + amt * 255)},${Math.min(255, parseInt(m[2], 16) + amt * 255)},${Math.min(255, parseInt(m[3], 16) + amt * 255)})`;
+    }
+
+    // ツールチップ
+    function showTooltip(node, x, y) {
+      let h = `<h3>${node.label.replace('\n', ' ')}</h3><span class="state ${node.state}">${getStateName(node.state)}</span>`;
+      h += `<div class="description">${node.description || ''}</div>`;
+      if (node.requirements?.length) {
+        h += '<div class="requirements"><h4>必要スフィア</h4>';
+        node.requirements.forEach(r => { const c = CONFIG.sphereTypes[r.type]?.color || '#888'; h += `<span class="sphere-item" style="background:${c}22;color:${c};border:1px solid ${c}44">${r.type} ×${r.count}</span>`; });
+        h += '</div>';
+      }
+      if (node.effect) h += `<div class="effect">→ ${node.effect}</div>`;
+      tooltip.innerHTML = h; tooltip.style.display = 'block';
+      const tr = tooltip.getBoundingClientRect();
+      let left = x + 15, top = y + 15;
+      if (left + tr.width > window.innerWidth) left = x - tr.width - 15;
+      if (top + tr.height > window.innerHeight) top = y - tr.height - 15;
+      tooltip.style.left = left + 'px'; tooltip.style.top = top + 'px';
+    }
+    function hideTooltip() { tooltip.style.display = 'none'; }
+    function getStateName(s) { return { MASTERED: '定着', UNLOCKED: '解放済', ELIGIBLE: '解放可', LOCKED: '未解放' }[s] || '未解放'; }
+
+    // エディタ
+    function toggleEditor() {
+      try {
+        isEditorOpen = !isEditorOpen;
+        const panel = document.getElementById('editor-panel');
+        const toggle = document.getElementById('editor-toggle');
+        const hint = document.getElementById('drag-hint');
+
+        if (panel) panel.classList.toggle('open', isEditorOpen);
+        if (toggle) {
+          toggle.classList.toggle('active', isEditorOpen);
+          toggle.textContent = isEditorOpen ? '✓ 編集モード' : '編集モード';
+        }
+        if (hint) hint.classList.toggle('visible', isEditorOpen);
+
+        if (isEditorOpen) {
+          updateRingList();
+          updateRingSelect();
+          updateNodeList();
+        }
+      } catch (err) {
+        console.error('toggleEditor error:', err);
+      }
+    }
+
+    function updateRingList() {
+      const list = document.getElementById('ring-list');
+      if (!list) return;
+      list.innerHTML = '';
+      CONFIG.rings.forEach((ring, i) => {
+        const item = document.createElement('div'); item.className = 'ring-item';
+        item.innerHTML = `
+          <input type="text" value="${ring.label}" onchange="updateRing(${i},'label',this.value)" style="flex:2">
+          <input type="number" class="ring-radius" value="${ring.radius}" onchange="updateRing(${i},'radius',+this.value)" min="100" max="1000">
+          <button class="delete-ring" onclick="deleteRing(${i})" ${CONFIG.rings.length <= 1 ? 'disabled' : ''}>×</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function updateRing(i, key, val) { CONFIG.rings[i][key] = val; draw(); updateRingSelect(); }
+    function deleteRing(i) {
+      if (CONFIG.rings.length <= 1) return;
+      const rid = CONFIG.rings[i].id;
+      CONFIG.nodes = CONFIG.nodes.filter(n => n.ring !== rid);
+      CONFIG.rings.splice(i, 1);
+      updateRingList(); updateNodeList(); updateRingSelect(); draw();
+    }
+    function addNewRing() {
+      const maxR = Math.max(...CONFIG.rings.map(r => r.radius));
+      const newId = 'R' + (maxR + 120);
+      CONFIG.rings.push({ id: newId, label: '新リング', radius: maxR + 120 });
+      CONFIG.rings.sort((a, b) => a.radius - b.radius);
+      updateRingList(); updateRingSelect(); draw();
+    }
+
+    function updateRingSelect() {
+      const sel = document.getElementById('edit-ring');
+      if (!sel) return;
+      sel.innerHTML = CONFIG.rings.map(r => `<option value="${r.id}">${r.label} (${r.radius}px)</option>`).join('');
+    }
+
+    function updateNodeList() {
+      const list = document.getElementById('node-list');
+      if (!list) return;
+      list.innerHTML = '';
+      CONFIG.nodes.filter(n => n.id !== 'CORE').forEach(node => {
+        const item = document.createElement('div');
+        item.className = 'node-list-item' + (node.id === selectedNodeId ? ' selected' : '');
+        item.onclick = () => selectNode(node.id);
+        const colors = { MASTERED: '#FFD700', UNLOCKED: '#33E680', ELIGIBLE: '#FFD700', LOCKED: '#4A4E58' };
+        item.innerHTML = `
+          <div class="node-dot" style="background:${colors[node.state]};color:${colors[node.state]}"></div>
+          <span class="node-name">${node.label.replace('\n', ' ')}</span>
+          <span class="node-ring">${node.ring}</span>
+          <span class="node-state state ${node.state}">${getStateName(node.state)}</span>
+        `;
+        list.appendChild(item);
+      });
+      const parent = document.getElementById('edit-parent');
+      if (parent) {
+        parent.innerHTML = '<option value="CORE">CORE</option>' + CONFIG.nodes.filter(n => n.id !== 'CORE').map(n => `<option value="${n.id}">${n.label.replace('\n', ' ')}</option>`).join('');
+      }
+    }
+
+    function selectNode(id) {
+      selectedNodeId = id;
+      const node = CONFIG.nodes.find(n => n.id === id);
+      if (!node) return;
+      document.getElementById('node-editor').style.display = 'block';
+      populateNodeEditor(node);
+      updateNodeList(); draw();
+    }
+
+    function populateNodeEditor(node) {
+      document.getElementById('edit-id').value = node.id;
+      document.getElementById('edit-label').value = node.label.replace('\n', ' ');
+      document.getElementById('edit-ring').value = node.ring;
+      document.getElementById('edit-state').value = node.state;
+      document.getElementById('edit-angle').value = node.angleDeg;
+      document.getElementById('edit-importance').value = node.importance;
+      document.getElementById('edit-shape').value = node.shape;
+      document.getElementById('edit-description').value = node.description || '';
+      document.getElementById('edit-effect').value = node.effect || '';
+      const se = document.getElementById('sphere-editor'); se.innerHTML = '';
+      Object.entries(CONFIG.sphereTypes).forEach(([t, info]) => {
+        const req = node.requirements?.find(r => r.type === t);
+        se.innerHTML += `<div class="sphere-tag" style="background:${info.color}22;color:${info.color};border:1px solid ${info.color}44">${t}<input type="number" min="0" max="10" value="${req ? req.count : 0}" data-type="${t}"></div>`;
+      });
+      const edge = CONFIG.edges.find(e => e.to === node.id);
+      document.getElementById('edit-parent').value = edge ? edge.from : 'CORE';
+    }
+
+    function addNewNode() {
+      const newId = 'NODE_' + Date.now();
+      const ring = CONFIG.rings[0]?.id || 'R30';
+      const newNode = { id: newId, label: '新規\nノード', ring, angleDeg: Math.floor(Math.random() * 360) - 180, state: 'LOCKED', importance: 'STANDARD', shape: 'circle', description: '', effect: '', requirements: [] };
+      CONFIG.nodes.push(newNode);
+      CONFIG.edges.push({ from: 'CORE', to: newId, type: 'MAIN' });
+      selectNode(newId); draw();
+    }
+
+    function saveNode() {
+      const id = document.getElementById('edit-id').value;
+      const node = CONFIG.nodes.find(n => n.id === selectedNodeId);
+      if (!node) return;
+      if (id !== selectedNodeId) {
+        CONFIG.edges.forEach(e => { if (e.from === selectedNodeId) e.from = id; if (e.to === selectedNodeId) e.to = id; });
+        node.id = id; selectedNodeId = id;
+      }
+      node.label = document.getElementById('edit-label').value.replace(/ /g, '\n');
+      node.ring = document.getElementById('edit-ring').value;
+      node.state = document.getElementById('edit-state').value;
+      node.angleDeg = parseInt(document.getElementById('edit-angle').value) || 0;
+      node.importance = document.getElementById('edit-importance').value;
+      node.shape = document.getElementById('edit-shape').value;
+      node.description = document.getElementById('edit-description').value;
+      node.effect = document.getElementById('edit-effect').value;
+      node.requirements = [];
+      document.querySelectorAll('#sphere-editor input').forEach(inp => { const c = parseInt(inp.value); if (c > 0) node.requirements.push({ type: inp.dataset.type, count: c }); });
+      const pid = document.getElementById('edit-parent').value;
+      const ei = CONFIG.edges.findIndex(e => e.to === node.id);
+      if (ei >= 0) CONFIG.edges[ei].from = pid; else CONFIG.edges.push({ from: pid, to: node.id, type: 'MAIN' });
+      updateNodeList(); draw();
+    }
+
+    function deleteNode() {
+      if (!selectedNodeId || selectedNodeId === 'CORE') return alert('COREは削除できません');
+      if (!confirm('削除しますか？')) return;
+      CONFIG.nodes = CONFIG.nodes.filter(n => n.id !== selectedNodeId);
+      CONFIG.edges = CONFIG.edges.filter(e => e.from !== selectedNodeId && e.to !== selectedNodeId);
+      selectedNodeId = null;
+      document.getElementById('node-editor').style.display = 'none';
+      updateNodeList(); draw();
+    }
+
+    function cancelEdit() {
+      selectedNodeId = null;
+      document.getElementById('node-editor').style.display = 'none';
+      updateNodeList(); draw();
+    }
+
+    // エクスポート/インポート
+    function exportData() {
+      const data = { rings: CONFIG.rings, nodes: CONFIG.nodes, edges: CONFIG.edges };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sphere-grid-data.json'; a.click();
+    }
+
+    function importData() {
+      const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json';
+      inp.onchange = e => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          try {
+            const d = JSON.parse(ev.target.result);
+            if (d.rings) CONFIG.rings = d.rings;
+            if (d.nodes) CONFIG.nodes = d.nodes;
+            if (d.edges) CONFIG.edges = d.edges;
+            updateRingList(); updateNodeList(); updateRingSelect(); draw();
+            alert('インポート完了');
+          } catch { alert('読み込み失敗'); }
+        };
+        reader.readAsText(e.target.files[0]);
+      };
+      inp.click();
+    }
+
+    function downloadImage() {
+      const link = document.createElement('a'); link.download = 'sphere-grid.png'; link.href = canvas.toDataURL('image/png'); link.click();
+    }
+  </script>
+</body>
+</html>
