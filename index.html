@@ -5,178 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WG Sphere Grid - 企業スフィア盤</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      background: #050812;
-      font-family: 'Segoe UI', 'Hiragino Sans', sans-serif;
-      overflow: hidden;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050812; font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; overflow: hidden; }
 
     /* ログイン画面 */
     #login-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: linear-gradient(135deg, #050812 0%, #0A1628 50%, #051020 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
+      display: flex; justify-content: center; align-items: center; z-index: 10000;
     }
-    #login-screen.hidden {
-      display: none;
-    }
+    #login-screen.hidden { display: none; }
     .login-box {
-      background: rgba(10, 22, 40, 0.95);
-      border: 1px solid rgba(74, 122, 184, 0.4);
-      border-radius: 16px;
-      padding: 40px 50px;
-      text-align: center;
+      background: rgba(10, 22, 40, 0.95); border: 1px solid rgba(74, 122, 184, 0.4);
+      border-radius: 16px; padding: 40px 50px; text-align: center;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(74, 122, 184, 0.1);
     }
     .login-logo {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 20px;
+      width: 80px; height: 80px; margin: 0 auto 20px;
       background: radial-gradient(circle at 30% 30%, #FFE066, #B88A08);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 32px;
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+      border-radius: 50%; display: flex; justify-content: center; align-items: center;
+      font-size: 32px; box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
     }
-    .login-box h1 {
-      color: #FFD700;
-      font-size: 24px;
-      letter-spacing: 3px;
-      margin-bottom: 8px;
-    }
-    .login-box .subtitle {
-      color: #889;
-      font-size: 14px;
-      margin-bottom: 30px;
-    }
+    .login-box h1 { color: #FFD700; font-size: 24px; letter-spacing: 3px; margin-bottom: 8px; }
+    .login-box .subtitle { color: #889; font-size: 14px; margin-bottom: 30px; }
     .login-box input[type="password"] {
-      width: 100%;
-      padding: 14px 20px;
-      background: rgba(20, 40, 60, 0.8);
-      border: 1px solid rgba(74, 122, 184, 0.3);
-      border-radius: 8px;
-      color: #fff;
-      font-size: 16px;
-      text-align: center;
-      letter-spacing: 4px;
-      margin-bottom: 16px;
+      width: 100%; padding: 14px 20px; background: rgba(20, 40, 60, 0.8);
+      border: 1px solid rgba(74, 122, 184, 0.3); border-radius: 8px;
+      color: #fff; font-size: 16px; text-align: center; letter-spacing: 4px; margin-bottom: 16px;
     }
-    .login-box input[type="password"]:focus {
-      outline: none;
-      border-color: #FFD700;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-    }
-    .login-box input[type="password"]::placeholder {
-      letter-spacing: 0;
-      color: #556;
-    }
+    .login-box input[type="password"]:focus { outline: none; border-color: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+    .login-box input[type="password"]::placeholder { letter-spacing: 0; color: #556; }
     .login-box button {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #B88A08, #FFD700);
-      border: none;
-      border-radius: 8px;
-      color: #000;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s;
+      width: 100%; padding: 14px; background: linear-gradient(135deg, #B88A08, #FFD700);
+      border: none; border-radius: 8px; color: #000; font-size: 16px; font-weight: bold; cursor: pointer;
     }
-    .login-box button:hover {
-      background: linear-gradient(135deg, #FFD700, #FFE44D);
-      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
-    }
-    .login-error {
-      color: #E64D66;
-      font-size: 13px;
-      margin-top: 12px;
-      min-height: 20px;
-    }
-    .login-hint {
-      color: #556;
-      font-size: 11px;
-      margin-top: 20px;
-    }
+    .login-box button:hover { background: linear-gradient(135deg, #FFD700, #FFE44D); box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3); }
+    .login-error { color: #E64D66; font-size: 13px; margin-top: 12px; min-height: 20px; }
+    .login-hint { color: #556; font-size: 11px; margin-top: 20px; }
 
-    /* ログアウトボタン */
     #logout-btn {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(100, 100, 120, 0.3);
-      border: 1px solid rgba(100, 100, 120, 0.5);
-      color: #889;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.2s;
-      z-index: 100;
+      position: absolute; bottom: 20px; right: 20px; background: rgba(100, 100, 120, 0.3);
+      border: 1px solid rgba(100, 100, 120, 0.5); color: #889; padding: 8px 16px;
+      border-radius: 6px; cursor: pointer; font-size: 12px; z-index: 100;
     }
-    #logout-btn:hover {
-      background: rgba(230, 77, 102, 0.3);
-      border-color: rgba(230, 77, 102, 0.5);
-      color: #E64D66;
-    }
+    #logout-btn:hover { background: rgba(230, 77, 102, 0.3); border-color: rgba(230, 77, 102, 0.5); color: #E64D66; }
 
-    /* メインコンテンツ（非表示初期状態） */
-    #main-content {
-      display: none;
-    }
-    #main-content.visible {
-      display: block;
-    }
-    #container {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    canvas {
-      display: block;
-    }
-    /* ツールチップ */
+    #main-content { display: none; }
+    #main-content.visible { display: block; }
+    #container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
+    canvas { display: block; cursor: default; }
+    canvas.dragging { cursor: grabbing; }
+    canvas.can-drag { cursor: grab; }
+
     #tooltip {
-      position: absolute;
-      display: none;
-      background: rgba(10, 16, 36, 0.95);
-      border: 1px solid rgba(74, 122, 184, 0.5);
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: #fff;
-      font-size: 12px;
-      max-width: 280px;
-      pointer-events: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      z-index: 1000;
+      position: absolute; display: none; background: rgba(10, 16, 36, 0.95);
+      border: 1px solid rgba(74, 122, 184, 0.5); border-radius: 8px; padding: 12px 16px;
+      color: #fff; font-size: 12px; max-width: 280px; pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 1000;
     }
-    #tooltip h3 {
-      color: #FFD700;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-    #tooltip .state {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      margin-bottom: 8px;
-    }
+    #tooltip h3 { color: #FFD700; font-size: 14px; margin-bottom: 8px; }
+    #tooltip .state { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; margin-bottom: 8px; }
     #tooltip .state.MASTERED { background: rgba(255,215,0,0.3); color: #FFD700; }
     #tooltip .state.UNLOCKED { background: rgba(51,230,128,0.3); color: #33E680; }
     #tooltip .state.ELIGIBLE { background: rgba(255,215,0,0.2); color: #FFD700; }
@@ -184,313 +72,104 @@
     #tooltip .description { color: #aab; margin-bottom: 8px; }
     #tooltip .requirements { margin-top: 8px; }
     #tooltip .requirements h4 { color: #B88A08; font-size: 11px; margin-bottom: 4px; }
-    #tooltip .sphere-item {
-      display: inline-block;
-      margin: 2px 4px 2px 0;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10px;
-    }
+    #tooltip .sphere-item { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
     #tooltip .effect { color: #4DCC80; margin-top: 8px; font-size: 11px; }
 
-    /* 凡例 */
-    #legend {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(10, 16, 36, 0.9);
-      border: 1px solid rgba(74, 122, 184, 0.4);
-      border-radius: 12px;
-      padding: 16px 20px;
-      color: #fff;
-      font-size: 11px;
-      min-width: 280px;
+    #legend, #gates {
+      position: absolute; background: rgba(10, 16, 36, 0.9);
+      border: 1px solid rgba(74, 122, 184, 0.4); border-radius: 12px;
+      padding: 16px 20px; color: #fff; font-size: 11px;
     }
-    #legend h2 {
-      color: #FFD700;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-    #legend h3 {
-      color: #B88A08;
-      font-size: 11px;
-      margin: 12px 0 8px 0;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      margin: 6px 0;
-    }
-    .legend-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      margin-right: 10px;
-      flex-shrink: 0;
-    }
-    .legend-sphere {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-right: 8px;
-      flex-shrink: 0;
-    }
-    .legend-text {
-      flex: 1;
-    }
+    #legend { top: 20px; right: 20px; min-width: 260px; }
+    #gates { top: 20px; left: 20px; max-width: 280px; }
+    #legend h2, #gates h2 { color: #FFD700; font-size: 14px; margin-bottom: 12px; }
+    #legend h3, #gates h3 { color: #B88A08; font-size: 11px; margin: 12px 0 8px 0; }
+    #gates .subtitle { color: #889; font-size: 12px; margin-bottom: 12px; }
+    #gates ul { list-style: none; color: #aab; line-height: 1.8; }
+    #gates li::before { content: "・"; color: #4A7AB8; }
+    .legend-item { display: flex; align-items: center; margin: 6px 0; }
+    .legend-dot { width: 16px; height: 16px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+    .legend-sphere { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
+    .legend-text { flex: 1; }
     .legend-text .label { color: #fff; }
     .legend-text .desc { color: #889; font-size: 10px; }
 
-    /* ゲート条件 */
-    #gates {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: rgba(10, 16, 36, 0.9);
-      border: 1px solid rgba(74, 122, 184, 0.4);
-      border-radius: 12px;
-      padding: 16px 20px;
-      color: #fff;
-      font-size: 11px;
-      max-width: 280px;
-    }
-    #gates h2 {
-      color: #FFD700;
-      font-size: 16px;
-      letter-spacing: 2px;
-      margin-bottom: 4px;
-    }
-    #gates .subtitle {
-      color: #889;
-      font-size: 12px;
-      margin-bottom: 12px;
-    }
-    #gates h3 {
-      color: #B88A08;
-      font-size: 11px;
-      margin-bottom: 8px;
-    }
-    #gates ul {
-      list-style: none;
-      color: #aab;
-      line-height: 1.8;
-    }
-    #gates li::before {
-      content: "・";
-      color: #4A7AB8;
-    }
-
-    /* エディタパネル */
     #editor-toggle {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(255, 215, 0, 0.2);
-      border: 1px solid #FFD700;
-      color: #FFD700;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s;
+      position: absolute; bottom: 20px; left: 20px; background: rgba(255, 215, 0, 0.2);
+      border: 1px solid #FFD700; color: #FFD700; padding: 10px 20px;
+      border-radius: 8px; cursor: pointer; font-size: 14px;
     }
-    #editor-toggle:hover {
-      background: rgba(255, 215, 0, 0.3);
-    }
+    #editor-toggle:hover { background: rgba(255, 215, 0, 0.3); }
+    #editor-toggle.active { background: rgba(255, 215, 0, 0.4); }
 
     #editor-panel {
-      position: absolute;
-      top: 0;
-      right: -450px;
-      width: 450px;
-      height: 100vh;
-      background: rgba(10, 16, 36, 0.98);
-      border-left: 1px solid rgba(74, 122, 184, 0.5);
-      padding: 20px;
-      overflow-y: auto;
-      transition: right 0.3s ease;
-      z-index: 2000;
+      position: absolute; top: 0; right: -480px; width: 480px; height: 100vh;
+      background: rgba(10, 16, 36, 0.98); border-left: 1px solid rgba(74, 122, 184, 0.5);
+      padding: 20px; overflow-y: auto; transition: right 0.3s ease; z-index: 2000;
     }
-    #editor-panel.open {
-      right: 0;
-    }
-    #editor-panel h2 {
-      color: #FFD700;
-      font-size: 18px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #editor-panel .close-btn {
-      background: none;
-      border: none;
-      color: #888;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    #editor-panel .close-btn:hover {
-      color: #fff;
-    }
+    #editor-panel.open { right: 0; }
+    #editor-panel h2 { color: #FFD700; font-size: 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    #editor-panel .close-btn { background: none; border: none; color: #888; font-size: 24px; cursor: pointer; }
+    #editor-panel .close-btn:hover { color: #fff; }
 
-    .editor-section {
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(74, 122, 184, 0.2);
-    }
-    .editor-section h3 {
-      color: #B88A08;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
+    .editor-section { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(74, 122, 184, 0.2); }
+    .editor-section h3 { color: #B88A08; font-size: 14px; margin-bottom: 12px; }
 
-    .node-list {
-      max-height: 200px;
-      overflow-y: auto;
-      margin-bottom: 12px;
-    }
+    .node-list { max-height: 180px; overflow-y: auto; margin-bottom: 12px; }
     .node-list-item {
-      display: flex;
-      align-items: center;
-      padding: 8px;
-      margin: 4px 0;
-      background: rgba(74, 122, 184, 0.1);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
+      display: flex; align-items: center; padding: 8px; margin: 4px 0;
+      background: rgba(74, 122, 184, 0.1); border-radius: 6px; cursor: pointer;
     }
-    .node-list-item:hover {
-      background: rgba(74, 122, 184, 0.2);
-    }
-    .node-list-item.selected {
-      background: rgba(255, 215, 0, 0.2);
-      border: 1px solid rgba(255, 215, 0, 0.5);
-    }
-    .node-list-item .node-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .node-list-item .node-name {
-      color: #fff;
-      flex: 1;
-    }
-    .node-list-item .node-state {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
+    .node-list-item:hover { background: rgba(74, 122, 184, 0.2); }
+    .node-list-item.selected { background: rgba(255, 215, 0, 0.2); border: 1px solid rgba(255, 215, 0, 0.5); }
+    .node-list-item .node-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
+    .node-list-item .node-name { color: #fff; flex: 1; font-size: 12px; }
+    .node-list-item .node-ring { color: #889; font-size: 10px; margin-right: 8px; }
+    .node-list-item .node-state { font-size: 10px; padding: 2px 6px; border-radius: 4px; }
 
-    .form-group {
-      margin-bottom: 12px;
-    }
-    .form-group label {
-      display: block;
-      color: #889;
-      font-size: 11px;
-      margin-bottom: 4px;
-    }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; color: #889; font-size: 11px; margin-bottom: 4px; }
     .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 8px 12px;
-      background: rgba(20, 30, 50, 0.8);
-      border: 1px solid rgba(74, 122, 184, 0.3);
-      border-radius: 6px;
-      color: #fff;
-      font-size: 13px;
+      width: 100%; padding: 8px 12px; background: rgba(20, 30, 50, 0.8);
+      border: 1px solid rgba(74, 122, 184, 0.3); border-radius: 6px; color: #fff; font-size: 13px;
     }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      outline: none;
-      border-color: #FFD700;
-    }
-    .form-group textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-    .form-row {
-      display: flex;
-      gap: 12px;
-    }
-    .form-row .form-group {
-      flex: 1;
-    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #FFD700; }
+    .form-group textarea { resize: vertical; min-height: 60px; }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
 
-    .sphere-editor {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .sphere-tag {
-      display: flex;
-      align-items: center;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      cursor: pointer;
-    }
-    .sphere-tag input {
-      width: 30px;
-      padding: 2px 4px;
-      margin-left: 4px;
-      text-align: center;
-      font-size: 11px;
-    }
+    .sphere-editor { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .sphere-tag { display: flex; align-items: center; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+    .sphere-tag input { width: 30px; padding: 2px 4px; margin-left: 4px; text-align: center; font-size: 11px; }
 
-    .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: #FFD700;
-      color: #000;
-    }
-    .btn-primary:hover {
-      background: #FFE44D;
-    }
-    .btn-secondary {
-      background: rgba(74, 122, 184, 0.3);
-      color: #fff;
-      border: 1px solid rgba(74, 122, 184, 0.5);
-    }
-    .btn-secondary:hover {
-      background: rgba(74, 122, 184, 0.5);
-    }
-    .btn-danger {
-      background: rgba(230, 77, 102, 0.3);
-      color: #E64D66;
-      border: 1px solid rgba(230, 77, 102, 0.5);
-    }
-    .btn-danger:hover {
-      background: rgba(230, 77, 102, 0.5);
-      color: #fff;
-    }
-    .btn-group {
-      display: flex;
-      gap: 8px;
-      margin-top: 16px;
-    }
+    .ring-list { margin-bottom: 12px; }
+    .ring-item { display: flex; align-items: center; gap: 8px; margin: 6px 0; padding: 8px; background: rgba(74, 122, 184, 0.1); border-radius: 6px; }
+    .ring-item input { flex: 1; }
+    .ring-item .ring-radius { width: 70px; }
+    .ring-item .delete-ring { background: rgba(230, 77, 102, 0.3); border: none; color: #E64D66; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
 
-    /* エクスポート */
-    #export-section {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(74, 122, 184, 0.2);
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
+    .btn-primary { background: #FFD700; color: #000; }
+    .btn-primary:hover { background: #FFE44D; }
+    .btn-secondary { background: rgba(74, 122, 184, 0.3); color: #fff; border: 1px solid rgba(74, 122, 184, 0.5); }
+    .btn-secondary:hover { background: rgba(74, 122, 184, 0.5); }
+    .btn-danger { background: rgba(230, 77, 102, 0.3); color: #E64D66; border: 1px solid rgba(230, 77, 102, 0.5); }
+    .btn-danger:hover { background: rgba(230, 77, 102, 0.5); color: #fff; }
+    .btn-small { padding: 6px 12px; font-size: 11px; }
+    .btn-group { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+
+    .drag-hint {
+      position: absolute; bottom: 60px; left: 20px; background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3); color: #FFD700; padding: 8px 16px;
+      border-radius: 6px; font-size: 12px; display: none;
     }
-    #export-section h3 {
-      color: #B88A08;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
+    .drag-hint.visible { display: block; }
+
+    #export-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(74, 122, 184, 0.2); }
+    #export-section h3 { color: #B88A08; font-size: 14px; margin-bottom: 12px; }
   </style>
 </head>
 <body>
-  <!-- ログイン画面 -->
   <div id="login-screen">
     <div class="login-box">
       <div class="login-logo">⚡</div>
@@ -503,932 +182,520 @@
     </div>
   </div>
 
-  <!-- メインコンテンツ -->
   <div id="main-content">
-    <div id="container">
-      <canvas id="canvas"></canvas>
-    </div>
-
+    <div id="container"><canvas id="canvas"></canvas></div>
     <div id="tooltip"></div>
-
     <button id="logout-btn" onclick="logout()">🔓 ログアウト</button>
 
     <div id="gates">
-    <h2>WONDERFUL GROWTH</h2>
-    <div class="subtitle">企業スフィア盤</div>
-    <h3>基盤ゲート達成条件</h3>
-    <ul>
-      <li>現預金：固定費4ヶ月分以上</li>
-      <li>粗利率：40%以上</li>
-      <li>稼働率：100%</li>
-      <li>採用：契約済みBacklogのみ</li>
-      <li>オフィス：賃料 ≤ 粗利15%</li>
-    </ul>
-  </div>
-
-  <div id="legend">
-    <h2>ノード状態</h2>
-    <div class="legend-item">
-      <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFF5CC, #FFD700); box-shadow: 0 0 12px #FFD700;"></div>
-      <div class="legend-text"><span class="label">定着 (Mastered)</span><br><span class="desc">習得完了・定着済み</span></div>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #66E699, #33E680); box-shadow: 0 0 10px #33E680;"></div>
-      <div class="legend-text"><span class="label">解放済 (Unlocked)</span><br><span class="desc">習得中・実施中</span></div>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFE066, #FFD700); box-shadow: 0 0 8px #FFD700;"></div>
-      <div class="legend-text"><span class="label">解放可 (Eligible)</span><br><span class="desc">条件クリア・解放可能</span></div>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #444, #333); border: 1px solid #555;"></div>
-      <div class="legend-text"><span class="label">未解放 (Locked)</span><br><span class="desc">条件未達成</span></div>
+      <h2>WONDERFUL GROWTH</h2>
+      <div class="subtitle">企業スフィア盤</div>
+      <h3>基盤ゲート達成条件</h3>
+      <ul>
+        <li>現預金：固定費4ヶ月分以上</li>
+        <li>粗利率：40%以上</li>
+        <li>稼働率：100%</li>
+        <li>採用：契約済みBacklogのみ</li>
+        <li>オフィス：賃料 ≤ 粗利15%</li>
+      </ul>
     </div>
 
-    <h3>必要スフィア</h3>
-    <div class="legend-item">
-      <div class="legend-sphere" style="background: #3399E6; box-shadow: 0 0 6px #3399E6;"></div>
-      <div class="legend-text"><span class="label">人材</span> <span class="desc">採用・育成</span></div>
-    </div>
-    <div class="legend-item">
-      <div class="legend-sphere" style="background: #E6B333; box-shadow: 0 0 6px #E6B333;"></div>
-      <div class="legend-text"><span class="label">資金</span> <span class="desc">財務・投資</span></div>
-    </div>
-    <div class="legend-item">
-      <div class="legend-sphere" style="background: #4DCC80; box-shadow: 0 0 6px #4DCC80;"></div>
-      <div class="legend-text"><span class="label">実績</span> <span class="desc">成功体験</span></div>
-    </div>
-    <div class="legend-item">
-      <div class="legend-sphere" style="background: #9966CC; box-shadow: 0 0 6px #9966CC;"></div>
-      <div class="legend-text"><span class="label">時間</span> <span class="desc">継続的取組</span></div>
-    </div>
-    <div class="legend-item">
-      <div class="legend-sphere" style="background: #E68033; box-shadow: 0 0 6px #E68033;"></div>
-      <div class="legend-text"><span class="label">信頼</span> <span class="desc">信頼関係</span></div>
-    </div>
-    <div class="legend-item">
-      <div class="legend-sphere" style="background: #66B3E6; box-shadow: 0 0 6px #66B3E6;"></div>
-      <div class="legend-text"><span class="label">技術</span> <span class="desc">技術力</span></div>
-    </div>
-  </div>
-
-  <button id="editor-toggle" onclick="toggleEditor()">📝 編集モード</button>
-
-  <div id="editor-panel">
-    <h2>
-      スフィア盤エディタ
-      <button class="close-btn" onclick="toggleEditor()">×</button>
-    </h2>
-
-    <div class="editor-section">
-      <h3>ノード一覧</h3>
-      <div class="node-list" id="node-list"></div>
-      <button class="btn btn-secondary" onclick="addNewNode()">+ 新規ノード追加</button>
-    </div>
-
-    <div class="editor-section" id="node-editor" style="display: none;">
-      <h3>ノード編集</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label>ID</label>
-          <input type="text" id="edit-id" placeholder="NODE_ID">
-        </div>
-        <div class="form-group">
-          <label>リング</label>
-          <select id="edit-ring">
-            <option value="R30">R30 (3,000万)</option>
-            <option value="R60">R60 (6,000万)</option>
-            <option value="R100">R100 (1億)</option>
-          </select>
-        </div>
+    <div id="legend">
+      <h2>ノード状態</h2>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFF5CC, #FFD700); box-shadow: 0 0 12px #FFD700;"></div>
+        <div class="legend-text"><span class="label">定着</span><br><span class="desc">習得完了・定着済み</span></div>
       </div>
-      <div class="form-group">
-        <label>ラベル（改行で2行）</label>
-        <input type="text" id="edit-label" placeholder="ラベル名">
+      <div class="legend-item">
+        <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #66E699, #33E680); box-shadow: 0 0 10px #33E680;"></div>
+        <div class="legend-text"><span class="label">解放済</span><br><span class="desc">習得中・実施中</span></div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>状態</label>
-          <select id="edit-state">
-            <option value="LOCKED">未解放 (LOCKED)</option>
-            <option value="ELIGIBLE">解放可 (ELIGIBLE)</option>
-            <option value="UNLOCKED">解放済 (UNLOCKED)</option>
-            <option value="MASTERED">定着 (MASTERED)</option>
-          </select>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFE066, #FFD700); box-shadow: 0 0 8px #FFD700;"></div>
+        <div class="legend-text"><span class="label">解放可</span><br><span class="desc">条件クリア・解放可能</span></div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #444, #333); border: 1px solid #555;"></div>
+        <div class="legend-text"><span class="label">未解放</span><br><span class="desc">条件未達成</span></div>
+      </div>
+      <h3>必要スフィア</h3>
+      <div class="legend-item"><div class="legend-sphere" style="background: #3399E6;"></div><div class="legend-text"><span class="label">人材</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #E6B333;"></div><div class="legend-text"><span class="label">資金</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #4DCC80;"></div><div class="legend-text"><span class="label">実績</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #9966CC;"></div><div class="legend-text"><span class="label">時間</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #E68033;"></div><div class="legend-text"><span class="label">信頼</span></div></div>
+      <div class="legend-item"><div class="legend-sphere" style="background: #66B3E6;"></div><div class="legend-text"><span class="label">技術</span></div></div>
+    </div>
+
+    <button id="editor-toggle" onclick="toggleEditor()">📝 編集モード</button>
+    <div id="drag-hint" class="drag-hint">🖱️ ノードをドラッグして移動できます</div>
+
+    <div id="editor-panel">
+      <h2>スフィア盤エディタ<button class="close-btn" onclick="toggleEditor()">×</button></h2>
+
+      <div class="editor-section">
+        <h3>リング管理</h3>
+        <div class="ring-list" id="ring-list"></div>
+        <button class="btn btn-secondary btn-small" onclick="addNewRing()">+ リング追加</button>
+      </div>
+
+      <div class="editor-section">
+        <h3>ノード一覧</h3>
+        <div class="node-list" id="node-list"></div>
+        <button class="btn btn-secondary btn-small" onclick="addNewNode()">+ ノード追加</button>
+      </div>
+
+      <div class="editor-section" id="node-editor" style="display: none;">
+        <h3>ノード編集 <span style="font-size:11px;color:#889;">(ドラッグでも移動可)</span></h3>
+        <div class="form-row">
+          <div class="form-group"><label>ID</label><input type="text" id="edit-id"></div>
+          <div class="form-group"><label>リング</label><select id="edit-ring"></select></div>
         </div>
-        <div class="form-group">
-          <label>角度 (度)</label>
-          <input type="number" id="edit-angle" min="-180" max="180" value="0">
+        <div class="form-group"><label>ラベル（スペースで改行）</label><input type="text" id="edit-label"></div>
+        <div class="form-row">
+          <div class="form-group"><label>状態</label>
+            <select id="edit-state">
+              <option value="LOCKED">未解放</option>
+              <option value="ELIGIBLE">解放可</option>
+              <option value="UNLOCKED">解放済</option>
+              <option value="MASTERED">定着</option>
+            </select>
+          </div>
+          <div class="form-group"><label>角度 (度)</label><input type="number" id="edit-angle" min="-180" max="180"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>重要度</label>
+            <select id="edit-importance">
+              <option value="STANDARD">標準</option>
+              <option value="MAJOR">重要</option>
+              <option value="MINOR">小</option>
+            </select>
+          </div>
+          <div class="form-group"><label>形状</label>
+            <select id="edit-shape">
+              <option value="circle">円</option>
+              <option value="hexagon">六角形</option>
+              <option value="diamond">菱形</option>
+              <option value="octagon">八角形</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>説明</label><textarea id="edit-description"></textarea></div>
+        <div class="form-group"><label>効果</label><input type="text" id="edit-effect"></div>
+        <div class="form-group"><label>必要スフィア</label><div class="sphere-editor" id="sphere-editor"></div></div>
+        <div class="form-group"><label>接続元</label><select id="edit-parent"></select></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveNode()">保存</button>
+          <button class="btn btn-danger" onclick="deleteNode()">削除</button>
+          <button class="btn btn-secondary" onclick="cancelEdit()">キャンセル</button>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>重要度</label>
-          <select id="edit-importance">
-            <option value="STANDARD">標準</option>
-            <option value="MAJOR">重要</option>
-            <option value="MINOR">小</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>形状</label>
-          <select id="edit-shape">
-            <option value="circle">円 (人材系)</option>
-            <option value="hexagon">六角形 (プロセス)</option>
-            <option value="diamond">菱形 (品質)</option>
-            <option value="octagon">八角形 (新規事業)</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>説明</label>
-        <textarea id="edit-description" placeholder="このノードの説明"></textarea>
-      </div>
-      <div class="form-group">
-        <label>効果</label>
-        <input type="text" id="edit-effect" placeholder="解放時の効果">
-      </div>
-      <div class="form-group">
-        <label>必要スフィア</label>
-        <div class="sphere-editor" id="sphere-editor"></div>
-      </div>
-      <div class="form-group">
-        <label>接続元ノード</label>
-        <select id="edit-parent">
-          <option value="">なし（COREから接続）</option>
-        </select>
-      </div>
-      <div class="btn-group">
-        <button class="btn btn-primary" onclick="saveNode()">保存</button>
-        <button class="btn btn-danger" onclick="deleteNode()">削除</button>
-        <button class="btn btn-secondary" onclick="cancelEdit()">キャンセル</button>
-      </div>
-    </div>
 
-    <div id="export-section">
-      <h3>データ管理</h3>
-      <div class="btn-group">
-        <button class="btn btn-secondary" onclick="exportData()">📤 エクスポート</button>
-        <button class="btn btn-secondary" onclick="importData()">📥 インポート</button>
-        <button class="btn btn-secondary" onclick="downloadImage()">🖼️ 画像保存</button>
+      <div id="export-section">
+        <h3>データ管理</h3>
+        <div class="btn-group">
+          <button class="btn btn-secondary btn-small" onclick="exportData()">📤 エクスポート</button>
+          <button class="btn btn-secondary btn-small" onclick="importData()">📥 インポート</button>
+          <button class="btn btn-secondary btn-small" onclick="downloadImage()">🖼️ 画像保存</button>
+        </div>
       </div>
     </div>
   </div>
-  </div> <!-- main-content 終了 -->
 
   <script>
-    // ============================================================
-    // 認証システム
-    // ============================================================
-    // パスワード設定（変更してください）
+    // 認証
     const ACCESS_PASSWORD = 'wg2024';
     const AUTH_KEY = 'wg_sphere_auth';
-    const AUTH_EXPIRY_DAYS = 7; // ログイン有効期限（日数）
+    const AUTH_EXPIRY_DAYS = 7;
 
     function checkAuth() {
-      const authData = localStorage.getItem(AUTH_KEY);
-      if (!authData) return false;
-
+      const d = localStorage.getItem(AUTH_KEY);
+      if (!d) return false;
       try {
-        const { hash, expiry } = JSON.parse(authData);
-        if (Date.now() > expiry) {
-          localStorage.removeItem(AUTH_KEY);
-          return false;
-        }
+        const { hash, expiry } = JSON.parse(d);
+        if (Date.now() > expiry) { localStorage.removeItem(AUTH_KEY); return false; }
         return hash === simpleHash(ACCESS_PASSWORD);
-      } catch {
-        return false;
-      }
+      } catch { return false; }
     }
-
-    function simpleHash(str) {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
-      }
-      return hash.toString(36);
-    }
-
+    function simpleHash(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h &= h; } return h.toString(36); }
     function attemptLogin() {
-      const input = document.getElementById('password-input');
-      const error = document.getElementById('login-error');
-
-      if (input.value === ACCESS_PASSWORD) {
-        const authData = {
-          hash: simpleHash(ACCESS_PASSWORD),
-          expiry: Date.now() + (AUTH_EXPIRY_DAYS * 24 * 60 * 60 * 1000)
-        };
-        localStorage.setItem(AUTH_KEY, JSON.stringify(authData));
+      const inp = document.getElementById('password-input');
+      if (inp.value === ACCESS_PASSWORD) {
+        localStorage.setItem(AUTH_KEY, JSON.stringify({ hash: simpleHash(ACCESS_PASSWORD), expiry: Date.now() + AUTH_EXPIRY_DAYS * 86400000 }));
         showMainContent();
-      } else {
-        error.textContent = 'パスワードが正しくありません';
-        input.value = '';
-        input.focus();
-      }
+      } else { document.getElementById('login-error').textContent = 'パスワードが正しくありません'; inp.value = ''; inp.focus(); }
     }
+    function logout() { if (confirm('ログアウトしますか？')) { localStorage.removeItem(AUTH_KEY); location.reload(); } }
+    function showMainContent() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-content').classList.add('visible'); initApp(); }
+    document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') attemptLogin(); });
+    if (checkAuth()) showMainContent(); else document.getElementById('password-input').focus();
 
-    function logout() {
-      if (confirm('ログアウトしますか？')) {
-        localStorage.removeItem(AUTH_KEY);
-        location.reload();
-      }
-    }
-
-    function showMainContent() {
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('main-content').classList.add('visible');
-      initApp();
-    }
-
-    // Enterキーでログイン
-    document.getElementById('password-input').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') attemptLogin();
-    });
-
-    // 初期化チェック
-    if (checkAuth()) {
-      showMainContent();
-    } else {
-      document.getElementById('password-input').focus();
-    }
-
-    // ============================================================
-    // 設定（グローバル）
-    // ============================================================
+    // CONFIG
     let CONFIG = {
-      width: 1920,
-      height: 1080,
-
+      width: 1920, height: 1080,
       rings: [
-        { id: "R30", label: "年商 3,000万", radius: 180, glowIntensity: 1.0 },
-        { id: "R60", label: "年商 6,000万", radius: 300, glowIntensity: 0.7 },
-        { id: "R100", label: "年商 1億", radius: 420, glowIntensity: 0.5 },
+        { id: "R30", label: "年商 3,000万", radius: 180 },
+        { id: "R60", label: "年商 6,000万", radius: 300 },
+        { id: "R100", label: "年商 1億", radius: 420 },
       ],
-
       sphereTypes: {
-        "人材": { color: "#3399E6", desc: "採用・育成リソース" },
-        "資金": { color: "#E6B333", desc: "財務・投資リソース" },
-        "実績": { color: "#4DCC80", desc: "成功体験・ノウハウ" },
-        "時間": { color: "#9966CC", desc: "継続的な取り組み" },
-        "信頼": { color: "#E68033", desc: "社内外の信頼関係" },
-        "技術": { color: "#66B3E6", desc: "技術力・専門性" },
+        "人材": { color: "#3399E6" }, "資金": { color: "#E6B333" }, "実績": { color: "#4DCC80" },
+        "時間": { color: "#9966CC" }, "信頼": { color: "#E68033" }, "技術": { color: "#66B3E6" },
       },
-
       nodes: [
-        // CORE
-        {
-          id: "CORE", label: "WG\nCORE", ring: "CORE", angleDeg: 0, state: "MASTERED",
-          importance: "MAJOR", shape: "octagon", sizeMultiplier: 1.4,
-          description: "企業の核心・全ての起点",
-          effect: "全ノードへのアクセス解放",
-          requirements: []
-        },
-        // R30 Ring
-        {
-          id: "HIRE_3", label: "採用\n〜3名", ring: "R30", angleDeg: -45, state: "ELIGIBLE",
-          importance: "STANDARD", shape: "circle",
-          description: "最初の正社員採用",
-          effect: "キャパシティ+30%",
-          requirements: [{ type: "資金", count: 2 }, { type: "実績", count: 1 }]
-        },
-        {
-          id: "OFFICE_15", label: "オフィス\n賃料≤15%", ring: "R30", angleDeg: 15, state: "ELIGIBLE",
-          importance: "STANDARD", shape: "diamond",
-          description: "適正なオフィスコスト",
-          effect: "固定費最適化",
-          requirements: [{ type: "資金", count: 1 }]
-        },
-        {
-          id: "PRODUCTIZE", label: "型化\n研修商品", ring: "R30", angleDeg: 75, state: "ELIGIBLE",
-          importance: "MAJOR", shape: "hexagon", sizeMultiplier: 1.15,
-          description: "サービスの標準化・商品化",
-          effect: "再現性+50%, スケーラビリティ確保",
-          requirements: [{ type: "技術", count: 2 }, { type: "時間", count: 1 }]
-        },
-        {
-          id: "BACKOFFICE", label: "バック\nオフィス", ring: "R30", angleDeg: 150, state: "ELIGIBLE",
-          importance: "STANDARD", shape: "circle",
-          description: "経理・総務の基盤整備",
-          effect: "管理効率+20%",
-          requirements: [{ type: "資金", count: 1 }, { type: "人材", count: 1 }]
-        },
-        // R60 Ring
-        {
-          id: "WELFARE", label: "福利厚生\n導入", ring: "R60", angleDeg: -60, state: "LOCKED",
-          importance: "STANDARD", shape: "circle",
-          description: "社員の満足度向上施策",
-          effect: "定着率+15%",
-          requirements: [{ type: "資金", count: 2 }, { type: "信頼", count: 1 }]
-        },
-        {
-          id: "HIRE_MORE", label: "採用\n追加", ring: "R60", angleDeg: -15, state: "LOCKED",
-          importance: "MAJOR", shape: "circle", sizeMultiplier: 1.15,
-          description: "さらなる人材確保",
-          effect: "キャパシティ+50%",
-          requirements: [{ type: "資金", count: 3 }, { type: "人材", count: 1 }, { type: "実績", count: 2 }]
-        },
-        {
-          id: "SEC_PREP", label: "セキュリティ\n認証準備", ring: "R60", angleDeg: 45, state: "LOCKED",
-          importance: "STANDARD", shape: "diamond",
-          description: "セキュリティ認証の準備段階",
-          effect: "大企業案件対応可能",
-          requirements: [{ type: "技術", count: 2 }, { type: "時間", count: 2 }]
-        },
-        {
-          id: "SALES_PROCESS", label: "営業\nプロセス", ring: "R60", angleDeg: 115, state: "LOCKED",
-          importance: "MAJOR", shape: "hexagon", sizeMultiplier: 1.15,
-          description: "営業活動の体系化",
-          effect: "受注効率+40%",
-          requirements: [{ type: "実績", count: 2 }, { type: "技術", count: 1 }]
-        },
-        // R100 Ring
-        {
-          id: "NEW_BIZ", label: "新規事業\n×1", ring: "R100", angleDeg: -30, state: "LOCKED",
-          importance: "MAJOR", shape: "octagon", sizeMultiplier: 1.2,
-          description: "新たな事業領域への進出",
-          effect: "収益源の多角化",
-          requirements: [{ type: "資金", count: 5 }, { type: "人材", count: 2 }, { type: "実績", count: 3 }]
-        },
-        {
-          id: "FUNCTION_SPLIT", label: "専任機能\n分離", ring: "R100", angleDeg: 30, state: "LOCKED",
-          importance: "STANDARD", shape: "circle",
-          description: "機能別の専任体制構築",
-          effect: "専門性深化",
-          requirements: [{ type: "人材", count: 3 }, { type: "資金", count: 2 }]
-        },
-        {
-          id: "SEC_GET", label: "認証\n本取得", ring: "R100", angleDeg: 90, state: "LOCKED",
-          importance: "MAJOR", shape: "diamond", sizeMultiplier: 1.15,
-          description: "セキュリティ認証の正式取得",
-          effect: "信頼性証明, 大型案件獲得",
-          requirements: [{ type: "技術", count: 3 }, { type: "時間", count: 3 }, { type: "資金", count: 2 }]
-        },
-        {
-          id: "LEAD_DEV", label: "リード\n育成", ring: "R100", angleDeg: 160, state: "LOCKED",
-          importance: "MAJOR", shape: "circle", sizeMultiplier: 1.15,
-          description: "次世代リーダーの育成",
-          effect: "組織の持続可能性確保",
-          requirements: [{ type: "人材", count: 2 }, { type: "時間", count: 3 }, { type: "信頼", count: 2 }]
-        },
+        { id: "CORE", label: "WG\nCORE", ring: "CORE", angleDeg: 0, state: "MASTERED", importance: "MAJOR", shape: "octagon", sizeMultiplier: 1.4, description: "企業の核心", effect: "全ノード解放", requirements: [] },
+        { id: "HIRE_3", label: "採用\n〜3名", ring: "R30", angleDeg: -45, state: "ELIGIBLE", importance: "STANDARD", shape: "circle", description: "最初の採用", effect: "キャパ+30%", requirements: [{ type: "資金", count: 2 }, { type: "実績", count: 1 }] },
+        { id: "OFFICE_15", label: "オフィス\n賃料≤15%", ring: "R30", angleDeg: 15, state: "ELIGIBLE", importance: "STANDARD", shape: "diamond", description: "適正コスト", effect: "固定費最適化", requirements: [{ type: "資金", count: 1 }] },
+        { id: "PRODUCTIZE", label: "型化\n研修商品", ring: "R30", angleDeg: 75, state: "ELIGIBLE", importance: "MAJOR", shape: "hexagon", sizeMultiplier: 1.15, description: "サービス標準化", effect: "再現性+50%", requirements: [{ type: "技術", count: 2 }, { type: "時間", count: 1 }] },
+        { id: "BACKOFFICE", label: "バック\nオフィス", ring: "R30", angleDeg: 150, state: "ELIGIBLE", importance: "STANDARD", shape: "circle", description: "管理基盤整備", effect: "管理効率+20%", requirements: [{ type: "資金", count: 1 }, { type: "人材", count: 1 }] },
+        { id: "WELFARE", label: "福利厚生\n導入", ring: "R60", angleDeg: -60, state: "LOCKED", importance: "STANDARD", shape: "circle", description: "満足度向上", effect: "定着率+15%", requirements: [{ type: "資金", count: 2 }, { type: "信頼", count: 1 }] },
+        { id: "HIRE_MORE", label: "採用\n追加", ring: "R60", angleDeg: -15, state: "LOCKED", importance: "MAJOR", shape: "circle", sizeMultiplier: 1.15, description: "人材確保", effect: "キャパ+50%", requirements: [{ type: "資金", count: 3 }, { type: "人材", count: 1 }, { type: "実績", count: 2 }] },
+        { id: "SEC_PREP", label: "セキュリティ\n認証準備", ring: "R60", angleDeg: 45, state: "LOCKED", importance: "STANDARD", shape: "diamond", description: "認証準備", effect: "大企業対応", requirements: [{ type: "技術", count: 2 }, { type: "時間", count: 2 }] },
+        { id: "SALES_PROCESS", label: "営業\nプロセス", ring: "R60", angleDeg: 115, state: "LOCKED", importance: "MAJOR", shape: "hexagon", sizeMultiplier: 1.15, description: "営業体系化", effect: "受注効率+40%", requirements: [{ type: "実績", count: 2 }, { type: "技術", count: 1 }] },
+        { id: "NEW_BIZ", label: "新規事業\n×1", ring: "R100", angleDeg: -30, state: "LOCKED", importance: "MAJOR", shape: "octagon", sizeMultiplier: 1.2, description: "新領域進出", effect: "収益多角化", requirements: [{ type: "資金", count: 5 }, { type: "人材", count: 2 }, { type: "実績", count: 3 }] },
+        { id: "FUNCTION_SPLIT", label: "専任機能\n分離", ring: "R100", angleDeg: 30, state: "LOCKED", importance: "STANDARD", shape: "circle", description: "専任体制", effect: "専門性深化", requirements: [{ type: "人材", count: 3 }, { type: "資金", count: 2 }] },
+        { id: "SEC_GET", label: "認証\n本取得", ring: "R100", angleDeg: 90, state: "LOCKED", importance: "MAJOR", shape: "diamond", sizeMultiplier: 1.15, description: "認証取得", effect: "大型案件獲得", requirements: [{ type: "技術", count: 3 }, { type: "時間", count: 3 }, { type: "資金", count: 2 }] },
+        { id: "LEAD_DEV", label: "リード\n育成", ring: "R100", angleDeg: 160, state: "LOCKED", importance: "MAJOR", shape: "circle", sizeMultiplier: 1.15, description: "リーダー育成", effect: "持続可能性", requirements: [{ type: "人材", count: 2 }, { type: "時間", count: 3 }, { type: "信頼", count: 2 }] },
       ],
-
       edges: [
-        { from: "CORE", to: "HIRE_3", type: "MAIN" },
-        { from: "CORE", to: "OFFICE_15", type: "MAIN" },
-        { from: "CORE", to: "PRODUCTIZE", type: "MAIN" },
-        { from: "CORE", to: "BACKOFFICE", type: "MAIN" },
-        { from: "HIRE_3", to: "WELFARE", type: "OPTIONAL" },
-        { from: "HIRE_3", to: "HIRE_MORE", type: "MAIN" },
-        { from: "HIRE_MORE", to: "FUNCTION_SPLIT", type: "MAIN" },
-        { from: "FUNCTION_SPLIT", to: "LEAD_DEV", type: "MAIN" },
-        { from: "PRODUCTIZE", to: "SALES_PROCESS", type: "MAIN" },
-        { from: "SALES_PROCESS", to: "NEW_BIZ", type: "MAIN" },
-        { from: "SALES_PROCESS", to: "SEC_PREP", type: "OPTIONAL" },
-        { from: "SEC_PREP", to: "SEC_GET", type: "MAIN" },
+        { from: "CORE", to: "HIRE_3", type: "MAIN" }, { from: "CORE", to: "OFFICE_15", type: "MAIN" },
+        { from: "CORE", to: "PRODUCTIZE", type: "MAIN" }, { from: "CORE", to: "BACKOFFICE", type: "MAIN" },
+        { from: "HIRE_3", to: "WELFARE", type: "OPTIONAL" }, { from: "HIRE_3", to: "HIRE_MORE", type: "MAIN" },
+        { from: "HIRE_MORE", to: "FUNCTION_SPLIT", type: "MAIN" }, { from: "FUNCTION_SPLIT", to: "LEAD_DEV", type: "MAIN" },
+        { from: "PRODUCTIZE", to: "SALES_PROCESS", type: "MAIN" }, { from: "SALES_PROCESS", to: "NEW_BIZ", type: "MAIN" },
+        { from: "SALES_PROCESS", to: "SEC_PREP", type: "OPTIONAL" }, { from: "SEC_PREP", to: "SEC_GET", type: "MAIN" },
         { from: "BACKOFFICE", to: "SEC_PREP", type: "CROSS_DOMAIN" },
       ],
-
-      nodeSizes: {
-        MAJOR: 55,
-        STANDARD: 45,
-        MINOR: 35,
-      }
+      nodeSizes: { MAJOR: 55, STANDARD: 45, MINOR: 35 }
     };
 
-    // ============================================================
-    // Canvas 変数（グローバル）
-    // ============================================================
     let canvas, ctx, tooltip;
-    let scale = 1;
-    let cx, cy;
+    let scale = 1, cx, cy;
     let nodePositions = [];
     let selectedNodeId = null;
     let isEditorOpen = false;
+    let isDragging = false;
+    let dragNode = null;
+    let dragStartPos = null;
 
-    // ============================================================
-    // メインアプリ初期化
-    // ============================================================
     function initApp() {
       canvas = document.getElementById('canvas');
       ctx = canvas.getContext('2d');
       tooltip = document.getElementById('tooltip');
-
       window.addEventListener('resize', resize);
-      resize();
-
-      // マウスイベント設定
       canvas.addEventListener('mousemove', handleMouseMove);
-      canvas.addEventListener('mouseleave', hideTooltip);
-      canvas.addEventListener('click', handleClick);
+      canvas.addEventListener('mousedown', handleMouseDown);
+      canvas.addEventListener('mouseup', handleMouseUp);
+      canvas.addEventListener('mouseleave', handleMouseLeave);
+      resize();
+    }
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = window.innerWidth, h = window.innerHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      scale = Math.min(w / CONFIG.width, h / CONFIG.height) * 0.9;
+      cx = w / 2; cy = h / 2;
+      draw();
+    }
+
+    function findNodeAt(x, y) {
+      for (const { node, x: nx, y: ny, size } of nodePositions) {
+        if (Math.sqrt((x - nx) ** 2 + (y - ny) ** 2) < size * 1.2) return node;
+      }
+      return null;
     }
 
     function handleMouseMove(e) {
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
 
-      let hoveredNode = null;
-      for (const { node, x: nx, y: ny, size } of nodePositions) {
-        const dist = Math.sqrt((x - nx) ** 2 + (y - ny) ** 2);
-        if (dist < size * 1.2) {
-          hoveredNode = node;
-          break;
+      if (isDragging && dragNode && dragNode.ring !== 'CORE') {
+        const dx = x - cx, dy = y - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        let angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+        dragNode.angleDeg = Math.round(angleDeg);
+        // スナップ先のリングを探す
+        let closestRing = CONFIG.rings[0];
+        let minDiff = Infinity;
+        for (const ring of CONFIG.rings) {
+          const diff = Math.abs(dist - ring.radius * scale);
+          if (diff < minDiff) { minDiff = diff; closestRing = ring; }
         }
+        dragNode.ring = closestRing.id;
+        draw();
+        if (isEditorOpen) { updateNodeList(); populateNodeEditor(dragNode); }
+        return;
       }
 
-      if (hoveredNode) {
-        showTooltip(hoveredNode, e.clientX, e.clientY);
-        canvas.style.cursor = 'pointer';
+      const hovered = findNodeAt(x, y);
+      if (hovered) {
+        if (isEditorOpen && hovered.ring !== 'CORE') { canvas.classList.add('can-drag'); } else { canvas.classList.remove('can-drag'); }
+        showTooltip(hovered, e.clientX, e.clientY);
       } else {
+        canvas.classList.remove('can-drag');
         hideTooltip();
-        canvas.style.cursor = 'default';
       }
     }
 
-    function handleClick(e) {
+    function handleMouseDown(e) {
       if (!isEditorOpen) return;
-
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      for (const { node, x: nx, y: ny, size } of nodePositions) {
-        const dist = Math.sqrt((x - nx) ** 2 + (y - ny) ** 2);
-        if (dist < size * 1.2) {
-          selectNode(node.id);
-          return;
-        }
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      const node = findNodeAt(x, y);
+      if (node && node.ring !== 'CORE') {
+        isDragging = true;
+        dragNode = node;
+        dragStartPos = { x, y };
+        canvas.classList.add('dragging');
+        canvas.classList.remove('can-drag');
+        selectNode(node.id);
       }
     }
 
-    // ============================================================
-    // Canvas 描画
-    // ============================================================
-    function resize() {
-      const dpr = window.devicePixelRatio || 1;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-
-      ctx.scale(dpr, dpr);
-
-      scale = Math.min(w / CONFIG.width, h / CONFIG.height) * 0.9;
-      cx = w / 2;
-      cy = h / 2;
-
-      draw();
+    function handleMouseUp(e) {
+      if (isDragging) {
+        isDragging = false;
+        dragNode = null;
+        canvas.classList.remove('dragging');
+        draw();
+      }
     }
 
-    // ============================================================
-    // 描画関数
-    // ============================================================
+    function handleMouseLeave() {
+      hideTooltip();
+      if (isDragging) { isDragging = false; dragNode = null; canvas.classList.remove('dragging'); draw(); }
+    }
+
+    // 描画
     function draw() {
-      const w = canvas.width / (window.devicePixelRatio || 1);
-      const h = canvas.height / (window.devicePixelRatio || 1);
-
-      ctx.fillStyle = '#050812';
-      ctx.fillRect(0, 0, w, h);
-
-      drawStarField(w, h);
-      drawCenterGlow();
-      drawRings();
-      drawEdges();
-
+      const w = canvas.width / (window.devicePixelRatio || 1), h = canvas.height / (window.devicePixelRatio || 1);
+      ctx.fillStyle = '#050812'; ctx.fillRect(0, 0, w, h);
+      drawStars(w, h); drawGlow(); drawRings(); drawEdges();
       nodePositions = [];
-      CONFIG.nodes.forEach(node => {
-        const pos = drawNode(node);
-        nodePositions.push({ node, ...pos });
-      });
+      CONFIG.nodes.forEach(n => { const p = drawNode(n); nodePositions.push({ node: n, ...p }); });
     }
 
-    function drawStarField(w, h) {
+    function drawStars(w, h) {
       let seed = 54321;
-      const random = () => {
-        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-        return seed / 0x7fffffff;
-      };
-
-      const layers = [
-        { count: 100, sizeRange: [0.5, 1.5], opacityRange: [0.2, 0.4] },
-        { count: 50, sizeRange: [1, 2], opacityRange: [0.3, 0.6] },
-        { count: 20, sizeRange: [2, 3], opacityRange: [0.5, 0.8] },
-      ];
-
-      layers.forEach(layer => {
-        for (let i = 0; i < layer.count; i++) {
-          const x = random() * w;
-          const y = random() * h;
-          const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
-          if (dist < 150 * scale) continue;
-
-          const size = layer.sizeRange[0] + random() * (layer.sizeRange[1] - layer.sizeRange[0]);
-          const opacity = layer.opacityRange[0] + random() * (layer.opacityRange[1] - layer.opacityRange[0]);
-
-          ctx.beginPath();
-          ctx.arc(x, y, size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-          ctx.fill();
-
-          if (size > 2) {
-            ctx.beginPath();
-            ctx.arc(x, y, size * 2, 0, Math.PI * 2);
-            const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * 2);
-            gradient.addColorStop(0, `rgba(180, 200, 255, ${opacity * 0.3})`);
-            gradient.addColorStop(1, 'rgba(180, 200, 255, 0)');
-            ctx.fillStyle = gradient;
-            ctx.fill();
-          }
+      const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+      [[100, 0.5, 1.5, 0.2, 0.4], [50, 1, 2, 0.3, 0.6], [20, 2, 3, 0.5, 0.8]].forEach(([c, s1, s2, o1, o2]) => {
+        for (let i = 0; i < c; i++) {
+          const x = rnd() * w, y = rnd() * h;
+          if (Math.sqrt((x - cx) ** 2 + (y - cy) ** 2) < 150 * scale) continue;
+          const sz = s1 + rnd() * (s2 - s1), op = o1 + rnd() * (o2 - o1);
+          ctx.beginPath(); ctx.arc(x, y, sz, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${op})`; ctx.fill();
         }
       });
     }
 
-    function drawCenterGlow() {
+    function drawGlow() {
       const r = 500 * scale;
-      const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-      gradient.addColorStop(0, 'rgba(20, 36, 66, 0.6)');
-      gradient.addColorStop(0.5, 'rgba(20, 36, 66, 0.3)');
-      gradient.addColorStop(1, 'rgba(20, 36, 66, 0)');
-
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fillStyle = gradient;
-      ctx.fill();
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      g.addColorStop(0, 'rgba(20,36,66,0.6)'); g.addColorStop(0.5, 'rgba(20,36,66,0.3)'); g.addColorStop(1, 'rgba(20,36,66,0)');
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
     }
 
     function drawRings() {
-      CONFIG.rings.forEach(ring => {
+      CONFIG.rings.forEach((ring, i) => {
         const r = ring.radius * scale;
-
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(74, 122, 184, ${0.15 * ring.glowIntensity})`;
-        ctx.lineWidth = 6;
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(74, 122, 184, ${0.4 + 0.3 * ring.glowIntensity})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
+        const intensity = 1 - i * 0.15;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(74,122,184,${0.15 * intensity})`; ctx.lineWidth = 6; ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(74,122,184,${0.4 + 0.3 * intensity})`; ctx.lineWidth = 1.5; ctx.stroke();
         ctx.font = '12px "Segoe UI", sans-serif';
-        ctx.fillStyle = `rgba(180, 200, 220, ${0.5 + 0.3 * ring.glowIntensity})`;
-        ctx.textAlign = 'left';
-        ctx.fillText(ring.label, cx + r + 15, cy + 4);
+        ctx.fillStyle = `rgba(180,200,220,${0.5 + 0.3 * intensity})`;
+        ctx.textAlign = 'left'; ctx.fillText(ring.label, cx + r + 15, cy + 4);
       });
     }
 
-    function getNodePosition(node) {
-      if (node.ring === "CORE") {
-        return { x: cx, y: cy };
-      }
+    function getNodePos(node) {
+      if (node.ring === 'CORE') return { x: cx, y: cy };
       const ring = CONFIG.rings.find(r => r.id === node.ring);
-      const r = ring ? ring.radius * scale : 0;
+      const r = ring ? ring.radius * scale : 180 * scale;
       const rad = (node.angleDeg * Math.PI) / 180;
-      return {
-        x: cx + r * Math.cos(rad),
-        y: cy + r * Math.sin(rad)
-      };
+      return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
     }
 
     function drawEdges() {
-      const nodeMap = new Map();
-      CONFIG.nodes.forEach(n => nodeMap.set(n.id, getNodePosition(n)));
-
-      CONFIG.edges.forEach(edge => {
-        const a = nodeMap.get(edge.from);
-        const b = nodeMap.get(edge.to);
-        if (!a || !b) return;
-
-        const isMain = edge.type === "MAIN";
-        const isOptional = edge.type === "OPTIONAL";
-        const isCross = edge.type === "CROSS_DOMAIN";
-
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = `rgba(58, 96, 144, ${isMain ? 0.3 : 0.15})`;
-        ctx.lineWidth = isMain ? 8 : 5;
-        ctx.lineCap = 'round';
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = isCross ? 'rgba(184, 138, 8, 0.6)' : `rgba(74, 122, 184, ${isMain ? 0.8 : 0.5})`;
+      const map = new Map(); CONFIG.nodes.forEach(n => map.set(n.id, getNodePos(n)));
+      CONFIG.edges.forEach(e => {
+        const a = map.get(e.from), b = map.get(e.to); if (!a || !b) return;
+        const isMain = e.type === 'MAIN', isCross = e.type === 'CROSS_DOMAIN';
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(58,96,144,${isMain ? 0.3 : 0.15})`; ctx.lineWidth = isMain ? 8 : 5; ctx.lineCap = 'round'; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = isCross ? 'rgba(184,138,8,0.6)' : `rgba(74,122,184,${isMain ? 0.8 : 0.5})`;
         ctx.lineWidth = isMain ? 3 : 1.5;
-        if (isOptional) {
-          ctx.setLineDash([6, 4]);
-        } else {
-          ctx.setLineDash([]);
-        }
-        ctx.stroke();
-        ctx.setLineDash([]);
+        if (e.type === 'OPTIONAL') ctx.setLineDash([6, 4]); else ctx.setLineDash([]);
+        ctx.stroke(); ctx.setLineDash([]);
       });
     }
 
     function drawNode(node) {
-      const pos = getNodePosition(node);
-      const baseSize = CONFIG.nodeSizes[node.importance];
+      const pos = getNodePos(node);
+      const baseSize = CONFIG.nodeSizes[node.importance] || 45;
       const size = baseSize * (node.sizeMultiplier || 1) * scale;
-
-      let fillColor, strokeColor, glowColor;
+      let fill, stroke, glow;
       switch (node.state) {
-        case "MASTERED":
-          fillColor = '#4A3D1A';
-          strokeColor = '#FFE680';
-          glowColor = 'rgba(255, 215, 0, 0.6)';
-          break;
-        case "UNLOCKED":
-          fillColor = '#1A3D2A';
-          strokeColor = '#33E680';
-          glowColor = 'rgba(51, 230, 128, 0.5)';
-          break;
-        case "ELIGIBLE":
-          fillColor = '#3D3520';
-          strokeColor = '#FFD700';
-          glowColor = 'rgba(255, 215, 0, 0.4)';
-          break;
-        default:
-          fillColor = '#252830';
-          strokeColor = '#4A4E58';
-          glowColor = null;
-          break;
+        case 'MASTERED': fill = '#4A3D1A'; stroke = '#FFE680'; glow = 'rgba(255,215,0,0.6)'; break;
+        case 'UNLOCKED': fill = '#1A3D2A'; stroke = '#33E680'; glow = 'rgba(51,230,128,0.5)'; break;
+        case 'ELIGIBLE': fill = '#3D3520'; stroke = '#FFD700'; glow = 'rgba(255,215,0,0.4)'; break;
+        default: fill = '#252830'; stroke = '#4A4E58'; glow = null;
       }
-
-      // 選択ハイライト
       if (node.id === selectedNodeId) {
-        ctx.beginPath();
-        ctx.arc(pos.x, pos.y, size * 1.6, 0, Math.PI * 2);
-        ctx.strokeStyle = '#FFD700';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
-        ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * 1.6, 0, Math.PI * 2);
+        ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
       }
-
-      if (glowColor) {
-        const glowSize = size * 1.4;
-        const gradient = ctx.createRadialGradient(pos.x, pos.y, size * 0.5, pos.x, pos.y, glowSize);
-        gradient.addColorStop(0, glowColor);
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.beginPath();
-        ctx.arc(pos.x, pos.y, glowSize, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.fill();
+      if (glow) {
+        const g = ctx.createRadialGradient(pos.x, pos.y, size * 0.5, pos.x, pos.y, size * 1.4);
+        g.addColorStop(0, glow); g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * 1.4, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
       }
-
       ctx.beginPath();
-      if (node.shape === "circle") {
-        ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
-      } else if (node.shape === "hexagon") {
-        drawPolygon(pos.x, pos.y, size, 6, Math.PI / 6);
-      } else if (node.shape === "diamond") {
-        drawPolygon(pos.x, pos.y, size, 4, 0);
-      } else if (node.shape === "octagon") {
-        drawPolygon(pos.x, pos.y, size, 8, Math.PI / 8);
-      }
-
-      const fillGradient = ctx.createRadialGradient(
-        pos.x - size * 0.3, pos.y - size * 0.3, 0,
-        pos.x, pos.y, size
-      );
-      fillGradient.addColorStop(0, lightenColor(fillColor, 0.3));
-      fillGradient.addColorStop(1, fillColor);
-      ctx.fillStyle = fillGradient;
-      ctx.fill();
-
-      ctx.strokeStyle = strokeColor;
-      ctx.lineWidth = node.state === "MASTERED" ? 4 : 3;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.ellipse(pos.x - size * 0.2, pos.y - size * 0.3, size * 0.35, size * 0.2, -0.3, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${node.state === "LOCKED" ? 0.05 : 0.15})`;
-      ctx.fill();
-
-      ctx.beginPath();
-      if (node.shape === "circle") {
-        ctx.arc(pos.x, pos.y, size * 0.75, 0, Math.PI * 2);
-      } else if (node.shape === "hexagon") {
-        drawPolygon(pos.x, pos.y, size * 0.75, 6, Math.PI / 6);
-      } else if (node.shape === "diamond") {
-        drawPolygon(pos.x, pos.y, size * 0.75, 4, 0);
-      } else if (node.shape === "octagon") {
-        drawPolygon(pos.x, pos.y, size * 0.75, 8, Math.PI / 8);
-      }
-      ctx.strokeStyle = `rgba(${hexToRgb(strokeColor)}, 0.5)`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
+      if (node.shape === 'circle') ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+      else if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, size, 6, Math.PI / 6);
+      else if (node.shape === 'diamond') drawPoly(pos.x, pos.y, size, 4, 0);
+      else if (node.shape === 'octagon') drawPoly(pos.x, pos.y, size, 8, Math.PI / 8);
+      const fg = ctx.createRadialGradient(pos.x - size * 0.3, pos.y - size * 0.3, 0, pos.x, pos.y, size);
+      fg.addColorStop(0, lighten(fill, 0.3)); fg.addColorStop(1, fill);
+      ctx.fillStyle = fg; ctx.fill();
+      ctx.strokeStyle = stroke; ctx.lineWidth = node.state === 'MASTERED' ? 4 : 3; ctx.stroke();
       ctx.font = `bold ${11 * scale}px "Segoe UI", "Hiragino Sans", sans-serif`;
-      ctx.fillStyle = node.state === "LOCKED" ? '#666' : '#fff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-
-      const lines = node.label.split('\n');
-      const lineHeight = 13 * scale;
-      const startY = pos.y - ((lines.length - 1) * lineHeight) / 2;
-      lines.forEach((line, i) => {
-        ctx.fillText(line, pos.x, startY + i * lineHeight);
-      });
-
-      if (node.state === "LOCKED") {
-        ctx.font = `${10 * scale}px sans-serif`;
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.fillText('🔒', pos.x + size * 0.6, pos.y - size * 0.6);
-      }
-
-      if (node.requirements && node.requirements.length > 0 && node.id !== "CORE") {
-        drawNodeRequirements(node, pos, size);
-      }
-
+      ctx.fillStyle = node.state === 'LOCKED' ? '#666' : '#fff';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const lines = node.label.split('\n'), lh = 13 * scale, startY = pos.y - ((lines.length - 1) * lh) / 2;
+      lines.forEach((l, i) => ctx.fillText(l, pos.x, startY + i * lh));
+      if (node.state === 'LOCKED') { ctx.font = `${10 * scale}px sans-serif`; ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillText('🔒', pos.x + size * 0.6, pos.y - size * 0.6); }
+      if (node.requirements?.length && node.ring !== 'CORE') drawReqs(node, pos, size);
       return { x: pos.x, y: pos.y, size };
     }
 
-    function drawNodeRequirements(node, pos, size) {
-      const dx = pos.x - cx;
-      const dy = pos.y - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const dirX = dist > 0 ? dx / dist : 0;
-      const dirY = dist > 0 ? dy / dist : 1;
-
-      const offset = size + 15 * scale;
-      const labelX = pos.x + dirX * offset;
-      const labelY = pos.y + dirY * offset;
-
-      const sphereSize = 6 * scale;
-      const spacing = 14 * scale;
-      const totalWidth = node.requirements.length * spacing;
-
-      let startX = labelX - totalWidth / 2;
-      if (dirX > 0.5) startX = labelX;
-      else if (dirX < -0.5) startX = labelX - totalWidth;
-
-      node.requirements.forEach((req, i) => {
-        const sphereX = startX + i * spacing + sphereSize / 2;
-        const sphereY = labelY;
-        const color = CONFIG.sphereTypes[req.type]?.color || '#888';
-
-        ctx.beginPath();
-        ctx.arc(sphereX, sphereY, sphereSize * 1.5, 0, Math.PI * 2);
-        const gradient = ctx.createRadialGradient(sphereX, sphereY, 0, sphereX, sphereY, sphereSize * 1.5);
-        gradient.addColorStop(0, `${color}44`);
-        gradient.addColorStop(1, 'transparent');
-        ctx.fillStyle = gradient;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(sphereX, sphereY, sphereSize, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
-
-        ctx.font = `bold ${8 * scale}px sans-serif`;
-        ctx.fillStyle = '#fff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(req.count.toString(), sphereX, sphereY);
+    function drawReqs(node, pos, size) {
+      const dx = pos.x - cx, dy = pos.y - cy, dist = Math.sqrt(dx * dx + dy * dy);
+      const dirX = dist > 0 ? dx / dist : 0, dirY = dist > 0 ? dy / dist : 1;
+      const off = size + 15 * scale, lx = pos.x + dirX * off, ly = pos.y + dirY * off;
+      const ss = 6 * scale, sp = 14 * scale, tw = node.requirements.length * sp;
+      let sx = lx - tw / 2; if (dirX > 0.5) sx = lx; else if (dirX < -0.5) sx = lx - tw;
+      node.requirements.forEach((r, i) => {
+        const rx = sx + i * sp + ss / 2, ry = ly;
+        const c = CONFIG.sphereTypes[r.type]?.color || '#888';
+        ctx.beginPath(); ctx.arc(rx, ry, ss, 0, Math.PI * 2); ctx.fillStyle = c; ctx.fill();
+        ctx.font = `bold ${8 * scale}px sans-serif`; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(r.count.toString(), rx, ry);
       });
     }
 
-    function drawPolygon(x, y, radius, sides, rotation = 0) {
-      ctx.moveTo(
-        x + radius * Math.cos(rotation),
-        y + radius * Math.sin(rotation)
-      );
-      for (let i = 1; i <= sides; i++) {
-        const angle = rotation + (i * 2 * Math.PI) / sides;
-        ctx.lineTo(
-          x + radius * Math.cos(angle),
-          y + radius * Math.sin(angle)
-        );
-      }
+    function drawPoly(x, y, r, sides, rot = 0) {
+      ctx.moveTo(x + r * Math.cos(rot), y + r * Math.sin(rot));
+      for (let i = 1; i <= sides; i++) { const a = rot + (i * 2 * Math.PI) / sides; ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); }
       ctx.closePath();
     }
 
-    function lightenColor(hex, amount) {
-      const rgb = hexToRgb(hex);
-      const [r, g, b] = rgb.split(',').map(v => parseInt(v.trim()));
-      return `rgb(${Math.min(255, r + amount * 255)}, ${Math.min(255, g + amount * 255)}, ${Math.min(255, b + amount * 255)})`;
+    function lighten(hex, amt) {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      if (!m) return hex;
+      return `rgb(${Math.min(255, parseInt(m[1], 16) + amt * 255)},${Math.min(255, parseInt(m[2], 16) + amt * 255)},${Math.min(255, parseInt(m[3], 16) + amt * 255)})`;
     }
 
-    function hexToRgb(hex) {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result
-        ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
-        : '0, 0, 0';
-    }
-
-    // ============================================================
     // ツールチップ
-    // ============================================================
     function showTooltip(node, x, y) {
-      let html = `<h3>${node.label.replace('\n', ' ')}</h3>`;
-      html += `<span class="state ${node.state}">${getStateName(node.state)}</span>`;
-      html += `<div class="description">${node.description}</div>`;
-
-      if (node.requirements && node.requirements.length > 0) {
-        html += `<div class="requirements"><h4>必要スフィア</h4>`;
-        node.requirements.forEach(req => {
-          const color = CONFIG.sphereTypes[req.type]?.color || '#888';
-          html += `<span class="sphere-item" style="background: ${color}33; color: ${color}">${req.type} ×${req.count}</span>`;
-        });
-        html += `</div>`;
+      let h = `<h3>${node.label.replace('\n', ' ')}</h3><span class="state ${node.state}">${getStateName(node.state)}</span>`;
+      h += `<div class="description">${node.description || ''}</div>`;
+      if (node.requirements?.length) {
+        h += '<div class="requirements"><h4>必要スフィア</h4>';
+        node.requirements.forEach(r => { const c = CONFIG.sphereTypes[r.type]?.color || '#888'; h += `<span class="sphere-item" style="background:${c}33;color:${c}">${r.type} ×${r.count}</span>`; });
+        h += '</div>';
       }
-
-      if (node.effect) {
-        html += `<div class="effect">→ ${node.effect}</div>`;
-      }
-
-      tooltip.innerHTML = html;
-      tooltip.style.display = 'block';
-
-      const tooltipRect = tooltip.getBoundingClientRect();
-      let left = x + 15;
-      let top = y + 15;
-
-      if (left + tooltipRect.width > window.innerWidth) {
-        left = x - tooltipRect.width - 15;
-      }
-      if (top + tooltipRect.height > window.innerHeight) {
-        top = y - tooltipRect.height - 15;
-      }
-
-      tooltip.style.left = left + 'px';
-      tooltip.style.top = top + 'px';
+      if (node.effect) h += `<div class="effect">→ ${node.effect}</div>`;
+      tooltip.innerHTML = h; tooltip.style.display = 'block';
+      const tr = tooltip.getBoundingClientRect();
+      let left = x + 15, top = y + 15;
+      if (left + tr.width > window.innerWidth) left = x - tr.width - 15;
+      if (top + tr.height > window.innerHeight) top = y - tr.height - 15;
+      tooltip.style.left = left + 'px'; tooltip.style.top = top + 'px';
     }
+    function hideTooltip() { tooltip.style.display = 'none'; }
+    function getStateName(s) { return { MASTERED: '定着', UNLOCKED: '解放済', ELIGIBLE: '解放可', LOCKED: '未解放' }[s] || '未解放'; }
 
-    function hideTooltip() {
-      tooltip.style.display = 'none';
-    }
-
-    function getStateName(state) {
-      switch (state) {
-        case "MASTERED": return "定着";
-        case "UNLOCKED": return "解放済";
-        case "ELIGIBLE": return "解放可";
-        default: return "未解放";
-      }
-    }
-
-    // ============================================================
     // エディタ
-    // ============================================================
     function toggleEditor() {
       isEditorOpen = !isEditorOpen;
       document.getElementById('editor-panel').classList.toggle('open', isEditorOpen);
+      document.getElementById('editor-toggle').classList.toggle('active', isEditorOpen);
       document.getElementById('editor-toggle').textContent = isEditorOpen ? '✓ 編集モード' : '📝 編集モード';
+      document.getElementById('drag-hint').classList.toggle('visible', isEditorOpen);
+      if (isEditorOpen) { updateRingList(); updateNodeList(); updateRingSelect(); }
+    }
 
-      if (isEditorOpen) {
-        updateNodeList();
-      }
+    function updateRingList() {
+      const list = document.getElementById('ring-list');
+      list.innerHTML = '';
+      CONFIG.rings.forEach((ring, i) => {
+        const item = document.createElement('div'); item.className = 'ring-item';
+        item.innerHTML = `
+          <input type="text" value="${ring.label}" onchange="updateRing(${i},'label',this.value)" style="flex:2">
+          <input type="number" class="ring-radius" value="${ring.radius}" onchange="updateRing(${i},'radius',+this.value)" min="100" max="800">
+          <button class="delete-ring" onclick="deleteRing(${i})" ${CONFIG.rings.length <= 1 ? 'disabled' : ''}>×</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function updateRing(i, key, val) { CONFIG.rings[i][key] = val; draw(); updateRingSelect(); }
+    function deleteRing(i) {
+      if (CONFIG.rings.length <= 1) return;
+      const rid = CONFIG.rings[i].id;
+      CONFIG.nodes = CONFIG.nodes.filter(n => n.ring !== rid);
+      CONFIG.rings.splice(i, 1);
+      updateRingList(); updateNodeList(); updateRingSelect(); draw();
+    }
+    function addNewRing() {
+      const maxR = Math.max(...CONFIG.rings.map(r => r.radius));
+      const newId = 'R' + (maxR + 120);
+      CONFIG.rings.push({ id: newId, label: '新リング', radius: maxR + 120 });
+      CONFIG.rings.sort((a, b) => a.radius - b.radius);
+      updateRingList(); updateRingSelect(); draw();
+    }
+
+    function updateRingSelect() {
+      const sel = document.getElementById('edit-ring');
+      sel.innerHTML = CONFIG.rings.map(r => `<option value="${r.id}">${r.label} (${r.radius}px)</option>`).join('');
     }
 
     function updateNodeList() {
-      const list = document.getElementById('node-list');
-      list.innerHTML = '';
-
+      const list = document.getElementById('node-list'); list.innerHTML = '';
       CONFIG.nodes.filter(n => n.id !== 'CORE').forEach(node => {
         const item = document.createElement('div');
         item.className = 'node-list-item' + (node.id === selectedNodeId ? ' selected' : '');
         item.onclick = () => selectNode(node.id);
-
-        const stateColors = {
-          MASTERED: '#FFD700',
-          UNLOCKED: '#33E680',
-          ELIGIBLE: '#FFD700',
-          LOCKED: '#4A4E58'
-        };
-
+        const colors = { MASTERED: '#FFD700', UNLOCKED: '#33E680', ELIGIBLE: '#FFD700', LOCKED: '#4A4E58' };
         item.innerHTML = `
-          <div class="node-dot" style="background: ${stateColors[node.state]}"></div>
+          <div class="node-dot" style="background:${colors[node.state]}"></div>
           <span class="node-name">${node.label.replace('\n', ' ')}</span>
+          <span class="node-ring">${node.ring}</span>
           <span class="node-state state ${node.state}">${getStateName(node.state)}</span>
         `;
         list.appendChild(item);
       });
-
-      // 親ノード選択肢を更新
-      const parentSelect = document.getElementById('edit-parent');
-      parentSelect.innerHTML = '<option value="CORE">CORE（中央）から接続</option>';
-      CONFIG.nodes.filter(n => n.id !== 'CORE').forEach(node => {
-        parentSelect.innerHTML += `<option value="${node.id}">${node.label.replace('\n', ' ')}</option>`;
-      });
+      const parent = document.getElementById('edit-parent');
+      parent.innerHTML = '<option value="CORE">CORE</option>' + CONFIG.nodes.filter(n => n.id !== 'CORE').map(n => `<option value="${n.id}">${n.label.replace('\n', ' ')}</option>`).join('');
     }
 
     function selectNode(id) {
       selectedNodeId = id;
       const node = CONFIG.nodes.find(n => n.id === id);
       if (!node) return;
-
       document.getElementById('node-editor').style.display = 'block';
+      populateNodeEditor(node);
+      updateNodeList(); draw();
+    }
 
+    function populateNodeEditor(node) {
       document.getElementById('edit-id').value = node.id;
       document.getElementById('edit-label').value = node.label.replace('\n', ' ');
       document.getElementById('edit-ring').value = node.ring;
@@ -1438,171 +705,92 @@
       document.getElementById('edit-shape').value = node.shape;
       document.getElementById('edit-description').value = node.description || '';
       document.getElementById('edit-effect').value = node.effect || '';
-
-      // スフィアエディタ
-      const sphereEditor = document.getElementById('sphere-editor');
-      sphereEditor.innerHTML = '';
-      Object.entries(CONFIG.sphereTypes).forEach(([type, info]) => {
-        const req = node.requirements?.find(r => r.type === type);
-        const count = req ? req.count : 0;
-        sphereEditor.innerHTML += `
-          <div class="sphere-tag" style="background: ${info.color}33; color: ${info.color}">
-            ${type}
-            <input type="number" min="0" max="10" value="${count}" data-type="${type}">
-          </div>
-        `;
+      const se = document.getElementById('sphere-editor'); se.innerHTML = '';
+      Object.entries(CONFIG.sphereTypes).forEach(([t, info]) => {
+        const req = node.requirements?.find(r => r.type === t);
+        se.innerHTML += `<div class="sphere-tag" style="background:${info.color}33;color:${info.color}">${t}<input type="number" min="0" max="10" value="${req ? req.count : 0}" data-type="${t}"></div>`;
       });
-
-      // 親ノード
-      const edge = CONFIG.edges.find(e => e.to === id);
+      const edge = CONFIG.edges.find(e => e.to === node.id);
       document.getElementById('edit-parent').value = edge ? edge.from : 'CORE';
-
-      updateNodeList();
-      draw();
     }
 
     function addNewNode() {
       const newId = 'NODE_' + Date.now();
-      const newNode = {
-        id: newId,
-        label: '新規\nノード',
-        ring: 'R30',
-        angleDeg: Math.floor(Math.random() * 360) - 180,
-        state: 'LOCKED',
-        importance: 'STANDARD',
-        shape: 'circle',
-        description: '新しいノードの説明',
-        effect: '効果を入力',
-        requirements: []
-      };
-
+      const ring = CONFIG.rings[0]?.id || 'R30';
+      const newNode = { id: newId, label: '新規\nノード', ring, angleDeg: Math.floor(Math.random() * 360) - 180, state: 'LOCKED', importance: 'STANDARD', shape: 'circle', description: '', effect: '', requirements: [] };
       CONFIG.nodes.push(newNode);
       CONFIG.edges.push({ from: 'CORE', to: newId, type: 'MAIN' });
-
-      selectNode(newId);
-      draw();
+      selectNode(newId); draw();
     }
 
     function saveNode() {
       const id = document.getElementById('edit-id').value;
       const node = CONFIG.nodes.find(n => n.id === selectedNodeId);
       if (!node) return;
-
-      // IDが変更された場合、エッジも更新
       if (id !== selectedNodeId) {
-        CONFIG.edges.forEach(e => {
-          if (e.from === selectedNodeId) e.from = id;
-          if (e.to === selectedNodeId) e.to = id;
-        });
-        node.id = id;
-        selectedNodeId = id;
+        CONFIG.edges.forEach(e => { if (e.from === selectedNodeId) e.from = id; if (e.to === selectedNodeId) e.to = id; });
+        node.id = id; selectedNodeId = id;
       }
-
-      node.label = document.getElementById('edit-label').value.replace(' ', '\n');
+      node.label = document.getElementById('edit-label').value.replace(/ /g, '\n');
       node.ring = document.getElementById('edit-ring').value;
       node.state = document.getElementById('edit-state').value;
-      node.angleDeg = parseInt(document.getElementById('edit-angle').value);
+      node.angleDeg = parseInt(document.getElementById('edit-angle').value) || 0;
       node.importance = document.getElementById('edit-importance').value;
       node.shape = document.getElementById('edit-shape').value;
       node.description = document.getElementById('edit-description').value;
       node.effect = document.getElementById('edit-effect').value;
-
-      // スフィア要件
       node.requirements = [];
-      document.querySelectorAll('#sphere-editor input').forEach(input => {
-        const count = parseInt(input.value);
-        if (count > 0) {
-          node.requirements.push({ type: input.dataset.type, count });
-        }
-      });
-
-      // 親ノード（エッジ）
-      const parentId = document.getElementById('edit-parent').value;
-      const existingEdgeIndex = CONFIG.edges.findIndex(e => e.to === id);
-      if (existingEdgeIndex >= 0) {
-        CONFIG.edges[existingEdgeIndex].from = parentId;
-      } else {
-        CONFIG.edges.push({ from: parentId, to: id, type: 'MAIN' });
-      }
-
-      updateNodeList();
-      draw();
-      alert('保存しました');
+      document.querySelectorAll('#sphere-editor input').forEach(inp => { const c = parseInt(inp.value); if (c > 0) node.requirements.push({ type: inp.dataset.type, count: c }); });
+      const pid = document.getElementById('edit-parent').value;
+      const ei = CONFIG.edges.findIndex(e => e.to === node.id);
+      if (ei >= 0) CONFIG.edges[ei].from = pid; else CONFIG.edges.push({ from: pid, to: node.id, type: 'MAIN' });
+      updateNodeList(); draw();
     }
 
     function deleteNode() {
-      if (!selectedNodeId || selectedNodeId === 'CORE') {
-        alert('COREは削除できません');
-        return;
-      }
-
-      if (!confirm('このノードを削除しますか？')) return;
-
+      if (!selectedNodeId || selectedNodeId === 'CORE') return alert('COREは削除できません');
+      if (!confirm('削除しますか？')) return;
       CONFIG.nodes = CONFIG.nodes.filter(n => n.id !== selectedNodeId);
       CONFIG.edges = CONFIG.edges.filter(e => e.from !== selectedNodeId && e.to !== selectedNodeId);
-
       selectedNodeId = null;
       document.getElementById('node-editor').style.display = 'none';
-      updateNodeList();
-      draw();
+      updateNodeList(); draw();
     }
 
     function cancelEdit() {
       selectedNodeId = null;
       document.getElementById('node-editor').style.display = 'none';
-      updateNodeList();
-      draw();
+      updateNodeList(); draw();
     }
 
-    // ============================================================
     // エクスポート/インポート
-    // ============================================================
     function exportData() {
-      const data = {
-        nodes: CONFIG.nodes,
-        edges: CONFIG.edges
-      };
-      const json = JSON.stringify(data, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'sphere-grid-data.json';
-      a.click();
-      URL.revokeObjectURL(url);
+      const data = { rings: CONFIG.rings, nodes: CONFIG.nodes, edges: CONFIG.edges };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sphere-grid-data.json'; a.click();
     }
 
     function importData() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json';
-      input.onchange = (e) => {
-        const file = e.target.files[0];
+      const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json';
+      inp.onchange = e => {
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = ev => {
           try {
-            const data = JSON.parse(event.target.result);
-            if (data.nodes && data.edges) {
-              CONFIG.nodes = data.nodes;
-              CONFIG.edges = data.edges;
-              updateNodeList();
-              draw();
-              alert('インポート完了');
-            }
-          } catch (err) {
-            alert('ファイルの読み込みに失敗しました');
-          }
+            const d = JSON.parse(ev.target.result);
+            if (d.rings) CONFIG.rings = d.rings;
+            if (d.nodes) CONFIG.nodes = d.nodes;
+            if (d.edges) CONFIG.edges = d.edges;
+            updateRingList(); updateNodeList(); updateRingSelect(); draw();
+            alert('インポート完了');
+          } catch { alert('読み込み失敗'); }
         };
-        reader.readAsText(file);
+        reader.readAsText(e.target.files[0]);
       };
-      input.click();
+      inp.click();
     }
 
     function downloadImage() {
-      const link = document.createElement('a');
-      link.download = 'sphere-grid.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      const link = document.createElement('a'); link.download = 'sphere-grid.png'; link.href = canvas.toDataURL('image/png'); link.click();
     }
   </script>
 </body>
