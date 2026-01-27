@@ -411,9 +411,18 @@
       } else { document.getElementById('login-error').textContent = 'パスワードが正しくありません'; inp.value = ''; inp.focus(); }
     }
     function logout() { if (confirm('ログアウトしますか？')) { localStorage.removeItem(AUTH_KEY); location.reload(); } }
-    function showMainContent() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-content').classList.add('visible'); initApp(); }
-    document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') attemptLogin(); });
-    if (checkAuth()) showMainContent(); else document.getElementById('password-input').focus();
+    function showMainContent() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('main-content').classList.add('visible');
+      // 少し遅延させてDOMが完全に表示されてから初期化
+      setTimeout(initApp, 50);
+    }
+
+    // DOMContentLoaded後に初期化
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') attemptLogin(); });
+      if (checkAuth()) showMainContent(); else document.getElementById('password-input').focus();
+    });
 
     // CONFIG
     let CONFIG = {
@@ -466,16 +475,24 @@
     let lastPanPos = null;
 
     function initApp() {
-      canvas = document.getElementById('canvas');
-      ctx = canvas.getContext('2d');
-      tooltip = document.getElementById('tooltip');
-      window.addEventListener('resize', resize);
-      canvas.addEventListener('mousemove', handleMouseMove);
-      canvas.addEventListener('mousedown', handleMouseDown);
-      canvas.addEventListener('mouseup', handleMouseUp);
-      canvas.addEventListener('mouseleave', handleMouseLeave);
-      canvas.addEventListener('wheel', handleWheel, { passive: false });
-      resize();
+      try {
+        canvas = document.getElementById('canvas');
+        if (!canvas) { console.error('Canvas not found'); return; }
+        ctx = canvas.getContext('2d');
+        if (!ctx) { console.error('Could not get 2d context'); return; }
+        tooltip = document.getElementById('tooltip');
+        window.addEventListener('resize', resize);
+        canvas.addEventListener('mousemove', handleMouseMove);
+        canvas.addEventListener('mousedown', handleMouseDown);
+        canvas.addEventListener('mouseup', handleMouseUp);
+        canvas.addEventListener('mouseleave', handleMouseLeave);
+        canvas.addEventListener('wheel', handleWheel, { passive: false });
+        console.log('initApp: starting resize');
+        resize();
+        console.log('initApp: complete');
+      } catch (err) {
+        console.error('initApp error:', err);
+      }
     }
 
     function resize() {
