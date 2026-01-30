@@ -429,13 +429,18 @@ const CONFIG = {
 
     figma.currentPage.appendChild(frame);
     figma.viewport.scrollAndZoomIntoView([frame]);
+
+    // UIを表示するように追加
+    figma.showUI(__html__, { width: 1000, height: 700, title: "WG Sphere Grid Interactive" });
+
     figma.notify("WG Sphere Grid (FF10 Style) を生成しました");
   } catch (err) {
     console.error("Error:", err);
     const msg = err instanceof Error ? err.message : String(err);
     figma.notify(`エラー: ${msg}`, { error: true });
   } finally {
-    figma.closePlugin();
+    // UIを表示するためここでは閉じない
+    // figma.closePlugin();
   }
 })();
 

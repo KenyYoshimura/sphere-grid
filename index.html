@@ -195,168 +195,194 @@
     #tooltip {
       position: absolute;
       display: none;
-      background: rgba(10, 16, 36, 0.95);
-      border: 1px solid rgba(74, 122, 184, 0.5);
-      border-radius: 8px;
-      padding: 12px 16px;
+      background: rgba(8, 14, 28, 0.96);
+      border: 1px solid rgba(74, 122, 184, 0.4);
+      border-radius: 12px;
+      padding: 16px 20px;
       color: #fff;
       font-size: 12px;
-      max-width: 280px;
+      max-width: 300px;
       pointer-events: none;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
       z-index: 1000;
+      backdrop-filter: blur(12px);
     }
 
     #tooltip h3 {
       color: #FFD700;
-      font-size: 14px;
+      font-size: 15px;
       margin-bottom: 8px;
+      font-weight: 600;
     }
 
     #tooltip .state {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 3px 10px;
+      border-radius: 6px;
       font-size: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      font-weight: 500;
     }
 
     #tooltip .state.MASTERED {
-      background: rgba(255, 215, 0, 0.3);
+      background: rgba(255, 215, 0, 0.2);
       color: #FFD700;
+      border: 1px solid rgba(255, 215, 0, 0.3);
     }
 
     #tooltip .state.UNLOCKED {
-      background: rgba(51, 230, 128, 0.3);
+      background: rgba(51, 230, 128, 0.2);
       color: #33E680;
+      border: 1px solid rgba(51, 230, 128, 0.3);
     }
 
     #tooltip .state.ELIGIBLE {
-      background: rgba(255, 215, 0, 0.2);
+      background: rgba(255, 215, 0, 0.15);
       color: #FFD700;
+      border: 1px solid rgba(255, 215, 0, 0.25);
     }
 
     #tooltip .state.LOCKED {
-      background: rgba(100, 100, 120, 0.3);
-      color: #888;
+      background: rgba(100, 100, 120, 0.25);
+      color: #8899aa;
+      border: 1px solid rgba(100, 100, 120, 0.3);
     }
 
     #tooltip .description {
-      color: #aab;
-      margin-bottom: 8px;
+      color: #aabbcc;
+      margin-bottom: 10px;
+      line-height: 1.5;
     }
 
     #tooltip .requirements {
-      margin-top: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(74, 122, 184, 0.2);
     }
 
     #tooltip .requirements h4 {
       color: #B88A08;
       font-size: 11px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      font-weight: 500;
     }
 
     #tooltip .sphere-item {
       display: inline-block;
-      margin: 2px 4px 2px 0;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10px;
+      margin: 3px 6px 3px 0;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
     }
 
     #tooltip .effect {
       color: #4DCC80;
-      margin-top: 8px;
-      font-size: 11px;
+      margin-top: 10px;
+      font-size: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(74, 122, 184, 0.2);
     }
 
+    /* 情報パネル */
     #legend,
     #gates {
       position: absolute;
-      background: rgba(10, 16, 36, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 24px;
+      background: rgba(8, 14, 28, 0.92);
+      border: 1px solid rgba(74, 122, 184, 0.3);
+      border-radius: 16px;
+      padding: 20px 24px;
       color: #fff;
-      font-size: 11px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-    }
-
-    #legend:hover,
-    #gates:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      background: rgba(10, 16, 36, 0.7);
+      font-size: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
     }
 
     #legend {
-      top: 30px;
-      right: 30px;
-      min-width: 280px;
+      top: 20px;
+      right: 20px;
+      min-width: 240px;
     }
 
     #gates {
-      top: 30px;
-      left: 30px;
-      max-width: 300px;
+      top: 20px;
+      left: 20px;
+      max-width: 280px;
     }
 
     #legend h2,
     #gates h2 {
       color: #FFD700;
-      font-size: 16px;
+      font-size: 15px;
       margin-bottom: 16px;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     #legend h3,
     #gates h3 {
       color: #B88A08;
       font-size: 11px;
-      margin: 20px 0 10px 0;
+      margin: 16px 0 10px 0;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
     }
 
     #gates .subtitle {
-      color: #889;
+      color: #8899aa;
       font-size: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     #gates ul {
       list-style: none;
-      color: #aab;
-      line-height: 1.8;
+      color: #aabbcc;
+      line-height: 2;
+    }
+
+    #gates li {
+      display: flex;
+      align-items: center;
     }
 
     #gates li::before {
-      content: "・";
-      color: #4A7AB8;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      margin: 6px 0;
-    }
-
-    .legend-dot {
-      width: 16px;
-      height: 16px;
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: #4A7AB8;
       border-radius: 50%;
       margin-right: 10px;
       flex-shrink: 0;
     }
 
-    .legend-sphere {
-      width: 12px;
-      height: 12px;
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+    }
+
+    .legend-dot {
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
-      margin-right: 8px;
+      margin-right: 12px;
       flex-shrink: 0;
+    }
+
+    .legend-sphere {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      margin-right: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px currentColor;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .legend-sphere:hover {
+      transform: scale(1.2);
     }
 
     .legend-text {
@@ -365,46 +391,113 @@
 
     .legend-text .label {
       color: #fff;
+      font-weight: 500;
     }
 
     .legend-text .desc {
-      color: #889;
+      color: #8899aa;
       font-size: 10px;
+      margin-top: 2px;
     }
 
+    /* ズームコントロール */
+    #zoom-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(8, 14, 28, 0.9);
+      border: 1px solid rgba(74, 122, 184, 0.3);
+      border-radius: 12px;
+      padding: 8px 16px;
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    #zoom-controls button {
+      width: 36px;
+      height: 36px;
+      background: rgba(74, 122, 184, 0.2);
+      border: 1px solid rgba(74, 122, 184, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #zoom-controls button:hover {
+      background: rgba(74, 122, 184, 0.4);
+      border-color: rgba(74, 122, 184, 0.5);
+    }
+
+    #zoom-controls button:active {
+      transform: scale(0.95);
+    }
+
+    #zoom-level {
+      color: #8899aa;
+      font-size: 12px;
+      min-width: 48px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    #zoom-controls .divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(74, 122, 184, 0.3);
+      margin: 0 4px;
+    }
+
+    /* 編集ボタン */
     #editor-toggle {
       position: absolute;
       bottom: 20px;
-      left: 20px;
-      background: rgba(255, 215, 0, 0.2);
-      border: 1px solid #FFD700;
+      left: 320px;
+      background: rgba(255, 215, 0, 0.15);
+      border: 1px solid rgba(255, 215, 0, 0.4);
       color: #FFD700;
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+      z-index: 100;
     }
 
     #editor-toggle:hover {
-      background: rgba(255, 215, 0, 0.3);
+      background: rgba(255, 215, 0, 0.25);
+      border-color: rgba(255, 215, 0, 0.6);
     }
 
     #editor-toggle.active {
-      background: rgba(255, 215, 0, 0.4);
+      background: rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
     }
 
+    /* 編集パネル */
     #editor-panel {
       position: absolute;
       top: 0;
-      right: -480px;
-      width: 480px;
+      right: -500px;
+      width: 500px;
       height: 100vh;
-      background: rgba(10, 16, 36, 0.98);
-      border-left: 1px solid rgba(74, 122, 184, 0.5);
-      padding: 20px;
+      background: rgba(8, 14, 28, 0.98);
+      border-left: 1px solid rgba(74, 122, 184, 0.3);
+      padding: 24px;
       overflow-y: auto;
-      transition: right 0.3s ease;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 2000;
+      backdrop-filter: blur(20px);
     }
 
     #editor-panel.open {
@@ -413,51 +506,90 @@
 
     #editor-panel h2 {
       color: #FFD700;
-      font-size: 18px;
-      margin-bottom: 20px;
+      font-size: 20px;
+      margin-bottom: 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-weight: 600;
     }
 
     #editor-panel .close-btn {
-      background: none;
+      background: rgba(100, 110, 130, 0.3);
       border: none;
-      color: #888;
-      font-size: 24px;
+      color: #8899aa;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      font-size: 20px;
       cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     #editor-panel .close-btn:hover {
-      color: #fff;
+      background: rgba(230, 77, 102, 0.3);
+      color: #E64D66;
     }
 
     .editor-section {
       margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(74, 122, 184, 0.2);
+      padding: 20px;
+      background: rgba(74, 122, 184, 0.08);
+      border-radius: 12px;
+      border: 1px solid rgba(74, 122, 184, 0.15);
     }
 
     .editor-section h3 {
-      color: #B88A08;
-      font-size: 14px;
-      margin-bottom: 12px;
+      color: #FFD700;
+      font-size: 13px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .editor-section h3::before {
+      content: "";
+      width: 4px;
+      height: 16px;
+      background: linear-gradient(180deg, #FFD700, #B88A08);
+      border-radius: 2px;
     }
 
     .node-list {
-      max-height: 180px;
+      max-height: 200px;
       overflow-y: auto;
       margin-bottom: 12px;
+    }
+
+    .node-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .node-list::-webkit-scrollbar-track {
+      background: rgba(74, 122, 184, 0.1);
+      border-radius: 3px;
+    }
+
+    .node-list::-webkit-scrollbar-thumb {
+      background: rgba(74, 122, 184, 0.3);
+      border-radius: 3px;
     }
 
     .node-list-item {
       display: flex;
       align-items: center;
-      padding: 8px;
-      margin: 4px 0;
+      padding: 12px 14px;
+      margin: 6px 0;
       background: rgba(74, 122, 184, 0.1);
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
     }
 
     .node-list-item:hover {
@@ -465,58 +597,66 @@
     }
 
     .node-list-item.selected {
-      background: rgba(255, 215, 0, 0.2);
-      border: 1px solid rgba(255, 215, 0, 0.5);
+      background: rgba(255, 215, 0, 0.15);
+      border-color: rgba(255, 215, 0, 0.4);
     }
 
     .node-list-item .node-dot {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      margin-right: 10px;
+      margin-right: 12px;
+      box-shadow: 0 0 8px currentColor;
     }
 
     .node-list-item .node-name {
       color: #fff;
       flex: 1;
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: 500;
     }
 
     .node-list-item .node-ring {
-      color: #889;
-      font-size: 10px;
-      margin-right: 8px;
+      color: #8899aa;
+      font-size: 11px;
+      margin-right: 10px;
+      background: rgba(74, 122, 184, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
     }
 
     .node-list-item .node-state {
       font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-weight: 500;
     }
 
     .form-group {
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .form-group label {
       display: block;
-      color: #889;
+      color: #8899aa;
       font-size: 11px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .form-group input,
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 10px 14px;
-      background: rgba(20, 30, 50, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
+      padding: 12px 14px;
+      background: rgba(20, 30, 50, 0.6);
+      border: 1px solid rgba(74, 122, 184, 0.25);
+      border-radius: 10px;
       color: #fff;
-      font-size: 13px;
-      backdrop-filter: blur(4px);
-      transition: all 0.3s ease;
+      font-size: 14px;
+      transition: all 0.2s ease;
     }
 
     .form-group input:focus,
@@ -524,13 +664,18 @@
     .form-group textarea:focus {
       outline: none;
       border-color: #FFD700;
-      background: rgba(20, 30, 50, 0.6);
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+      background: rgba(20, 30, 50, 0.8);
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    }
+
+    .form-group select {
+      cursor: pointer;
     }
 
     .form-group textarea {
       resize: vertical;
-      min-height: 60px;
+      min-height: 80px;
+      line-height: 1.5;
     }
 
     .form-row {
@@ -545,24 +690,29 @@
     .sphere-editor {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
+      gap: 10px;
+      margin-top: 10px;
     }
 
     .sphere-tag {
       display: flex;
       align-items: center;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 11px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid transparent;
     }
 
     .sphere-tag input {
-      width: 30px;
-      padding: 2px 4px;
-      margin-left: 4px;
+      width: 40px;
+      padding: 4px 6px;
+      margin-left: 8px;
       text-align: center;
-      font-size: 11px;
+      font-size: 12px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .ring-list {
@@ -664,6 +814,163 @@
       display: block;
     }
 
+    /* 現在の指標パネル */
+    #metrics-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(8, 14, 28, 0.92);
+      border: 1px solid rgba(74, 122, 184, 0.3);
+      border-radius: 16px;
+      padding: 16px 20px;
+      color: #fff;
+      font-size: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+      min-width: 280px;
+      z-index: 100;
+    }
+
+    #metrics-panel h2 {
+      color: #FFD700;
+      font-size: 14px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #metrics-panel .toggle-btn {
+      background: none;
+      border: none;
+      color: #8899aa;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #metrics-panel .toggle-btn:hover {
+      color: #FFD700;
+    }
+
+    #metrics-panel.collapsed .metrics-content {
+      display: none;
+    }
+
+    #metrics-panel.collapsed {
+      min-width: auto;
+    }
+
+    .metrics-content {
+      margin-top: 8px;
+    }
+
+    .metric-row {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+      gap: 8px;
+    }
+
+    .metric-row label {
+      color: #8899aa;
+      font-size: 11px;
+      min-width: 70px;
+    }
+
+    .metric-row input {
+      flex: 1;
+      padding: 6px 10px;
+      background: rgba(20, 30, 50, 0.6);
+      border: 1px solid rgba(74, 122, 184, 0.25);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .metric-row input:focus {
+      outline: none;
+      border-color: #FFD700;
+    }
+
+    .metric-row .unit {
+      color: #8899aa;
+      font-size: 11px;
+      min-width: 30px;
+    }
+
+    .metric-divider {
+      height: 1px;
+      background: rgba(74, 122, 184, 0.2);
+      margin: 12px 0;
+    }
+
+    .sphere-inventory {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .sphere-inv-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(74, 122, 184, 0.1);
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    .sphere-inv-item .sphere-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .sphere-inv-item input {
+      width: 32px;
+      padding: 3px 5px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .metric-status {
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(74, 122, 184, 0.1);
+      border-radius: 8px;
+    }
+
+    .metric-status .status-title {
+      color: #B88A08;
+      font-size: 11px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .metric-status .status-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .metric-status .status-value.good {
+      color: #33E680;
+    }
+
+    .metric-status .status-value.warning {
+      color: #FFD700;
+    }
+
+    .metric-status .status-value.bad {
+      color: #E64D66;
+    }
+
     #export-section {
       margin-top: 20px;
       padding-top: 16px;
@@ -713,56 +1020,91 @@
       <h2>ノード状態</h2>
       <div class="legend-item">
         <div class="legend-dot"
-          style="background: radial-gradient(circle at 30% 30%, #FFF5CC, #FFD700); box-shadow: 0 0 12px #FFD700;"></div>
+          style="background: radial-gradient(circle at 30% 30%, #FFF5CC, #FFD700); box-shadow: 0 0 14px #FFD700;"></div>
         <div class="legend-text"><span class="label">定着</span><br><span class="desc">習得完了・定着済み</span></div>
       </div>
       <div class="legend-item">
         <div class="legend-dot"
-          style="background: radial-gradient(circle at 30% 30%, #66E699, #33E680); box-shadow: 0 0 10px #33E680;"></div>
+          style="background: radial-gradient(circle at 30% 30%, #66E699, #33E680); box-shadow: 0 0 12px #33E680;"></div>
         <div class="legend-text"><span class="label">解放済</span><br><span class="desc">習得中・実施中</span></div>
       </div>
       <div class="legend-item">
         <div class="legend-dot"
-          style="background: radial-gradient(circle at 30% 30%, #FFE066, #FFD700); box-shadow: 0 0 8px #FFD700;"></div>
+          style="background: radial-gradient(circle at 30% 30%, #FFE066, #FFD700); box-shadow: 0 0 10px rgba(255,215,0,0.6);">
+        </div>
         <div class="legend-text"><span class="label">解放可</span><br><span class="desc">条件クリア・解放可能</span></div>
       </div>
       <div class="legend-item">
         <div class="legend-dot"
-          style="background: radial-gradient(circle at 30% 30%, #444, #333); border: 1px solid #555;"></div>
+          style="background: radial-gradient(circle at 30% 30%, #3A3E48, #2A2E38); border: 1px solid #4A4E58;"></div>
         <div class="legend-text"><span class="label">未解放</span><br><span class="desc">条件未達成</span></div>
       </div>
       <h3>必要スフィア</h3>
-      <div class="legend-item highlightable" onmouseenter="hoveredSphereType='人材';draw()"
+      <div class="legend-item" onmouseenter="hoveredSphereType='人材';draw()"
         onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #3399E6;"></div>
+        <div class="legend-sphere" style="background: #3399E6; color: #3399E6;"></div>
         <div class="legend-text"><span class="label">人材</span></div>
       </div>
-      <div class="legend-item highlightable" onmouseenter="hoveredSphereType='資金';draw()"
+      <div class="legend-item" onmouseenter="hoveredSphereType='資金';draw()"
         onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #E6B333;"></div>
+        <div class="legend-sphere" style="background: #E6B333; color: #E6B333;"></div>
         <div class="legend-text"><span class="label">資金</span></div>
       </div>
-      <div class="legend-item highlightable" onmouseenter="hoveredSphereType='実績';draw()"
+      <div class="legend-item" onmouseenter="hoveredSphereType='実績';draw()"
         onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #4DCC80;"></div>
+        <div class="legend-sphere" style="background: #4DCC80; color: #4DCC80;"></div>
         <div class="legend-text"><span class="label">実績</span></div>
       </div>
-      <div class="legend-item highlightable" onmouseenter="hoveredSphereType='時間';draw()"
+      <div class="legend-item" onmouseenter="hoveredSphereType='時間';draw()"
         onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #9966CC;"></div>
+        <div class="legend-sphere" style="background: #9966CC; color: #9966CC;"></div>
         <div class="legend-text"><span class="label">時間</span></div>
       </div>
-      <div class="legend-item highlightable" onmouseenter="hoveredSphereType='信頼';draw()"
+      <div class="legend-item" onmouseenter="hoveredSphereType='信頼';draw()"
         onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #E68033;"></div>
+        <div class="legend-sphere" style="background: #E68033; color: #E68033;"></div>
         <div class="legend-text"><span class="label">信頼</span></div>
       </div>
-      <div class="legend-item highlightable" onmouseenter="hoveredSphereType='技術';draw()"
+      <div class="legend-item" onmouseenter="hoveredSphereType='技術';draw()"
         onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #66B3E6;"></div>
+        <div class="legend-sphere" style="background: #66B3E6; color: #66B3E6;"></div>
         <div class="legend-text"><span class="label">技術</span></div>
       </div>
     </div>
+
+    <div id="metrics-panel">
+      <h2>現在の指標 <button class="toggle-btn" onclick="toggleMetrics()">▼</button></h2>
+      <div class="metrics-content">
+        <div class="metric-row">
+          <label>年商</label>
+          <input type="number" id="metric-revenue" value="1500" onchange="updateMetrics()">
+          <span class="unit">万円</span>
+        </div>
+        <div class="metric-row">
+          <label>従業員数</label>
+          <input type="number" id="metric-employees" value="2" onchange="updateMetrics()">
+          <span class="unit">名</span>
+        </div>
+        <div class="metric-row">
+          <label>粗利率</label>
+          <input type="number" id="metric-margin" value="45" onchange="updateMetrics()">
+          <span class="unit">%</span>
+        </div>
+        <div class="metric-row">
+          <label>現預金</label>
+          <input type="number" id="metric-cash" value="800" onchange="updateMetrics()">
+          <span class="unit">万円</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div style="color: #B88A08; font-size: 11px; margin-bottom: 8px; font-weight: 600;">保有スフィア</div>
+        <div class="sphere-inventory" id="sphere-inventory"></div>
+        <div class="metric-status">
+          <div class="status-title">現在のステージ</div>
+          <div class="status-value" id="current-stage">-</div>
+        </div>
+      </div>
+    </div>
+
 
     <button id="editor-toggle" onclick="toggleEditor()">📝 編集モード</button>
     <div id="drag-hint" class="drag-hint">🖱️ ノードをドラッグして移動できます</div>
@@ -909,7 +1251,7 @@
     };
 
     let canvas, ctx, tooltip;
-    let baseScale = 1, userZoom = 1, offsetX = 0, offsetY = 0;
+    let baseScale = 1, userZoom = 1, panX = 0, panY = 0;
     let cx, cy;
     let nodePositions = [];
     let selectedNodeId = null;
@@ -919,587 +1261,353 @@
     let isDragging = false;
     let isPanning = false;
     let dragNode = null;
-    let dragStartPos = null;
-    let panStartPos = null;
+    let lastPanPos = null;
+
+    function getScale() { return baseScale * userZoom; }
 
     function initApp() {
-      canvas = document.getElementById('canvas');
-      ctx = canvas.getContext('2d');
-      tooltip = document.getElementById('tooltip');
-      window.addEventListener('resize', resize);
-      canvas.addEventListener('mousemove', handleMouseMove);
-      canvas.addEventListener('mousedown', handleMouseDown);
-      canvas.addEventListener('mouseup', handleMouseUp);
-      canvas.addEventListener('mouseleave', handleMouseLeave);
-      canvas.addEventListener('wheel', handleWheel, { passive: false });
-      resize();
+      canvas = document.getElementById('canvas'); ctx = canvas.getContext('2d'); tooltip = document.getElementById('tooltip');
+      window.addEventListener('resize', resize); canvas.addEventListener('mousemove', handleMouseMove); canvas.addEventListener('mousedown', handleMouseDown);
+      canvas.addEventListener('mouseup', handleMouseUp); canvas.addEventListener('mouseleave', handleMouseLeave); canvas.addEventListener('wheel', handleWheel, { passive: false });
+      resize(); updateMetrics();
+      setupLegendInteractions(); // Add Legend Listeners
       requestAnimationFrame(animate);
     }
 
-    function animate() {
-      draw();
-      requestAnimationFrame(animate);
-    }
-
-    function resize() {
-      const dpr = window.devicePixelRatio || 1;
-      const w = window.innerWidth, h = window.innerHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      baseScale = Math.min(w / CONFIG.width, h / CONFIG.height) * 0.9;
-      cx = w / 2; cy = h / 2;
-      draw();
-    }
-
-    function findNodeAt(x, y) {
-      for (const { node, x: nx, y: ny, size } of nodePositions) {
-        if (Math.sqrt((x - nx) ** 2 + (y - ny) ** 2) < size * 1.2) return node;
-      }
-      return null;
-    }
-
-    function handleMouseMove(e) {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left, y = e.clientY - rect.top;
-
-      if (isPanning) {
-        offsetX += x - panStartPos.x;
-        offsetY += y - panStartPos.y;
-        panStartPos = { x, y };
-        return;
-      }
-
-      if (isDragging && dragNode && dragNode.ring !== 'CORE') {
-        const sx = baseScale * userZoom;
-        const dx = (x - cx - offsetX) / sx, dy = (y - cy - offsetY) / sx;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        let angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
-        dragNode.angleDeg = Math.round(angleDeg);
-        // スナップ先のリングを探す
-        let closestRing = CONFIG.rings[0];
-        let minDiff = Infinity;
-        for (const ring of CONFIG.rings) {
-          const diff = Math.abs(dist - ring.radius);
-          if (diff < minDiff) { minDiff = diff; closestRing = ring; }
+    function setupLegendInteractions() {
+      document.querySelectorAll('.legend-item').forEach(item => {
+        const label = item.querySelector('.legend-text .label');
+        if (label && CONFIG.sphereTypes[label.textContent]) {
+          item.style.cursor = 'pointer';
+          item.addEventListener('mouseenter', () => { hoveredSphereType = label.textContent; draw(); });
+          item.addEventListener('mouseleave', () => { hoveredSphereType = null; draw(); });
         }
-        dragNode.ring = closestRing.id;
-        if (isEditorOpen) { updateNodeList(); populateNodeEditor(dragNode); }
-        return;
-      }
-
-      const hovered = findNodeAt(x, y);
-      if (hovered) {
-        if (isEditorOpen && hovered.ring !== 'CORE') { canvas.classList.add('can-drag'); } else { canvas.classList.remove('can-drag'); }
-        showTooltip(hovered, e.clientX, e.clientY);
-      } else {
-        canvas.classList.remove('can-drag');
-        hideTooltip();
-      }
-    }
-
-    function handleMouseDown(e) {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left, y = e.clientY - rect.top;
-
-      if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
-        isPanning = true;
-        panStartPos = { x, y };
-        canvas.classList.add('dragging');
-        return;
-      }
-
-      if (!isEditorOpen) return;
-      const node = findNodeAt(x, y);
-      if (node && node.ring !== 'CORE') {
-        isDragging = true;
-        dragNode = node;
-        dragStartPos = { x, y };
-        canvas.classList.add('dragging');
-        canvas.classList.remove('can-drag');
-        selectNode(node.id);
-      }
-    }
-
-    function handleMouseUp(e) {
-      isDragging = false;
-      isPanning = false;
-      dragNode = null;
-      canvas.classList.remove('dragging');
-      draw();
-    }
-
-    function handleWheel(e) {
-      e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left, y = e.clientY - rect.top;
-
-      const zoomFactor = 1.1;
-      const oldZoom = userZoom;
-      if (e.deltaY < 0) userZoom *= zoomFactor;
-      else userZoom /= zoomFactor;
-
-      userZoom = Math.min(Math.max(userZoom, 0.2), 5);
-
-      // マウス位置を中心にズーム
-      const sx = baseScale * oldZoom;
-      const nx = baseScale * userZoom;
-      offsetX -= (x - cx - offsetX) * (nx / sx - 1);
-      offsetY -= (y - cy - offsetY) * (nx / sx - 1);
-    }
-
-    function handleMouseLeave() {
-      hideTooltip();
-      if (isDragging) { isDragging = false; dragNode = null; canvas.classList.remove('dragging'); draw(); }
-    }
-
-    // 描画
-    function draw() {
-      const w = canvas.width / (window.devicePixelRatio || 1), h = canvas.height / (window.devicePixelRatio || 1);
-      ctx.fillStyle = '#03060f'; ctx.fillRect(0, 0, w, h);
-      drawStars(w, h); drawGlow(); drawRings(); drawEdges();
-      nodePositions = [];
-      CONFIG.nodes.forEach(n => { const p = drawNode(n); nodePositions.push({ node: n, ...p }); });
-      if (hoveredSphereType) drawSphereConnections();
-    }
-
-    function drawSphereConnections() {
-      const color = CONFIG.sphereTypes[hoveredSphereType].color;
-      const targetNodes = nodePositions.filter(np => np.node.requirements?.some(r => r.type === hoveredSphereType));
-      const w = canvas.width / (window.devicePixelRatio || 1);
-      const legendX = w - 100, legendY = 200; // 凡例の概算位置
-
-      targetNodes.forEach(np => {
-        ctx.beginPath();
-        ctx.setLineDash([5, 5]);
-        ctx.lineDashOffset = -Date.now() * 0.01;
-        ctx.moveTo(legendX, legendY);
-        ctx.quadraticCurveTo((legendX + np.x) / 2, legendY - 50, np.x, np.y);
-        ctx.strokeStyle = color + '44';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.setLineDash([]);
       });
     }
 
+    function animate() { draw(); requestAnimationFrame(animate); }
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1, w = window.innerWidth, h = window.innerHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr; canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); baseScale = Math.min(w / CONFIG.width, h / CONFIG.height) * 0.9; cx = w / 2; cy = h / 2;
+    }
+
+    function toggleMetrics() { const p = document.getElementById('metrics-panel'); p.classList.toggle('collapsed'); const btn = p.querySelector('.toggle-btn'); btn.textContent = p.classList.contains('collapsed') ? '▲' : '▼'; }
+
+    function updateMetrics() {
+      const revenue = +document.getElementById('metric-revenue').value, employees = +document.getElementById('metric-employees').value, margin = +document.getElementById('metric-margin').value, cash = +document.getElementById('metric-cash').value;
+      const inventory = { '人材': Math.max(0, employees - 1), '資金': Math.floor(cash / 200), '実績': Math.floor(revenue / 500), '時間': Math.min(5, Math.floor(revenue / 1000) + 1), '信頼': Math.floor(margin / 10), '技術': Math.floor(revenue / 800) };
+      const invEl = document.getElementById('sphere-inventory'); invEl.innerHTML = '';
+      Object.entries(inventory).forEach(([type, count]) => { const color = CONFIG.sphereTypes[type]?.color || '#888'; invEl.innerHTML += `<div class="sphere-inv-item"><div class="sphere-dot" style="background:${color}; box-shadow:0 0 8px ${color}"></div><span style="font-size:10px; color:#8899aa">${type}</span><input type="number" value="${count}" readonly></div>`; });
+      const stageEl = document.getElementById('current-stage'); stageEl.className = 'status-value'; let stage = "創業期 (Seed)";
+      if (revenue >= 10000) { stage = "拡大期 (Expansion)"; stageEl.classList.add('good'); } else if (revenue >= 3000) { stage = "成長期 (Growth)"; stageEl.classList.add('good'); } else if (revenue >= 1000) { stage = "立上げ期 (Startup)"; stageEl.classList.add('warning'); } else { stageEl.classList.add('bad'); } stageEl.textContent = stage;
+    }
+
+    function draw() {
+      if (!ctx) return;
+      try {
+        const w = canvas.width / (window.devicePixelRatio || 1), h = canvas.height / (window.devicePixelRatio || 1);
+        const grd = ctx.createRadialGradient(cx + panX, cy + panY, 0, cx + panX, cy + panY, Math.max(w, h)); grd.addColorStop(0, '#0a1628'); grd.addColorStop(1, '#03060f'); ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
+        drawStars(w, h); drawGlow(); drawRings(); drawEdges(); nodePositions = [];
+        // Sort once or handle visibility elsewhere. Ideally don't sort every frame.
+        // For now, simpler iteration. CORE usually comes first in list, so we might want to draw it last?
+        // Let's just draw in order.
+        CONFIG.nodes.forEach(n => { const p = drawNode(n); nodePositions.push({ id: n.id, ...p }); });
+        if (hoveredSphereType) drawSphereConnections();
+      } catch (e) {
+        console.error('Draw error:', e);
+      }
+    }
+
     function drawStars(w, h) {
-      const time = Date.now() * 0.0005;
-      let seed = 54321;
-      const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+      const time = Date.now() * 0.0005; let seed = 54321; const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
       [[150, 0.5, 1.2, 0.1, 0.3], [70, 1, 2, 0.2, 0.5], [30, 2, 4, 0.4, 0.8]].forEach(([c, s1, s2, o1, o2], idx) => {
         for (let i = 0; i < c; i++) {
-          const rx = rnd(), ry = rnd();
-          const pScale = 1 + idx * 0.2;
+          const rx = rnd(), ry = rnd(), pScale = 1 + idx * 0.2;
           const x = (rx * w + Math.sin(time * pScale + rx * 10) * 10) % w, y = (ry * h + Math.cos(time * pScale + ry * 10) * 10) % h;
-          if (Math.sqrt((x - cx) ** 2 + (y - cy) ** 2) < 120 * baseScale * userZoom) continue;
+          if (Math.sqrt((x - (cx + panX)) ** 2 + (y - (cy + panY)) ** 2) < 120 * getScale()) continue;
           const sz = s1 + rnd() * (s2 - s1), op = o1 + rnd() * (o2 - o1) * (0.5 + 0.5 * Math.sin(time + rx * 20));
-          ctx.beginPath(); ctx.arc(x, y, sz, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${op})`; ctx.fill();
+          ctx.beginPath(); ctx.arc(x, y, sz, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,255,255,${op})`; ctx.fill();
         }
       });
     }
 
     function drawGlow() {
-      const r = 500 * baseScale * userZoom;
-      const g = ctx.createRadialGradient(cx + offsetX, cy + offsetY, 0, cx + offsetX, cy + offsetY, r);
-      g.addColorStop(0, 'rgba(20,36,66,0.6)'); g.addColorStop(0.5, 'rgba(20,36,66,0.3)'); g.addColorStop(1, 'rgba(20,36,66,0)');
-      ctx.beginPath(); ctx.arc(cx + offsetX, cy + offsetY, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+      const scale = getScale(); const r = 600 * scale;
+      const g = ctx.createRadialGradient(cx + panX, cy + panY, 0, cx + panX, cy + panY, r);
+      g.addColorStop(0, 'rgba(30,56,106,0.5)'); g.addColorStop(0.5, 'rgba(20,36,66,0.2)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
     }
 
     function drawRings() {
-      CONFIG.rings.forEach((ring, i) => {
-        const r = ring.radius * baseScale * userZoom;
-        const intensity = 1 - i * 0.15;
-        ctx.beginPath(); ctx.arc(cx + offsetX, cy + offsetY, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(74,122,184,${0.15 * intensity})`; ctx.lineWidth = 6 * userZoom; ctx.stroke();
-        ctx.beginPath(); ctx.arc(cx + offsetX, cy + offsetY, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(74,122,184,${0.4 + 0.3 * intensity})`; ctx.lineWidth = 1.5; ctx.stroke();
-        ctx.font = `${12 * userZoom}px "Outfit", sans-serif`;
-        ctx.fillStyle = `rgba(180,200,220,${0.5 + 0.3 * intensity})`;
-        ctx.textAlign = 'left'; ctx.fillText(ring.label, cx + offsetX + r + 15, cy + offsetY + 4);
+      const scale = getScale(); CONFIG.rings.forEach((ring, i) => {
+        const r = ring.radius * scale; const intensity = 1 - i * 0.15;
+        // Outer Glow Layer
+        ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(74,122,184,${0.2 * intensity})`; ctx.lineWidth = 12 * scale; ctx.stroke();
+        // Inner Core Line Layer
+        ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(100,160,230,${0.6 + 0.2 * intensity})`; ctx.lineWidth = 2 * scale; ctx.stroke();
+        // Label
+        ctx.font = `600 ${Math.max(10, 11 * scale)}px "Outfit", sans-serif`;
+        ctx.fillStyle = `rgba(200,225,255,${0.6 + 0.3 * intensity})`; ctx.textAlign = 'center';
+        ctx.fillText(ring.label.toUpperCase(), cx + panX, cy + panY - r - 12 * scale);
       });
-    }
-
-    function getNodePos(node) {
-      const sx = baseScale * userZoom;
-      if (node.ring === 'CORE') return { x: cx + offsetX, y: cy + offsetY };
-      const ring = CONFIG.rings.find(r => r.id === node.ring);
-      const r = ring ? ring.radius * sx : 180 * sx;
-      const rad = (node.angleDeg * Math.PI) / 180;
-      return { x: cx + offsetX + r * Math.cos(rad), y: cy + offsetY + r * Math.sin(rad) };
     }
 
     function drawEdges() {
-      const time = Date.now() * 0.002;
-      const map = new Map(); CONFIG.nodes.forEach(n => map.set(n.id, getNodePos(n)));
-      CONFIG.edges.forEach(e => {
-        const a = map.get(e.from), b = map.get(e.to); if (!a || !b) return;
-        const isMain = e.type === 'MAIN', isCross = e.type === 'CROSS_DOMAIN';
+      const scale = getScale(); const time = Date.now() * 0.002;
+      CONFIG.edges.forEach(edge => {
+        const from = CONFIG.nodes.find(n => n.id === edge.from), to = CONFIG.nodes.find(n => n.id === edge.to); if (!from || !to) return;
+        const p1 = getNodePos(from), p2 = getNodePos(to), isPath = highlightedPathNodes.has(from.id) && highlightedPathNodes.has(to.id);
+        const isMain = edge.type === 'MAIN', isCross = edge.type === 'CROSS_DOMAIN';
 
-        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = `rgba(58,96,144,${isMain ? 0.2 : 0.1})`; ctx.lineWidth = isMain ? 10 : 6; ctx.lineCap = 'round'; ctx.stroke();
+        // Background line (Thick)
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = isPath ? 'rgba(255,215,0,0.15)' : `rgba(58,96,144,${isMain ? 0.3 : 0.15})`;
+        ctx.lineWidth = (isMain ? 10 : 6) * scale; ctx.lineCap = 'round'; ctx.stroke();
 
-        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-        const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-        const c1 = isCross ? 'rgba(184,138,8,0.4)' : `rgba(74,122,184,${isMain ? 0.6 : 0.3})`;
-        grad.addColorStop(0, c1); grad.addColorStop(0.5, isCross ? 'rgba(255,215,0,0.8)' : `rgba(100,180,255,${isMain ? 0.9 : 0.5})`); grad.addColorStop(1, c1);
-        ctx.strokeStyle = grad; ctx.lineWidth = isMain ? 3 : 1.5;
-        if (e.type === 'OPTIONAL') ctx.setLineDash([6, 4]); else ctx.setLineDash([]);
-        ctx.stroke(); ctx.setLineDash([]);
-
-        if (isMain) {
-          const dist = Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
-          const dotPos = (time % 1) * dist;
-          const angle = Math.atan2(b.y - a.y, b.x - a.x);
-          const dx = a.x + Math.cos(angle) * dotPos, dy = a.y + Math.sin(angle) * dotPos;
-          ctx.beginPath(); ctx.arc(dx, dy, 2, 0, Math.PI * 2); ctx.fillStyle = '#fff';
-          ctx.shadowBlur = 10; ctx.shadowColor = '#fff'; ctx.fill(); ctx.shadowBlur = 0;
+        // Core line (Sharp)
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+        if (isPath) {
+          ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 3 * scale; ctx.shadowBlur = 10; ctx.shadowColor = '#FFD700';
+        } else {
+          ctx.strokeStyle = isCross ? 'rgba(184,138,8,0.6)' : `rgba(74,122,184,${isMain ? 0.8 : 0.5})`;
+          ctx.lineWidth = (isMain ? 2.5 : 1.2) * scale; ctx.shadowBlur = 0;
         }
+        if (edge.type === 'OPTIONAL') ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
+        ctx.stroke(); ctx.setLineDash([]); ctx.shadowBlur = 0;
 
-        // パス強調
-        if (highlightedPathNodes.has(e.from) && highlightedPathNodes.has(e.to)) {
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = 'rgba(255,215,0,0.4)'; ctx.lineWidth = (isMain ? 6 : 3); ctx.stroke();
+        // Animate particles on main path
+        if (isMain && !isPath) {
+          const dist = Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
+          const dotPos = (time % 1) * dist; const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+          const dx = p1.x + Math.cos(angle) * dotPos, dy = p1.y + Math.sin(angle) * dotPos;
+          ctx.beginPath(); ctx.arc(dx, dy, 1.5 * scale, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fill();
         }
       });
-    }
-
-    function getPathToCore(nodeId) {
-      const path = [nodeId];
-      let currentId = nodeId;
-      while (currentId !== 'CORE') {
-        const edge = CONFIG.edges.find(e => e.to === currentId);
-        if (!edge) break;
-        currentId = edge.from;
-        path.push(currentId);
-      }
-      return path;
-    }
-
-    function calculateTotalCost(path) {
-      const cost = {};
-      path.forEach(nodeId => {
-        const node = CONFIG.nodes.find(n => n.id === nodeId);
-        if (node && node.state !== 'MASTERED') {
-          node.requirements?.forEach(r => {
-            cost[r.type] = (cost[r.type] || 0) + r.count;
-          });
-        }
-      });
-      return cost;
     }
 
     function drawNode(node) {
-      const pos = getNodePos(node);
-      const baseSize = CONFIG.nodeSizes[node.importance] || 45;
-      const size = baseSize * (node.sizeMultiplier || 1) * baseScale * userZoom;
-      const time = Date.now() * 0.002;
-      let fill, stroke, glowColor;
-      switch (node.state) {
-        case 'MASTERED': fill = '#3a2d0a'; stroke = '#ffe066'; glowColor = 'rgba(255,215,0,0.5)'; break;
-        case 'UNLOCKED': fill = '#0a2d1a'; stroke = '#4dcc80'; glowColor = 'rgba(77,204,128,0.4)'; break;
-        case 'ELIGIBLE': fill = '#2d250a'; stroke = '#ffd700'; glowColor = 'rgba(255,215,0,0.3)'; break;
-        default: fill = '#1a1d24'; stroke = '#3a3e48'; glowColor = null;
+      const scale = getScale(), pos = getNodePos(node), baseSize = CONFIG.nodeSizes[node.importance] || 45, size = baseSize * (node.sizeMultiplier || 1) * scale;
+      const isSelected = selectedNodeId === node.id, isPath = highlightedPathNodes.has(node.id), hasSph = hoveredSphereType && node.requirements?.some(r => r.type === hoveredSphereType);
+      const time = Date.now() * 0.003;
+
+      // Outer Glow & Pulsing
+      if (node.state !== 'LOCKED' || isPath || hasSph) {
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * (1.25 + Math.sin(time) * 0.05), 0, Math.PI * 2);
+        const g = ctx.createRadialGradient(pos.x, pos.y, size * 0.7, pos.x, pos.y, size * 1.5);
+        let gc = node.state === 'MASTERED' ? '#FFD700' : (node.state === 'UNLOCKED' ? '#33E680' : '#FFD700');
+        if (hasSph) gc = CONFIG.sphereTypes[hoveredSphereType].color;
+        g.addColorStop(0, gc + '55'); g.addColorStop(1, gc + '00'); ctx.fillStyle = g; ctx.fill();
       }
 
-      // 累計必要スフィア強調
-      if (hoveredSphereType && node.requirements?.some(r => r.type === hoveredSphereType)) {
-        glowColor = CONFIG.sphereTypes[hoveredSphereType].color + 'cc';
-      }
-      if (node.id === selectedNodeId) {
-        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * 1.5, 0, Math.PI * 2);
-        ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.lineDashOffset = -time * 5; ctx.stroke(); ctx.setLineDash([]);
-      }
-      if (glowColor && node.state !== 'LOCKED') {
-        const pulse = 0.8 + 0.2 * Math.sin(time);
-        const g = ctx.createRadialGradient(pos.x, pos.y, size * 0.5 * pulse, pos.x, pos.y, size * (1.5 + 0.2 * pulse));
-        g.addColorStop(0, glowColor); g.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * 2, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
-      }
+      // Node Body
       ctx.beginPath();
-      if (node.shape === 'circle') ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
-      else if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, size, 6, Math.PI / 6);
+      if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, size, 6, Math.PI / 2);
       else if (node.shape === 'diamond') drawPoly(pos.x, pos.y, size, 4, 0);
       else if (node.shape === 'octagon') drawPoly(pos.x, pos.y, size, 8, Math.PI / 8);
+      else ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
 
-      const fg = ctx.createRadialGradient(pos.x - size * 0.3, pos.y - size * 0.3, size * 0.1, pos.x, pos.y, size);
-      fg.addColorStop(0, lighten(fill, 0.4)); fg.addColorStop(0.5, fill); fg.addColorStop(1, darken(fill, 0.4));
-      ctx.fillStyle = fg; ctx.fill();
-      ctx.strokeStyle = stroke; ctx.lineWidth = node.state === 'MASTERED' ? 3 : 2; ctx.stroke();
+      const baseFill = node.state === 'LOCKED' ? '#2A2E38' : (node.state === 'MASTERED' ? '#B88A08' : (node.state === 'UNLOCKED' ? '#146B3A' : '#B88A08'));
+      const grd = ctx.createRadialGradient(pos.x - size * 0.3, pos.y - size * 0.3, size * 0.1, pos.x, pos.y, size * 1.1);
+      grd.addColorStop(0, lighten(baseFill, 0.4)); grd.addColorStop(0.5, baseFill); grd.addColorStop(1, darken(baseFill, 0.4));
+      ctx.fillStyle = grd; ctx.fill();
 
-      // 光沢
-      ctx.beginPath(); ctx.ellipse(pos.x - size * 0.3, pos.y - size * 0.3, size * 0.4, size * 0.2, -Math.PI / 4, 0, Math.PI * 2);
-      const gloss = ctx.createRadialGradient(pos.x - size * 0.3, pos.y - size * 0.3, 0, pos.x - size * 0.3, pos.y - size * 0.3, size * 0.4);
-      gloss.addColorStop(0, 'rgba(255,255,255,0.3)'); gloss.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = gloss; ctx.fill();
+      // Reflections (Gloss)
+      ctx.save();
+      ctx.beginPath();
+      const clipSize = size * 0.98;
+      if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, clipSize, 6, Math.PI / 2); else if (node.shape === 'diamond') drawPoly(pos.x, pos.y, clipSize, 4, 0); else if (node.shape === 'octagon') drawPoly(pos.x, pos.y, clipSize, 8, Math.PI / 8); else ctx.arc(pos.x, pos.y, clipSize, 0, Math.PI * 2);
+      ctx.clip();
 
-      ctx.font = `600 ${11 * baseScale * userZoom}px "Outfit", sans-serif`;
-      ctx.fillStyle = node.state === 'LOCKED' ? '#556' : '#fff';
+      // Top Highlight
+      const glossGrd = ctx.createLinearGradient(pos.x, pos.y - size, pos.x, pos.y);
+      glossGrd.addColorStop(0, 'rgba(255,255,255,0.4)'); glossGrd.addColorStop(0.5, 'rgba(255,255,255,0.05)'); glossGrd.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.beginPath(); ctx.ellipse(pos.x, pos.y - size * 0.4, size * 0.7, size * 0.4, 0, 0, Math.PI * 2);
+      ctx.fillStyle = glossGrd; ctx.fill();
+
+      // Bottom Reflection
+      const botGlow = ctx.createRadialGradient(pos.x, pos.y + size * 0.8, 0, pos.x, pos.y + size * 0.8, size * 0.5);
+      botGlow.addColorStop(0, 'rgba(255,255,255,0.2)'); botGlow.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.beginPath(); ctx.ellipse(pos.x, pos.y + size * 0.7, size * 0.5, size * 0.2, 0, 0, Math.PI * 2);
+      ctx.fillStyle = botGlow; ctx.fill();
+
+      ctx.restore();
+
+      // Border
+      ctx.beginPath();
+      if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, size, 6, Math.PI / 2); else if (node.shape === 'diamond') drawPoly(pos.x, pos.y, size, 4, 0); else if (node.shape === 'octagon') drawPoly(pos.x, pos.y, size, 8, Math.PI / 8); else ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+      ctx.strokeStyle = isSelected ? '#fff' : (node.state === 'LOCKED' ? '#4A4E58' : '#FFD700');
+      ctx.lineWidth = (isSelected || node.state === 'MASTERED' ? 3 : 1.5) * scale;
+      if (isSelected) { ctx.shadowBlur = 10; ctx.shadowColor = '#fff'; }
+      ctx.stroke(); ctx.shadowBlur = 0;
+
+      // Text
+      ctx.font = `600 ${Math.max(8, 11 * scale)}px "Outfit", sans-serif`;
+      ctx.fillStyle = node.state === 'LOCKED' ? '#8899aa' : '#fff';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      const lines = node.label.split('\n'), lh = 14 * baseScale * userZoom, startY = pos.y - ((lines.length - 1) * lh) / 2;
-      lines.forEach((l, i) => ctx.fillText(l, pos.x, startY + i * lh));
+      const lines = node.label.split('\n'), lh = 14 * scale, startY = pos.y - ((lines.length - 1) * lh) / 2; lines.forEach((l, i) => ctx.fillText(l, pos.x, startY + i * lh));
 
-      if (node.state === 'LOCKED') { ctx.font = `${10 * baseScale * userZoom}px sans-serif`; ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.fillText('🔒', pos.x + size * 0.6, pos.y - size * 0.6); }
-      if (node.requirements?.length && node.ring !== 'CORE') drawReqs(node, pos, size);
+      if (node.state === 'LOCKED') { ctx.font = `${10 * scale}px serif`; ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.fillText('🔒', pos.x + size * 0.7, pos.y - size * 0.7); }
       return { x: pos.x, y: pos.y, size };
     }
-    function darken(hex, amt) {
-      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      if (!m) return hex;
-      return `rgb(${Math.max(0, parseInt(m[1], 16) - amt * 255)},${Math.max(0, parseInt(m[2], 16) - amt * 255)},${Math.max(0, parseInt(m[3], 16) - amt * 255)})`;
+
+    function getNodePos(node) {
+      const radius = (CONFIG.rings.find(r => r.id === node.ring)?.radius || 0) * getScale(), angle = (node.angleDeg || 0) * Math.PI / 180;
+      if (node.id === 'CORE') return { x: cx + panX, y: cy + panY };
+      return { x: cx + panX + Math.cos(angle) * radius, y: cy + panY + Math.sin(angle) * radius };
     }
 
-    function drawReqs(node, pos, size) {
-      const dx = pos.x - (cx + offsetX), dy = pos.y - (cy + offsetY), dist = Math.sqrt(dx * dx + dy * dy);
-      const dirX = dist > 0 ? dx / dist : 0, dirY = dist > 0 ? dy / dist : 1;
-      const off = size + 15 * baseScale * userZoom, lx = pos.x + dirX * off, ly = pos.y + dirY * off;
-      const ss = 6 * baseScale * userZoom, sp = 14 * baseScale * userZoom, tw = node.requirements.length * sp;
-      let sx = lx - tw / 2; if (dirX > 0.5) sx = lx; else if (dirX < -0.5) sx = lx - tw;
-      node.requirements.forEach((r, i) => {
-        const rx = sx + i * sp + ss / 2, ry = ly;
-        const c = CONFIG.sphereTypes[r.type]?.color || '#888';
-        ctx.beginPath(); ctx.arc(rx, ry, ss, 0, Math.PI * 2); ctx.fillStyle = c; ctx.fill();
-        ctx.font = `bold ${8 * baseScale * userZoom}px sans-serif`; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(r.count.toString(), rx, ry);
+    function drawPoly(x, y, r, sides, rot = 0) { ctx.moveTo(x + r * Math.cos(rot), y + r * Math.sin(rot)); for (let i = 1; i <= sides; i++) { const a = rot + (i * 2 * Math.PI) / sides; ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); } ctx.closePath(); }
+
+    function drawSphereConnections() {
+      const color = CONFIG.sphereTypes[hoveredSphereType].color, w = canvas.width / (window.devicePixelRatio || 1);
+      nodePositions.filter(p => CONFIG.nodes.find(n => n.id === p.id)?.requirements?.some(r => r.type === hoveredSphereType)).forEach(p => {
+        ctx.beginPath(); ctx.setLineDash([5, 5]); ctx.lineDashOffset = -Date.now() * 0.01;
+        ctx.moveTo(w - 100, 200); ctx.quadraticCurveTo((w - 100 + p.x) / 2, 150, p.x, p.y); ctx.strokeStyle = color + '44'; ctx.lineWidth = 2; ctx.stroke(); ctx.setLineDash([]);
       });
     }
 
-    function drawPoly(x, y, r, sides, rot = 0) {
-      ctx.moveTo(x + r * Math.cos(rot), y + r * Math.sin(rot));
-      for (let i = 1; i <= sides; i++) { const a = rot + (i * 2 * Math.PI) / sides; ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); }
-      ctx.closePath();
+    function handleMouseMove(e) {
+      const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
+      if (isPanning && lastPanPos) { panX += x - lastPanPos.x; panY += y - lastPanPos.y; lastPanPos = { x, y }; return; }
+      if (dragNode) { const dx = x - (cx + panX), dy = y - (cy + panY); dragNode.angleDeg = Math.atan2(dy, dx) * 180 / Math.PI; return; }
+      const node = nodePositions.find(p => Math.sqrt((x - p.x) ** 2 + (y - p.y) ** 2) < p.size);
+      if (node) { canvas.style.cursor = 'pointer'; const n = CONFIG.nodes.find(v => v.id === node.id); if (n) showTooltip(n, e.clientX, e.clientY); }
+      else { canvas.style.cursor = isPanning ? 'move' : (isEditorOpen ? 'crosshair' : 'default'); hideTooltip(); if (highlightedPathNodes.size > 0) highlightedPathNodes.clear(); }
     }
 
-    function lighten(hex, amt) {
-      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      if (!m) return hex;
-      return `rgb(${Math.min(255, parseInt(m[1], 16) + amt * 255)},${Math.min(255, parseInt(m[2], 16) + amt * 255)},${Math.min(255, parseInt(m[3], 16) + amt * 255)})`;
+    function handleMouseDown(e) {
+      const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
+      if (e.button === 1 || (e.button === 0 && e.altKey)) { isPanning = true; lastPanPos = { x, y }; canvas.classList.add('panning'); return; }
+      const node = nodePositions.find(p => Math.sqrt((x - p.x) ** 2 + (y - p.y) ** 2) < p.size);
+      if (node) { if (isEditorOpen) dragNode = CONFIG.nodes.find(v => v.id === node.id); selectNode(node.id); }
+      else { selectedNodeId = null; if (isEditorOpen) document.getElementById('node-editor').style.display = 'none'; }
     }
 
-    // ツールチップ
+    function handleMouseUp() { isPanning = false; dragNode = null; lastPanPos = null; canvas.classList.remove('panning'); }
+    function handleMouseLeave() { handleMouseUp(); hideTooltip(); }
+    function handleWheel(e) {
+      e.preventDefault(); const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      const oldZoom = userZoom; userZoom = Math.max(0.25, Math.min(4, userZoom * delta));
+      const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      const sx = baseScale * oldZoom, nx = baseScale * userZoom;
+      panX -= (x - cx - panX) * (nx / sx - 1); panY -= (y - cy - panY) * (nx / sx - 1);
+    }
+
+    function getPathToCore(id) { const p = []; let c = id; while (c) { p.push(c); if (c === 'CORE') break; const e = CONFIG.edges.find(x => x.to === c); c = e ? e.from : null; } return p; }
+    function calculateTotalCost(ids) { const t = {}; ids.forEach(id => { const n = CONFIG.nodes.find(v => v.id === id); if (n && n.state === 'LOCKED') n.requirements?.forEach(r => { t[r.type] = (t[r.type] || 0) + r.count; }); }); return t; }
+
     function showTooltip(node, x, y) {
-      highlightedPathNodes = new Set(getPathToCore(node.id));
-      const totalCost = calculateTotalCost(Array.from(highlightedPathNodes));
-
-      let h = `<h3>${node.label.replace('\n', ' ')}</h3><span class="state ${node.state}">${getStateName(node.state)}</span>`;
-      h += `<div class="description">${node.description || ''}</div>`;
-
-      if (node.requirements?.length) {
-        h += '<div class="requirements"><h4>この項目の必要スフィア</h4>';
-        node.requirements.forEach(r => {
-          const c = CONFIG.sphereTypes[r.type]?.color || '#888';
-          h += `<span class="sphere-item" style="background:${c}33;color:${c}">${r.type} ×${r.count}</span>`;
-        });
-        h += '</div>';
-      }
-
-      if (Object.keys(totalCost).length > 0) {
-        h += '<div class="total-cost" style="margin-top:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1)">';
-        h += '<h4 style="color:#FFD700; font-size:11px; margin-bottom:6px;">最短ルート累計コスト</h4>';
-        Object.entries(totalCost).forEach(([type, count]) => {
-          const c = CONFIG.sphereTypes[type]?.color || '#888';
-          h += `<div style="display:inline-flex; align-items:center; margin-right:12px; font-size:11px;">
-            <div style="width:8px; height:8px; border-radius:50%; background:${c}; margin-right:4px;"></div>
-            <span>${type} ×${count}</span>
-          </div>`;
-        });
-        h += '</div>';
-      }
-
-      if (node.effect) h += `<div class="effect" style="margin-top:8px; color:#33E680; font-size:11px;">→ ${node.effect}</div>`;
-      tooltip.innerHTML = h; tooltip.style.display = 'block';
-      const tr = tooltip.getBoundingClientRect();
-      let left = x + 15, top = y + 15;
-      if (left + tr.width > window.innerWidth) left = x - tr.width - 15;
-      if (top + tr.height > window.innerHeight) top = y - tr.height - 15;
-      tooltip.style.left = left + 'px'; tooltip.style.top = top + 'px';
-      draw();
+      highlightedPathNodes = new Set(getPathToCore(node.id)); const cost = calculateTotalCost(Array.from(highlightedPathNodes));
+      let h = `<h3>${node.label.replace('\n', ' ')}</h3><span class="state ${node.state}">${getStateName(node.state)}</span><div class="description">${node.description || ''}</div>`;
+      if (node.requirements?.length) { h += '<div class="requirements"><h4>必要スフィア</h4>'; node.requirements.forEach(r => { const c = CONFIG.sphereTypes[r.type]?.color || '#888'; h += `<span class="sphere-item" style="background:${c}22;color:${c};border:1px solid ${c}44">${r.type} ×${r.count}</span>`; }); h += '</div>'; }
+      if (Object.keys(cost).length > 0) { h += `<div class="total-cost" style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(74, 122, 184, 0.2)"><h4 style="color:#FFD700; font-size:11px; margin-bottom:6px;">最短ルート累計コスト</h4>`; Object.entries(cost).forEach(([t, c]) => { const cl = CONFIG.sphereTypes[t]?.color || '#888'; h += `<div style="display:inline-flex; align-items:center; margin-right:12px; font-size:11px;"><div style="width:8px; height:8px; border-radius:50%; background:${cl}; margin-right:6px; box-shadow:0 0 6px ${cl}"></div><span>${t} ×${c}</span></div>`; }); h += '</div>'; }
+      if (node.effect) h += `<div class="effect">→ ${node.effect}</div>`;
+      tooltip.innerHTML = h; tooltip.style.display = 'block'; const tr = tooltip.getBoundingClientRect();
+      let l = x + 15, t = y + 15; if (l + tr.width > window.innerWidth) l = x - tr.width - 15; if (t + tr.height > window.innerHeight) t = y - tr.height - 15;
+      tooltip.style.left = l + 'px'; tooltip.style.top = t + 'px';
     }
-    function hideTooltip() { tooltip.style.display = 'none'; highlightedPathNodes = new Set(); draw(); }
-    function getStateName(s) { return { MASTERED: '定着', UNLOCKED: '解放済', ELIGIBLE: '解放可', LOCKED: '未解放' }[s] || '未解放'; }
 
-    // エディタ
+    function hideTooltip() { if (tooltip) tooltip.style.display = 'none'; }
+    function getStateName(s) { return { MASTERED: '定着', UNLOCKED: '解放済', ELIGIBLE: '解放可', LOCKED: '未解放' }[s] || '未解放'; }
+    function lighten(hex, amt) { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? `rgb(${Math.min(255, parseInt(m[1], 16) + amt * 255)},${Math.min(255, parseInt(m[2], 16) + amt * 255)},${Math.min(255, parseInt(m[3], 16) + amt * 255)})` : hex; }
+    function darken(hex, amt) { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? `rgb(${Math.max(0, parseInt(m[1], 16) - amt * 255)},${Math.max(0, parseInt(m[2], 16) - amt * 255)},${Math.max(0, parseInt(m[3], 16) - amt * 255)})` : hex; }
+
+
+    // --- Editor & IO ---
     function toggleEditor() {
-      isEditorOpen = !isEditorOpen;
-      document.getElementById('editor-panel').classList.toggle('open', isEditorOpen);
-      document.getElementById('editor-toggle').classList.toggle('active', isEditorOpen);
-      document.getElementById('editor-toggle').textContent = isEditorOpen ? '✓ 編集モード' : '📝 編集モード';
-      document.getElementById('drag-hint').classList.toggle('visible', isEditorOpen);
+      isEditorOpen = !isEditorOpen; document.getElementById('editor-panel').classList.toggle('open', isEditorOpen);
+      const btn = document.getElementById('editor-toggle'); btn.classList.toggle('active', isEditorOpen); btn.textContent = isEditorOpen ? '✓ 編集モード' : '📝 編集モード';
       if (isEditorOpen) { updateRingList(); updateNodeList(); updateRingSelect(); }
     }
 
     function updateRingList() {
-      const list = document.getElementById('ring-list');
-      list.innerHTML = '';
-      CONFIG.rings.forEach((ring, i) => {
+      const list = document.getElementById('ring-list'); list.innerHTML = '';
+      CONFIG.rings.forEach((r, i) => {
         const item = document.createElement('div'); item.className = 'ring-item';
         item.innerHTML = `
-          <div style="display:flex; flex-direction:column; gap:2px;">
-            <button class="btn btn-secondary btn-small" onclick="moveRing(${i}, -1)" ${i === 0 ? 'disabled' : ''} style="padding:2px 4px; font-size:9px;">▲</button>
-            <button class="btn btn-secondary btn-small" onclick="moveRing(${i}, 1)" ${i === CONFIG.rings.length - 1 ? 'disabled' : ''} style="padding:2px 4px; font-size:9px;">▼</button>
-          </div>
-          <input type="text" value="${ring.label}" onchange="updateRing(${i},'label',this.value)" style="flex:2">
-          <input type="number" class="ring-radius" value="${ring.radius}" onchange="updateRing(${i},'radius',+this.value)" min="100" max="800">
-          <button class="delete-ring" onclick="deleteRing(${i})" ${CONFIG.rings.length <= 1 ? 'disabled' : ''}>×</button>
-        `;
+          <div style="display:flex; flex-direction:column; gap:2px;"><button class="btn btn-secondary btn-small" onclick="moveRing(${i},-1)" ${i === 0 ? 'disabled' : ''}>▲</button><button class="btn btn-secondary btn-small" onclick="moveRing(${i},1)" ${i === CONFIG.rings.length - 1 ? 'disabled' : ''}>▼</button></div>
+          <input type="text" value="${r.label}" onchange="CONFIG.rings[${i}].label=this.value; draw()">
+          <input type="number" value="${r.radius}" onchange="CONFIG.rings[${i}].radius=+this.value; draw()" style="width:50px">
+          <button class="delete-ring" onclick="deleteRing(${i})">×</button>`;
         list.appendChild(item);
       });
     }
 
-    function moveRing(index, direction) {
-      const newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= CONFIG.rings.length) return;
-      const temp = CONFIG.rings[index];
-      CONFIG.rings[index] = CONFIG.rings[newIndex];
-      CONFIG.rings[newIndex] = temp;
-      updateRingList(); updateRingSelect(); draw();
-    }
-
-    function updateRing(i, key, val) { CONFIG.rings[i][key] = val; draw(); updateRingSelect(); }
-    function deleteRing(i) {
-      if (CONFIG.rings.length <= 1) return;
-      const rid = CONFIG.rings[i].id;
-      CONFIG.nodes = CONFIG.nodes.filter(n => n.ring !== rid);
-      CONFIG.rings.splice(i, 1);
-      updateRingList(); updateNodeList(); updateRingSelect(); draw();
-    }
-    function addNewRing() {
-      const maxR = CONFIG.rings.length > 0 ? Math.max(...CONFIG.rings.map(r => r.radius)) : 100;
-      const newId = 'R' + (maxR + 120);
-      CONFIG.rings.push({ id: newId, label: '新リング', radius: maxR + 120 });
-      updateRingList(); updateRingSelect(); draw();
-    }
-
-    function updateRingSelect() {
-      const sel = document.getElementById('edit-ring');
-      sel.innerHTML = CONFIG.rings.map(r => `<option value="${r.id}">${r.label} (${r.radius}px)</option>`).join('');
-    }
+    function moveRing(idx, d) { const n = idx + d; if (n < 0 || n >= CONFIG.rings.length) return;[CONFIG.rings[idx], CONFIG.rings[n]] = [CONFIG.rings[n], CONFIG.rings[idx]]; updateRingList(); updateRingSelect(); draw(); }
+    function deleteRing(idx) { if (CONFIG.rings.length > 1) { CONFIG.rings.splice(idx, 1); updateRingList(); updateRingSelect(); draw(); } }
+    function addNewRing() { const maxR = Math.max(...CONFIG.rings.map(r => r.radius)); CONFIG.rings.push({ id: 'R' + Date.now().toString(36), label: '新リング', radius: maxR + 100 }); updateRingList(); updateRingSelect(); draw(); }
+    function updateRingSelect() { document.getElementById('edit-ring').innerHTML = CONFIG.rings.map(r => `<option value="${r.id}">${r.label}</option>`).join(''); }
 
     function updateNodeList() {
       const list = document.getElementById('node-list'); list.innerHTML = '';
       CONFIG.nodes.filter(n => n.id !== 'CORE').forEach(node => {
-        const item = document.createElement('div');
-        item.className = 'node-list-item' + (node.id === selectedNodeId ? ' selected' : '');
+        const item = document.createElement('div'); item.className = 'node-list-item' + (node.id === selectedNodeId ? ' selected' : '');
         item.onclick = () => selectNode(node.id);
-        const colors = { MASTERED: '#FFD700', UNLOCKED: '#33E680', ELIGIBLE: '#FFD700', LOCKED: '#4A4E58' };
-        item.innerHTML = `
-          <div class="node-dot" style="background:${colors[node.state]}"></div>
-          <span class="node-name">${node.label.replace('\n', ' ')}</span>
-          <span class="node-ring">${node.ring}</span>
-          <span class="node-state state ${node.state}">${getStateName(node.state)}</span>
-        `;
+        const c = node.state === 'MASTERED' ? '#FFD700' : (node.state === 'UNLOCKED' ? '#33E680' : '#8899aa');
+        item.innerHTML = `<div class="node-dot" style="background:${c}"></div><span class="node-name">${node.label.replace('\n', ' ')}</span><span class="node-ring">${node.ring}</span>`;
         list.appendChild(item);
       });
-      const parent = document.getElementById('edit-parent');
-      parent.innerHTML = '<option value="CORE">CORE</option>' + CONFIG.nodes.filter(n => n.id !== 'CORE').map(n => `<option value="${n.id}">${n.label.replace('\n', ' ')}</option>`).join('');
+      document.getElementById('edit-parent').innerHTML = '<option value="CORE">CORE</option>' + CONFIG.nodes.filter(n => n.id !== 'CORE').map(n => `<option value="${n.id}">${n.label.replace('\n', ' ')}</option>`).join('');
     }
 
     function selectNode(id) {
-      selectedNodeId = id;
-      const node = CONFIG.nodes.find(n => n.id === id);
-      if (!node) return;
-      document.getElementById('node-editor').style.display = 'block';
-      populateNodeEditor(node);
-      updateNodeList(); draw();
+      selectedNodeId = id; const n = CONFIG.nodes.find(v => v.id === id); if (!n) return;
+      document.getElementById('node-editor').style.display = 'block'; populateNodeEditor(n); updateNodeList(); draw();
     }
 
-    function populateNodeEditor(node) {
-      document.getElementById('edit-id').value = node.id;
-      document.getElementById('edit-label').value = node.label.replace('\n', ' ');
-      document.getElementById('edit-ring').value = node.ring;
-      document.getElementById('edit-state').value = node.state;
-      document.getElementById('edit-angle').value = node.angleDeg;
-      document.getElementById('edit-importance').value = node.importance;
-      document.getElementById('edit-shape').value = node.shape;
-      document.getElementById('edit-description').value = node.description || '';
-      document.getElementById('edit-effect').value = node.effect || '';
+    function populateNodeEditor(n) {
+      document.getElementById('edit-id').value = n.id; document.getElementById('edit-label').value = n.label.replace('\n', ' ');
+      document.getElementById('edit-ring').value = n.ring; document.getElementById('edit-state').value = n.state;
+      document.getElementById('edit-angle').value = n.angleDeg || 0; document.getElementById('edit-importance').value = n.importance;
+      document.getElementById('edit-shape').value = n.shape; document.getElementById('edit-description').value = n.description || '';
+      document.getElementById('edit-effect').value = n.effect || '';
       const se = document.getElementById('sphere-editor'); se.innerHTML = '';
       Object.entries(CONFIG.sphereTypes).forEach(([t, info]) => {
-        const req = node.requirements?.find(r => r.type === t);
-        se.innerHTML += `<div class="sphere-tag" style="background:${info.color}33;color:${info.color}">${t}<input type="number" min="0" max="10" value="${req ? req.count : 0}" data-type="${t}"></div>`;
+        const r = n.requirements?.find(x => x.type === t);
+        se.innerHTML += `<div class="sphere-tag" style="background:${info.color}33;color:${info.color}">${t}<input type="number" min="0" max="10" value="${r ? r.count : 0}" data-type="${t}"></div>`;
       });
-      const edge = CONFIG.edges.find(e => e.to === node.id);
-      document.getElementById('edit-parent').value = edge ? edge.from : 'CORE';
-    }
-
-    function addNewNode() {
-      const newId = 'NODE_' + Date.now();
-      const ring = CONFIG.rings[0]?.id || 'R30';
-      const newNode = { id: newId, label: '新規\nノード', ring, angleDeg: Math.floor(Math.random() * 360) - 180, state: 'LOCKED', importance: 'STANDARD', shape: 'circle', description: '', effect: '', requirements: [] };
-      CONFIG.nodes.push(newNode);
-      CONFIG.edges.push({ from: 'CORE', to: newId, type: 'MAIN' });
-      selectNode(newId); draw();
+      const edge = CONFIG.edges.find(e => e.to === n.id); document.getElementById('edit-parent').value = edge ? edge.from : 'CORE';
     }
 
     function saveNode() {
-      const id = document.getElementById('edit-id').value;
-      const node = CONFIG.nodes.find(n => n.id === selectedNodeId);
-      if (!node) return;
-      if (id !== selectedNodeId) {
-        CONFIG.edges.forEach(e => { if (e.from === selectedNodeId) e.from = id; if (e.to === selectedNodeId) e.to = id; });
-        node.id = id; selectedNodeId = id;
-      }
-      node.label = document.getElementById('edit-label').value.replace(/ /g, '\n');
-      node.ring = document.getElementById('edit-ring').value;
-      node.state = document.getElementById('edit-state').value;
-      node.angleDeg = parseInt(document.getElementById('edit-angle').value) || 0;
-      node.importance = document.getElementById('edit-importance').value;
-      node.shape = document.getElementById('edit-shape').value;
-      node.description = document.getElementById('edit-description').value;
-      node.effect = document.getElementById('edit-effect').value;
-      node.requirements = [];
-      document.querySelectorAll('#sphere-editor input').forEach(inp => { const c = parseInt(inp.value); if (c > 0) node.requirements.push({ type: inp.dataset.type, count: c }); });
-      const pid = document.getElementById('edit-parent').value;
-      const ei = CONFIG.edges.findIndex(e => e.to === node.id);
-      if (ei >= 0) CONFIG.edges[ei].from = pid; else CONFIG.edges.push({ from: pid, to: node.id, type: 'MAIN' });
+      const n = CONFIG.nodes.find(v => v.id === selectedNodeId); if (!n) return;
+      n.label = document.getElementById('edit-label').value.replace(/ /g, '\n'); n.ring = document.getElementById('edit-ring').value;
+      n.state = document.getElementById('edit-state').value; n.angleDeg = +document.getElementById('edit-angle').value;
+      n.importance = document.getElementById('edit-importance').value; n.shape = document.getElementById('edit-shape').value;
+      n.description = document.getElementById('edit-description').value; n.effect = document.getElementById('edit-effect').value;
+      n.requirements = []; document.querySelectorAll('#sphere-editor input').forEach(i => { if (+i.value > 0) n.requirements.push({ type: i.dataset.type, count: +i.value }); });
+      const pid = document.getElementById('edit-parent').value, ei = CONFIG.edges.findIndex(e => e.to === n.id);
+      if (ei >= 0) CONFIG.edges[ei].from = pid; else CONFIG.edges.push({ from: pid, to: n.id, type: 'MAIN' });
       updateNodeList(); draw();
     }
 
     function deleteNode() {
-      if (!selectedNodeId || selectedNodeId === 'CORE') return alert('COREは削除できません');
-      if (!confirm('削除しますか？')) return;
-      CONFIG.nodes = CONFIG.nodes.filter(n => n.id !== selectedNodeId);
+      if (!confirm('削除しますか？')) return; CONFIG.nodes = CONFIG.nodes.filter(n => n.id !== selectedNodeId);
       CONFIG.edges = CONFIG.edges.filter(e => e.from !== selectedNodeId && e.to !== selectedNodeId);
-      selectedNodeId = null;
-      document.getElementById('node-editor').style.display = 'none';
-      updateNodeList(); draw();
+      selectedNodeId = null; document.getElementById('node-editor').style.display = 'none'; updateNodeList(); draw();
     }
 
-    function cancelEdit() {
-      selectedNodeId = null;
-      document.getElementById('node-editor').style.display = 'none';
-      updateNodeList(); draw();
-    }
-
-    // エクスポート/インポート
     function exportData() {
-      const data = { rings: CONFIG.rings, nodes: CONFIG.nodes, edges: CONFIG.edges };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sphere-grid-data.json'; a.click();
+      const blob = new Blob([JSON.stringify({ rings: CONFIG.rings, nodes: CONFIG.nodes, edges: CONFIG.edges }, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sphere-grid.json'; a.click();
     }
 
     function importData() {
-      const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json';
-      inp.onchange = e => {
-        const reader = new FileReader();
-        reader.onload = ev => {
+      const i = document.createElement('input'); i.type = 'file'; i.accept = '.json';
+      i.onchange = e => {
+        const r = new FileReader(); r.onload = ev => {
           try {
-            const d = JSON.parse(ev.target.result);
-            if (d.rings) CONFIG.rings = d.rings;
-            if (d.nodes) CONFIG.nodes = d.nodes;
-            if (d.edges) CONFIG.edges = d.edges;
-            updateRingList(); updateNodeList(); updateRingSelect(); draw();
-            alert('インポート完了');
-          } catch { alert('読み込み失敗'); }
-        };
-        reader.readAsText(e.target.files[0]);
-      };
-      inp.click();
+            const d = JSON.parse(ev.target.result); if (d.rings) CONFIG.rings = d.rings; if (d.nodes) CONFIG.nodes = d.nodes; if (d.edges) CONFIG.edges = d.edges;
+            updateRingList(); updateNodeList(); updateRingSelect(); draw(); alert('インポート完了');
+          } catch { alert('エラー'); }
+        }; r.readAsText(e.target.files[0]);
+      }; i.click();
     }
-
-    function downloadImage() {
-      const link = document.createElement('a'); link.download = 'sphere-grid.png'; link.href = canvas.toDataURL('image/png'); link.click();
-    }
+    function downloadImage() { const a = document.createElement('a'); a.download = 'grid.png'; a.href = canvas.toDataURL('image/png'); a.click(); }
   </script>
 </body>
 
