@@ -1,8 +1,22 @@
 # Node
 *.log
 *.log.*
-node_modules
+node_modules/
 
+# Build outputs
 out/
 dist/
 code.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Local development
+.env.local
+.env.*.local
