@@ -7,1003 +7,371 @@
   <title>WG Sphere Grid - 企業スフィア盤</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg: #04070e;
+      --ink: #EAF0FA;
+      --mute: #7C8AA5;
+      --dim: #4B5870;
+      --line: rgba(150, 180, 230, .14);
+      --line-strong: rgba(150, 180, 230, .28);
+      --gold: #FFD700;
+      --gold-deep: #B88A08;
+      --blue: #6FA3F0;
+      --green: #33E680;
+      --panel: rgba(7, 12, 24, .58);
+      --ease: cubic-bezier(.2, .8, .2, 1);
+      --font-display: 'Outfit', 'Zen Kaku Gothic New', sans-serif;
+      --font-body: 'Zen Kaku Gothic New', 'Outfit', 'Hiragino Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #03060f;
-      font-family: 'Outfit', 'Hiragino Sans', sans-serif;
+      background: var(--bg);
+      font-family: var(--font-body);
+      color: var(--ink);
       overflow: hidden;
-      color: #fff;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ログイン画面 */
+    button { font-family: inherit; color: inherit; cursor: pointer; }
+
+    ::selection { background: var(--gold); color: #000; }
+
+    /* ---------- 共通オーバーレイ（粒子ノイズ・ビネット） ---------- */
+    #grain, #vignette { position: fixed; inset: 0; pointer-events: none; z-index: 900; }
+    #grain {
+      opacity: .07; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+    #vignette { background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .55) 100%); }
+
+    /* ---------- カーソル追従リング ---------- */
+    #cursor-ring {
+      position: fixed; left: 0; top: 0; width: 36px; height: 36px; margin: -18px 0 0 -18px;
+      border: 1px solid rgba(255, 255, 255, .55); border-radius: 50%;
+      pointer-events: none; z-index: 9500; opacity: 0;
+      transition: width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease), border-color .3s, background .3s, opacity .3s;
+      mix-blend-mode: difference;
+    }
+    #cursor-ring.on { opacity: 1; }
+    #cursor-ring.hot { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: rgba(255, 255, 255, .9); border-color: transparent; }
+    #cursor-ring.grab { width: 22px; height: 22px; margin: -11px 0 0 -11px; background: rgba(255, 255, 255, .9); }
+    @media (hover: none) { #cursor-ring { display: none; } }
+
+    /* ---------- ログイン ---------- */
     #login-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: linear-gradient(135deg, #050812 0%, #0A1628 50%, #051020 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
+      position: fixed; inset: 0; z-index: 10000; overflow: hidden;
+      background: radial-gradient(ellipse at 50% 55%, #0b1a33 0%, #050912 55%, #03060d 100%);
+      display: flex; justify-content: center; align-items: center;
+      transition: opacity .6s var(--ease), visibility .6s;
     }
+    #login-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-    #login-screen.hidden {
-      display: none;
-    }
+    .orbit { position: absolute; left: 50%; top: 50%; border-radius: 50%; border: 1px solid var(--line); pointer-events: none; }
+    .orbit::after { content: ''; position: absolute; top: -4px; left: 50%; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 14px var(--gold); }
+    .orbit.o1 { width: 420px; height: 420px; margin: -210px 0 0 -210px; animation: spin 38s linear infinite; }
+    .orbit.o2 { width: 680px; height: 680px; margin: -340px 0 0 -340px; animation: spin 64s linear infinite reverse; border-style: dashed; }
+    .orbit.o2::after { background: var(--blue); box-shadow: 0 0 14px var(--blue); }
+    .orbit.o3 { width: 980px; height: 980px; margin: -490px 0 0 -490px; animation: spin 110s linear infinite; }
+    .orbit.o3::after { width: 4px; height: 4px; background: #fff; box-shadow: 0 0 10px #fff; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .login-box {
-      background: rgba(10, 22, 40, 0.7);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(74, 122, 184, 0.3);
-      border-radius: 24px;
-      padding: 48px 60px;
-      text-align: center;
-      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 40px rgba(74, 122, 184, 0.1);
-      animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative; width: min(420px, calc(100vw - 40px)); text-align: center;
+      animation: rise 1s var(--ease) both;
     }
+    @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .login-logo {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 20px;
-      background: radial-gradient(circle at 30% 30%, #FFE066, #B88A08);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 32px;
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
-    }
-
+    .login-eyebrow { font: 500 10px var(--font-mono); letter-spacing: .4em; color: var(--mute); margin-bottom: 22px; }
     .login-box h1 {
-      color: #FFD700;
-      font-size: 24px;
-      letter-spacing: 3px;
-      margin-bottom: 8px;
+      font: 200 clamp(34px, 6vw, 52px)/1.05 var(--font-display); letter-spacing: .16em; margin-bottom: 6px;
+      background: linear-gradient(180deg, #fff 30%, #9db4da 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
     }
+    .login-box h1 em { font-style: normal; color: var(--gold); -webkit-text-fill-color: var(--gold); font-weight: 400; }
+    .login-box .subtitle { color: var(--mute); font-size: 12px; letter-spacing: .3em; margin-bottom: 40px; }
 
-    .login-box .subtitle {
-      color: #889;
-      font-size: 14px;
-      margin-bottom: 30px;
-    }
-
+    .field { position: relative; margin-bottom: 18px; }
     .login-box input[type="password"] {
-      width: 100%;
-      padding: 14px 20px;
-      background: rgba(20, 40, 60, 0.8);
-      border: 1px solid rgba(74, 122, 184, 0.3);
-      border-radius: 8px;
-      color: #fff;
-      font-size: 16px;
-      text-align: center;
-      letter-spacing: 4px;
-      margin-bottom: 16px;
+      width: 100%; padding: 14px 4px; background: transparent; border: 0; border-bottom: 1px solid var(--line-strong);
+      color: #fff; font: 400 18px var(--font-mono); text-align: center; letter-spacing: .5em; outline: none; transition: border-color .3s;
     }
-
-    .login-box input[type="password"]:focus {
-      outline: none;
-      border-color: #FFD700;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    .login-box input[type="password"]::placeholder { letter-spacing: .15em; font: 400 12px var(--font-body); color: var(--dim); }
+    .field::after {
+      content: ''; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%; background: var(--gold);
+      transform: scaleX(0); transition: transform .5s var(--ease);
     }
+    .field:focus-within::after { transform: scaleX(1); }
 
-    .login-box input[type="password"]::placeholder {
-      letter-spacing: 0;
-      color: #556;
+    .login-box button.enter {
+      position: relative; width: 100%; padding: 15px; margin-top: 10px; overflow: hidden;
+      background: transparent; border: 1px solid var(--line-strong); color: var(--ink);
+      font: 500 11px var(--font-mono); letter-spacing: .4em; transition: color .4s var(--ease), border-color .4s;
     }
-
-    .login-box button {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #B88A08, #FFD700);
-      border: none;
-      border-radius: 8px;
-      color: #000;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+    .login-box button.enter::before {
+      content: ''; position: absolute; inset: 0; background: var(--gold); transform: translateY(101%); transition: transform .45s var(--ease); z-index: -1;
     }
+    .login-box button.enter { z-index: 0; isolation: isolate; }
+    .login-box button.enter:hover { color: #000; border-color: var(--gold); }
+    .login-box button.enter:hover::before { transform: none; }
+    .login-error { color: #ff7a8a; font-size: 12px; min-height: 18px; margin-top: 14px; }
+    .login-hint { color: var(--dim); font: 400 10px var(--font-mono); letter-spacing: .2em; margin-top: 26px; }
 
-    .login-box button:hover {
-      background: linear-gradient(135deg, #FFD700, #FFE44D);
-      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+    /* ---------- イントロ幕 ---------- */
+    #intro { position: fixed; inset: 0; z-index: 9800; pointer-events: none; display: none; }
+    #intro.play { display: block; }
+    #intro .half { position: absolute; left: 0; width: 100%; height: 50.2%; background: #03060d; }
+    #intro .top { top: 0; animation: curtainUp 1.1s .95s var(--ease) forwards; }
+    #intro .bot { bottom: 0; animation: curtainDown 1.1s .95s var(--ease) forwards; }
+    #intro .word {
+      position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px;
+      font: 200 clamp(22px, 4vw, 44px) var(--font-display); letter-spacing: .5em; padding-left: .5em; color: #fff;
+      animation: wordIn 1.5s var(--ease) forwards;
     }
+    #intro .word small { font: 400 10px var(--font-mono); letter-spacing: .5em; color: var(--gold); }
+    @keyframes curtainUp { to { transform: translateY(-101%); } }
+    @keyframes curtainDown { to { transform: translateY(101%); } }
+    @keyframes wordIn { 0% { opacity: 0; letter-spacing: .9em; } 40% { opacity: 1; } 75% { opacity: 1; letter-spacing: .5em; } 100% { opacity: 0; letter-spacing: .5em; } }
 
-    .login-error {
-      color: #E64D66;
-      font-size: 13px;
-      margin-top: 12px;
-      min-height: 20px;
+    /* ---------- メイン ---------- */
+    #main-content { display: none; position: fixed; inset: 0; }
+    #main-content.visible { display: block; }
+    #container { position: absolute; inset: 0; }
+    #canvas { display: block; touch-action: none; cursor: grab; }
+    #canvas.panning { cursor: grabbing; }
+
+    /* 共通パネル */
+    .panel {
+      position: fixed; z-index: 100; background: var(--panel);
+      -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2);
+      border: 1px solid var(--line);
+      opacity: 0; transform: translateY(12px);
     }
+    .visible .panel { animation: panelIn .9s var(--ease) forwards; }
+    @keyframes panelIn { to { opacity: 1; transform: none; } }
+    #gates { animation-delay: 1.9s !important; }
+    #metrics-panel { animation-delay: 2.05s !important; }
+    #legend { animation-delay: 2.2s !important; }
 
-    .login-hint {
-      color: #556;
-      font-size: 11px;
-      margin-top: 20px;
+    /* 角のトンボ */
+    .panel::before, .panel::after { content: ''; position: absolute; width: 9px; height: 9px; border: 1px solid var(--gold); opacity: .8; pointer-events: none; }
+    .panel::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+    .panel::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+
+    .eyebrow { font: 500 9.5px var(--font-mono); letter-spacing: .28em; text-transform: uppercase; color: var(--mute); }
+    .eyebrow i { font-style: normal; color: var(--gold); margin-right: 8px; }
+
+    /* ヘッダー */
+    #topbar {
+      position: fixed; z-index: 200; top: 0; left: 0; right: 0; height: 68px; padding: 0 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(180deg, rgba(4, 7, 14, .85), transparent);
+      opacity: 0; animation: panelIn 1s 1.7s var(--ease) forwards;
     }
-
-    #logout-btn {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(100, 100, 120, 0.3);
-      border: 1px solid rgba(100, 100, 120, 0.5);
-      color: #889;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-      z-index: 100;
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-mark {
+      width: 26px; height: 26px; border-radius: 50%; position: relative;
+      background: radial-gradient(circle at 32% 30%, #FFF3B0, var(--gold) 45%, var(--gold-deep));
+      box-shadow: 0 0 22px rgba(255, 215, 0, .45);
     }
+    .brand-mark::after { content: ''; position: absolute; inset: -6px; border: 1px solid rgba(255, 215, 0, .35); border-radius: 50%; animation: spin 14s linear infinite; border-top-color: transparent; }
+    .brand b { display: block; font: 600 13px var(--font-display); letter-spacing: .32em; }
+    .brand small { display: block; margin-top: 3px; font: 400 9.5px var(--font-mono); letter-spacing: .3em; color: var(--mute); }
+    .top-actions { display: flex; gap: 10px; }
 
-    #logout-btn:hover {
-      background: rgba(230, 77, 102, 0.3);
-      border-color: rgba(230, 77, 102, 0.5);
-      color: #E64D66;
+    .pill {
+      position: relative; padding: 9px 16px; background: rgba(8, 14, 26, .5); border: 1px solid var(--line-strong);
+      font: 500 10px var(--font-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--ink);
+      transition: background .3s, color .3s, border-color .3s; overflow: hidden;
     }
+    .pill:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+    .pill.active { background: var(--gold); color: #000; border-color: var(--gold); }
 
-    #main-content {
-      display: none;
-    }
+    /* 左カラム */
+    #gates { top: 92px; left: 28px; width: 252px; padding: 20px 20px 18px; }
+    #gates h2 { font: 300 15px var(--font-display); letter-spacing: .24em; margin: 10px 0 2px; }
+    #gates .subtitle { color: var(--mute); font-size: 11px; letter-spacing: .2em; margin-bottom: 16px; }
+    #gates h3 { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--gold); margin-bottom: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+    #gates ul { list-style: none; counter-reset: g; }
+    #gates li { counter-increment: g; display: flex; gap: 12px; padding: 5px 0; font-size: 12px; color: #c4cfe3; border-bottom: 1px solid rgba(150, 180, 230, .06); }
+    #gates li::before { content: counter(g, decimal-leading-zero); font: 400 10px/1.9 var(--font-mono); color: var(--gold); opacity: .8; }
 
-    #main-content.visible {
-      display: block;
-    }
+    #metrics-panel { left: 28px; bottom: 28px; width: 252px; padding: 16px 20px 18px; max-height: calc(100vh - 440px); min-height: 56px; overflow: auto; scrollbar-width: none; }
+    #metrics-panel::-webkit-scrollbar { display: none; }
+    #metrics-panel h2 { display: flex; justify-content: space-between; align-items: center; font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--mute); text-transform: uppercase; }
+    #metrics-panel h2 .toggle-btn { width: 24px; height: 24px; background: transparent; border: 1px solid var(--line-strong); font-size: 8px; color: var(--ink); transition: .3s; }
+    #metrics-panel h2 .toggle-btn:hover { background: var(--gold); color: #000; }
+    #metrics-panel.collapsed .metrics-content { display: none; }
+    .metrics-content { margin-top: 14px; }
+    .metric-row { display: grid; grid-template-columns: 60px 1fr 28px; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(150, 180, 230, .06); }
+    .metric-row label { font-size: 11px; color: var(--mute); }
+    .metric-row input { width: 100%; background: transparent; border: 0; color: var(--ink); font: 400 16px var(--font-display); text-align: right; outline: none; padding: 2px 0; -moz-appearance: textfield; }
+    .metric-row input:focus { color: var(--gold); }
+    .metric-row input::-webkit-outer-spin-button, .metric-row input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .metric-row .unit { font-size: 10px; color: var(--dim); }
+    .metric-divider { height: 14px; }
+    .metrics-content > div[style] { font: 500 9.5px var(--font-mono) !important; letter-spacing: .28em; text-transform: uppercase; color: var(--gold) !important; }
+    .sphere-inventory { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+    .sphere-inv-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 5px 4px; border: 1px solid var(--line); background: rgba(255, 255, 255, .02); }
+    .sphere-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .sphere-inv-item input { width: 100%; background: transparent; border: 0; text-align: center; color: var(--ink); font: 300 17px var(--font-display); outline: none; }
+    .metric-status { padding-top: 12px; border-top: 1px solid var(--line); }
+    .status-title { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--mute); text-transform: uppercase; margin-bottom: 6px; }
+    .status-value { font: 300 18px var(--font-display); letter-spacing: .08em; }
+    .status-value.good { color: var(--green); } .status-value.warning { color: var(--gold); } .status-value.bad { color: #ff7a8a; }
 
-    #container {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+    /* 右カラム（凡例） */
+    #legend { top: 92px; right: 28px; width: 214px; padding: 20px 20px 16px; transition: opacity .5s var(--ease), transform .5s var(--ease) !important; }
+    .editing #legend { opacity: 0 !important; transform: translateX(30px) !important; pointer-events: none; }
+    #legend h2 { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--mute); text-transform: uppercase; margin-bottom: 12px; }
+    #legend h3 { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--gold); text-transform: uppercase; margin: 16px 0 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .legend-item { display: flex; align-items: center; gap: 12px; padding: 6px 6px; margin: 0 -6px; transition: background .25s, transform .35s var(--ease); }
+    .legend-item[data-sphere] { cursor: pointer; }
+    .legend-item[data-sphere]:hover { background: rgba(255, 255, 255, .05); transform: translateX(4px); }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+    .legend-sphere { width: 9px; height: 9px; border-radius: 50%; flex: none; box-shadow: 0 0 12px currentColor; margin: 0 1.5px; }
+    .legend-text { font-size: 12px; line-height: 1.35; }
+    .legend-text .label { color: var(--ink); }
+    .legend-text .desc { color: var(--dim); font-size: 10px; }
 
-    canvas {
-      display: block;
-      cursor: default;
-    }
+    /* HUD */
+    #hud { position: fixed; z-index: 150; left: 50%; bottom: 26px; transform: translateX(-50%); display: flex; align-items: center; gap: 0; opacity: 0; animation: panelIn 1s 2.3s var(--ease) forwards; background: var(--panel); border: 1px solid var(--line); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+    #hud button { width: 38px; height: 38px; background: transparent; border: 0; font: 300 16px var(--font-display); transition: background .25s, color .25s; }
+    #hud button:hover { background: var(--gold); color: #000; }
+    #hud .readout { min-width: 64px; text-align: center; font: 400 11px var(--font-mono); letter-spacing: .1em; color: var(--mute); border-left: 1px solid var(--line); border-right: 1px solid var(--line); line-height: 38px; }
+    #keys { position: fixed; z-index: 120; right: 28px; bottom: 32px; font: 400 9.5px var(--font-mono); letter-spacing: .22em; color: var(--dim); text-align: right; line-height: 1.9; opacity: 0; animation: panelIn 1s 2.4s var(--ease) forwards; }
+    #keys b { color: var(--mute); font-weight: 500; }
 
-    canvas.dragging {
-      cursor: grabbing;
-    }
-
-    canvas.can-drag {
-      cursor: grab;
-    }
-
+    /* ツールチップ */
     #tooltip {
-      position: absolute;
-      display: none;
-      background: rgba(8, 14, 28, 0.96);
-      border: 1px solid rgba(74, 122, 184, 0.4);
-      border-radius: 12px;
-      padding: 16px 20px;
-      color: #fff;
-      font-size: 12px;
-      max-width: 300px;
-      pointer-events: none;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
-      z-index: 1000;
-      backdrop-filter: blur(12px);
+      display: none; position: fixed; z-index: 1000; pointer-events: none; width: 270px; padding: 18px 18px 16px;
+      background: rgba(6, 11, 22, .86); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+      border: 1px solid var(--line-strong); box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+      animation: tipIn .35s var(--ease);
     }
+    @keyframes tipIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+    #tooltip::before { content: ''; position: absolute; top: -1px; left: -1px; width: 9px; height: 9px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+    #tooltip h3 { font: 500 17px var(--font-body); letter-spacing: .06em; margin-bottom: 8px; }
+    #tooltip .state { display: inline-block; font: 500 9.5px var(--font-mono); letter-spacing: .24em; padding: 3px 9px; border: 1px solid; margin-bottom: 12px; }
+    #tooltip .state.MASTERED { color: var(--gold); border-color: rgba(255, 215, 0, .5); background: rgba(255, 215, 0, .08); }
+    #tooltip .state.UNLOCKED { color: var(--green); border-color: rgba(51, 230, 128, .5); background: rgba(51, 230, 128, .08); }
+    #tooltip .state.ELIGIBLE { color: #FFE066; border-color: rgba(255, 224, 102, .4); }
+    #tooltip .state.LOCKED { color: var(--mute); border-color: var(--line-strong); }
+    #tooltip .description { color: #b6c2d9; font-size: 12px; line-height: 1.75; margin-bottom: 12px; }
+    #tooltip h4 { font: 500 9.5px var(--font-mono); letter-spacing: .26em; color: var(--mute); text-transform: uppercase; margin-bottom: 8px; }
+    #tooltip .sphere-item { display: inline-block; font-size: 11px; padding: 3px 10px; margin: 0 6px 6px 0; }
+    #tooltip .effect { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--gold); font-size: 12px; }
 
-    #tooltip h3 {
-      color: #FFD700;
-      font-size: 15px;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    #tooltip .state {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-size: 10px;
-      margin-bottom: 10px;
-      font-weight: 500;
-    }
-
-    #tooltip .state.MASTERED {
-      background: rgba(255, 215, 0, 0.2);
-      color: #FFD700;
-      border: 1px solid rgba(255, 215, 0, 0.3);
-    }
-
-    #tooltip .state.UNLOCKED {
-      background: rgba(51, 230, 128, 0.2);
-      color: #33E680;
-      border: 1px solid rgba(51, 230, 128, 0.3);
-    }
-
-    #tooltip .state.ELIGIBLE {
-      background: rgba(255, 215, 0, 0.15);
-      color: #FFD700;
-      border: 1px solid rgba(255, 215, 0, 0.25);
-    }
-
-    #tooltip .state.LOCKED {
-      background: rgba(100, 100, 120, 0.25);
-      color: #8899aa;
-      border: 1px solid rgba(100, 100, 120, 0.3);
-    }
-
-    #tooltip .description {
-      color: #aabbcc;
-      margin-bottom: 10px;
-      line-height: 1.5;
-    }
-
-    #tooltip .requirements {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(74, 122, 184, 0.2);
-    }
-
-    #tooltip .requirements h4 {
-      color: #B88A08;
-      font-size: 11px;
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    #tooltip .sphere-item {
-      display: inline-block;
-      margin: 3px 6px 3px 0;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    #tooltip .effect {
-      color: #4DCC80;
-      margin-top: 10px;
-      font-size: 12px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(74, 122, 184, 0.2);
-    }
-
-    /* 情報パネル */
-    #legend,
-    #gates {
-      position: absolute;
-      background: rgba(8, 14, 28, 0.92);
-      border: 1px solid rgba(74, 122, 184, 0.3);
-      border-radius: 16px;
-      padding: 20px 24px;
-      color: #fff;
-      font-size: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(12px);
-    }
-
-    #legend {
-      top: 20px;
-      right: 20px;
-      min-width: 240px;
-    }
-
-    #gates {
-      top: 20px;
-      left: 20px;
-      max-width: 280px;
-    }
-
-    #legend h2,
-    #gates h2 {
-      color: #FFD700;
-      font-size: 15px;
-      margin-bottom: 16px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    #legend h3,
-    #gates h3 {
-      color: #B88A08;
-      font-size: 11px;
-      margin: 16px 0 10px 0;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    #gates .subtitle {
-      color: #8899aa;
-      font-size: 12px;
-      margin-bottom: 16px;
-    }
-
-    #gates ul {
-      list-style: none;
-      color: #aabbcc;
-      line-height: 2;
-    }
-
-    #gates li {
-      display: flex;
-      align-items: center;
-    }
-
-    #gates li::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      background: #4A7AB8;
-      border-radius: 50%;
-      margin-right: 10px;
-      flex-shrink: 0;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      margin: 8px 0;
-    }
-
-    .legend-dot {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      margin-right: 12px;
-      flex-shrink: 0;
-    }
-
-    .legend-sphere {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      margin-right: 10px;
-      flex-shrink: 0;
-      box-shadow: 0 0 8px currentColor;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .legend-sphere:hover {
-      transform: scale(1.2);
-    }
-
-    .legend-text {
-      flex: 1;
-    }
-
-    .legend-text .label {
-      color: #fff;
-      font-weight: 500;
-    }
-
-    .legend-text .desc {
-      color: #8899aa;
-      font-size: 10px;
-      margin-top: 2px;
-    }
-
-    /* ズームコントロール */
-    #zoom-controls {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(8, 14, 28, 0.9);
-      border: 1px solid rgba(74, 122, 184, 0.3);
-      border-radius: 12px;
-      padding: 8px 16px;
-      backdrop-filter: blur(12px);
-      z-index: 100;
-    }
-
-    #zoom-controls button {
-      width: 36px;
-      height: 36px;
-      background: rgba(74, 122, 184, 0.2);
-      border: 1px solid rgba(74, 122, 184, 0.3);
-      border-radius: 8px;
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #zoom-controls button:hover {
-      background: rgba(74, 122, 184, 0.4);
-      border-color: rgba(74, 122, 184, 0.5);
-    }
-
-    #zoom-controls button:active {
-      transform: scale(0.95);
-    }
-
-    #zoom-level {
-      color: #8899aa;
-      font-size: 12px;
-      min-width: 48px;
-      text-align: center;
-      font-weight: 500;
-    }
-
-    #zoom-controls .divider {
-      width: 1px;
-      height: 24px;
-      background: rgba(74, 122, 184, 0.3);
-      margin: 0 4px;
-    }
-
-    /* 編集ボタン */
-    #editor-toggle {
-      position: absolute;
-      bottom: 20px;
-      left: 320px;
-      background: rgba(255, 215, 0, 0.15);
-      border: 1px solid rgba(255, 215, 0, 0.4);
-      color: #FFD700;
-      padding: 12px 24px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(8px);
-      z-index: 100;
-    }
-
-    #editor-toggle:hover {
-      background: rgba(255, 215, 0, 0.25);
-      border-color: rgba(255, 215, 0, 0.6);
-    }
-
-    #editor-toggle.active {
-      background: rgba(255, 215, 0, 0.3);
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-    }
-
-    /* 編集パネル */
+    /* 編集モード */
     #editor-panel {
-      position: absolute;
-      top: 0;
-      right: -500px;
-      width: 500px;
-      height: 100vh;
-      background: rgba(8, 14, 28, 0.98);
-      border-left: 1px solid rgba(74, 122, 184, 0.3);
-      padding: 24px;
-      overflow-y: auto;
-      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 2000;
-      backdrop-filter: blur(20px);
+      position: fixed; z-index: 300; top: 0; right: 0; bottom: 0; width: 340px; padding: 84px 24px 24px; overflow-y: auto;
+      background: rgba(5, 9, 18, .88); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+      border-left: 1px solid var(--line-strong); transform: translateX(105%); transition: transform .7s var(--ease);
+      scrollbar-width: thin; scrollbar-color: var(--dim) transparent;
     }
-
-    #editor-panel.open {
-      right: 0;
+    #editor-panel.open { transform: none; }
+    #editor-panel h2 { display: flex; justify-content: space-between; align-items: center; font: 300 18px var(--font-display); letter-spacing: .22em; margin-bottom: 22px; }
+    #editor-panel .close-btn { width: 30px; height: 30px; background: transparent; border: 1px solid var(--line-strong); font-size: 16px; line-height: 1; transition: .3s; }
+    #editor-panel .close-btn:hover { background: var(--gold); color: #000; transform: rotate(90deg); }
+    .editor-section { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+    .editor-section h3, #export-section h3 { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+    .ring-list, .node-list { margin-bottom: 10px; }
+    .node-list { max-height: 190px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--dim) transparent; }
+    .ring-item { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+    .ring-item input { flex: 1; min-width: 0; }
+    .delete-ring { width: 28px; height: 28px; background: transparent; border: 1px solid var(--line-strong); color: #ff7a8a; }
+    .delete-ring:hover { background: #ff7a8a; color: #000; }
+    .node-list-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; cursor: pointer; border-left: 2px solid transparent; transition: background .25s, border-color .25s, padding-left .3s var(--ease); }
+    .node-list-item:hover { background: rgba(255, 255, 255, .04); padding-left: 14px; }
+    .node-list-item.selected { background: rgba(255, 215, 0, .07); border-left-color: var(--gold); }
+    .node-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+    .node-name { flex: 1; font-size: 12px; }
+    .node-ring { font: 400 10px var(--font-mono); color: var(--dim); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font: 500 9.5px var(--font-mono); letter-spacing: .2em; color: var(--mute); margin-bottom: 5px; }
+    #editor-panel input[type="text"], #editor-panel input[type="number"], #editor-panel select, #editor-panel textarea {
+      width: 100%; padding: 8px 10px; background: rgba(255, 255, 255, .03); border: 1px solid var(--line); border-radius: 0;
+      color: var(--ink); font: 400 12px var(--font-body); outline: none; transition: border-color .25s, background .25s;
     }
-
-    #editor-panel h2 {
-      color: #FFD700;
-      font-size: 20px;
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-    }
-
-    #editor-panel .close-btn {
-      background: rgba(100, 110, 130, 0.3);
-      border: none;
-      color: #8899aa;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      font-size: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #editor-panel .close-btn:hover {
-      background: rgba(230, 77, 102, 0.3);
-      color: #E64D66;
-    }
-
-    .editor-section {
-      margin-bottom: 24px;
-      padding: 20px;
-      background: rgba(74, 122, 184, 0.08);
-      border-radius: 12px;
-      border: 1px solid rgba(74, 122, 184, 0.15);
-    }
-
-    .editor-section h3 {
-      color: #FFD700;
-      font-size: 13px;
-      margin-bottom: 16px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .editor-section h3::before {
-      content: "";
-      width: 4px;
-      height: 16px;
-      background: linear-gradient(180deg, #FFD700, #B88A08);
-      border-radius: 2px;
-    }
-
-    .node-list {
-      max-height: 200px;
-      overflow-y: auto;
-      margin-bottom: 12px;
-    }
-
-    .node-list::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .node-list::-webkit-scrollbar-track {
-      background: rgba(74, 122, 184, 0.1);
-      border-radius: 3px;
-    }
-
-    .node-list::-webkit-scrollbar-thumb {
-      background: rgba(74, 122, 184, 0.3);
-      border-radius: 3px;
-    }
-
-    .node-list-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 14px;
-      margin: 6px 0;
-      background: rgba(74, 122, 184, 0.1);
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      border: 1px solid transparent;
-    }
-
-    .node-list-item:hover {
-      background: rgba(74, 122, 184, 0.2);
-    }
-
-    .node-list-item.selected {
-      background: rgba(255, 215, 0, 0.15);
-      border-color: rgba(255, 215, 0, 0.4);
-    }
-
-    .node-list-item .node-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      margin-right: 12px;
-      box-shadow: 0 0 8px currentColor;
-    }
-
-    .node-list-item .node-name {
-      color: #fff;
-      flex: 1;
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .node-list-item .node-ring {
-      color: #8899aa;
-      font-size: 11px;
-      margin-right: 10px;
-      background: rgba(74, 122, 184, 0.2);
-      padding: 2px 8px;
-      border-radius: 4px;
-    }
-
-    .node-list-item .node-state {
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-weight: 500;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      color: #8899aa;
-      font-size: 11px;
-      margin-bottom: 6px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 12px 14px;
-      background: rgba(20, 30, 50, 0.6);
-      border: 1px solid rgba(74, 122, 184, 0.25);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14px;
-      transition: all 0.2s ease;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #FFD700;
-      background: rgba(20, 30, 50, 0.8);
-      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
-    }
-
-    .form-group select {
-      cursor: pointer;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 80px;
-      line-height: 1.5;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 12px;
-    }
-
-    .form-row .form-group {
-      flex: 1;
-    }
-
-    .sphere-editor {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .sphere-tag {
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 500;
-      border: 1px solid transparent;
-    }
-
-    .sphere-tag input {
-      width: 40px;
-      padding: 4px 6px;
-      margin-left: 8px;
-      text-align: center;
-      font-size: 12px;
-      border-radius: 6px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .ring-list {
-      margin-bottom: 12px;
-    }
-
-    .ring-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 6px 0;
-      padding: 8px;
-      background: rgba(74, 122, 184, 0.1);
-      border-radius: 6px;
-    }
-
-    .ring-item input {
-      flex: 1;
-    }
-
-    .ring-item .ring-radius {
-      width: 70px;
-    }
-
-    .ring-item .delete-ring {
-      background: rgba(230, 77, 102, 0.3);
-      border: none;
-      color: #E64D66;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .btn-primary {
-      background: #FFD700;
-      color: #000;
-    }
-
-    .btn-primary:hover {
-      background: #FFE44D;
-    }
-
-    .btn-secondary {
-      background: rgba(74, 122, 184, 0.3);
-      color: #fff;
-      border: 1px solid rgba(74, 122, 184, 0.5);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(74, 122, 184, 0.5);
-    }
-
-    .btn-danger {
-      background: rgba(230, 77, 102, 0.3);
-      color: #E64D66;
-      border: 1px solid rgba(230, 77, 102, 0.5);
-    }
-
-    .btn-danger:hover {
-      background: rgba(230, 77, 102, 0.5);
-      color: #fff;
-    }
-
-    .btn-small {
-      padding: 6px 12px;
-      font-size: 11px;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 8px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
+    #editor-panel select option { background: #0a1220; }
+    #editor-panel textarea { min-height: 62px; resize: vertical; }
+    #editor-panel input:focus, #editor-panel select:focus, #editor-panel textarea:focus { border-color: var(--gold); background: rgba(255, 215, 0, .04); }
+    .sphere-editor { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .sphere-tag { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; font-size: 11px; border: 1px solid currentColor; }
+    .sphere-tag input { width: 38px !important; padding: 2px 4px !important; text-align: center; border: 0 !important; background: rgba(0, 0, 0, .3) !important; }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { padding: 10px 14px; background: transparent; border: 1px solid var(--line-strong); font: 500 10px var(--font-mono); letter-spacing: .14em; transition: background .25s, color .25s, border-color .25s; }
+    .btn:hover:not(:disabled) { background: var(--ink); color: #000; }
+    .btn:disabled { opacity: .3; cursor: default; }
+    .btn-primary { background: var(--gold); border-color: var(--gold); color: #000; }
+    .btn-primary:hover:not(:disabled) { background: #fff; }
+    .btn-danger { color: #ff7a8a; border-color: rgba(255, 122, 138, .4); }
+    .btn-danger:hover:not(:disabled) { background: #ff7a8a; color: #000; }
+    .btn-small { padding: 6px 10px; font-size: 9px; }
 
     .drag-hint {
-      position: absolute;
-      bottom: 60px;
-      left: 20px;
-      background: rgba(255, 215, 0, 0.1);
-      border: 1px solid rgba(255, 215, 0, 0.3);
-      color: #FFD700;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 12px;
-      display: none;
+      position: fixed; z-index: 160; left: 50%; top: 84px; transform: translate(-50%, -10px); opacity: 0; pointer-events: none;
+      padding: 9px 18px; background: var(--gold); color: #000; font: 500 10px var(--font-mono); letter-spacing: .2em;
+      transition: opacity .5s var(--ease), transform .5s var(--ease);
     }
+    .drag-hint.visible { opacity: 1; transform: translate(-50%, 0); }
 
-    .drag-hint.visible {
-      display: block;
+    @media (max-width: 1280px) { #keys { display: none; } }
+    @media (max-width: 960px) {
+      #gates, #legend, #keys { display: none; }
+      #metrics-panel { left: 12px; right: 12px; width: auto; max-height: 40vh; bottom: 74px; }
+      #topbar { padding: 0 14px; } .brand small { display: none; }
+      #editor-panel { width: 100%; }
     }
-
-    /* 現在の指標パネル */
-    #metrics-panel {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(8, 14, 28, 0.92);
-      border: 1px solid rgba(74, 122, 184, 0.3);
-      border-radius: 16px;
-      padding: 16px 20px;
-      color: #fff;
-      font-size: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(12px);
-      min-width: 280px;
-      z-index: 100;
-    }
-
-    #metrics-panel h2 {
-      color: #FFD700;
-      font-size: 14px;
-      margin-bottom: 12px;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    #metrics-panel .toggle-btn {
-      background: none;
-      border: none;
-      color: #8899aa;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    #metrics-panel .toggle-btn:hover {
-      color: #FFD700;
-    }
-
-    #metrics-panel.collapsed .metrics-content {
-      display: none;
-    }
-
-    #metrics-panel.collapsed {
-      min-width: auto;
-    }
-
-    .metrics-content {
-      margin-top: 8px;
-    }
-
-    .metric-row {
-      display: flex;
-      align-items: center;
-      margin: 8px 0;
-      gap: 8px;
-    }
-
-    .metric-row label {
-      color: #8899aa;
-      font-size: 11px;
-      min-width: 70px;
-    }
-
-    .metric-row input {
-      flex: 1;
-      padding: 6px 10px;
-      background: rgba(20, 30, 50, 0.6);
-      border: 1px solid rgba(74, 122, 184, 0.25);
-      border-radius: 6px;
-      color: #fff;
-      font-size: 12px;
-      text-align: right;
-    }
-
-    .metric-row input:focus {
-      outline: none;
-      border-color: #FFD700;
-    }
-
-    .metric-row .unit {
-      color: #8899aa;
-      font-size: 11px;
-      min-width: 30px;
-    }
-
-    .metric-divider {
-      height: 1px;
-      background: rgba(74, 122, 184, 0.2);
-      margin: 12px 0;
-    }
-
-    .sphere-inventory {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .sphere-inv-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      background: rgba(74, 122, 184, 0.1);
-      border-radius: 8px;
-      font-size: 11px;
-    }
-
-    .sphere-inv-item .sphere-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .sphere-inv-item input {
-      width: 32px;
-      padding: 3px 5px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-      color: #fff;
-      font-size: 11px;
-      text-align: center;
-    }
-
-    .metric-status {
-      margin-top: 12px;
-      padding: 10px;
-      background: rgba(74, 122, 184, 0.1);
-      border-radius: 8px;
-    }
-
-    .metric-status .status-title {
-      color: #B88A08;
-      font-size: 11px;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    .metric-status .status-value {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .metric-status .status-value.good {
-      color: #33E680;
-    }
-
-    .metric-status .status-value.warning {
-      color: #FFD700;
-    }
-
-    .metric-status .status-value.bad {
-      color: #E64D66;
-    }
-
-    #export-section {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(74, 122, 184, 0.2);
-    }
-
-    #export-section h3 {
-      color: #B88A08;
-      font-size: 14px;
-      margin-bottom: 12px;
+    @media (prefers-reduced-motion: reduce) {
+      #intro { display: none !important; }
+      .panel, #topbar, #hud, #keys { animation-duration: .01s !important; animation-delay: 0s !important; }
+      .orbit { animation: none; }
     }
   </style>
 </head>
 
 <body>
+  <div id="grain"></div>
+  <div id="vignette"></div>
+  <div id="cursor-ring"></div>
+
   <div id="login-screen">
+    <div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div>
     <div class="login-box">
-      <div class="login-logo">⚡</div>
-      <h1>WONDERFUL GROWTH</h1>
-      <div class="subtitle">企業スフィア盤 - 社内限定</div>
-      <input type="password" id="password-input" placeholder="パスワードを入力" autocomplete="off">
-      <button onclick="attemptLogin()">ログイン</button>
+      <div class="login-eyebrow">MEMBERS ONLY — 社内限定</div>
+      <h1>WONDERFUL<br><em>GROWTH</em></h1>
+      <div class="subtitle">企業スフィア盤</div>
+      <div class="field"><input type="password" id="password-input" placeholder="パスワードを入力" autocomplete="off"></div>
+      <button class="enter" onclick="attemptLogin()">ENTER</button>
       <div class="login-error" id="login-error"></div>
-      <div class="login-hint">※ 社内メンバー用アクセスキー</div>
+      <div class="login-hint">社内メンバー用アクセスキー</div>
     </div>
   </div>
+
+  <div id="intro"><div class="half top"></div><div class="half bot"></div><div class="word">WONDERFUL GROWTH<small>SPHERE GRID</small></div></div>
 
   <div id="main-content">
     <div id="container"><canvas id="canvas"></canvas></div>
     <div id="tooltip"></div>
-    <button id="logout-btn" onclick="logout()">🔓 ログアウト</button>
 
-    <div id="gates">
+    <header id="topbar">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div><b>WONDERFUL GROWTH</b><small>SPHERE GRID / 企業スフィア盤</small></div>
+      </div>
+      <div class="top-actions">
+        <button id="editor-toggle" class="pill" onclick="toggleEditor()">編集モード</button>
+        <button id="logout-btn" class="pill" onclick="logout()">ログアウト</button>
+      </div>
+    </header>
+
+    <div id="gates" class="panel">
+      <div class="eyebrow"><i>01</i>Foundation Gate</div>
       <h2>WONDERFUL GROWTH</h2>
       <div class="subtitle">企業スフィア盤</div>
       <h3>基盤ゲート達成条件</h3>
@@ -1016,87 +384,15 @@
       </ul>
     </div>
 
-    <div id="legend">
-      <h2>ノード状態</h2>
-      <div class="legend-item">
-        <div class="legend-dot"
-          style="background: radial-gradient(circle at 30% 30%, #FFF5CC, #FFD700); box-shadow: 0 0 14px #FFD700;"></div>
-        <div class="legend-text"><span class="label">定着</span><br><span class="desc">習得完了・定着済み</span></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot"
-          style="background: radial-gradient(circle at 30% 30%, #66E699, #33E680); box-shadow: 0 0 12px #33E680;"></div>
-        <div class="legend-text"><span class="label">解放済</span><br><span class="desc">習得中・実施中</span></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot"
-          style="background: radial-gradient(circle at 30% 30%, #FFE066, #FFD700); box-shadow: 0 0 10px rgba(255,215,0,0.6);">
-        </div>
-        <div class="legend-text"><span class="label">解放可</span><br><span class="desc">条件クリア・解放可能</span></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot"
-          style="background: radial-gradient(circle at 30% 30%, #3A3E48, #2A2E38); border: 1px solid #4A4E58;"></div>
-        <div class="legend-text"><span class="label">未解放</span><br><span class="desc">条件未達成</span></div>
-      </div>
-      <h3>必要スフィア</h3>
-      <div class="legend-item" onmouseenter="hoveredSphereType='人材';draw()"
-        onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #3399E6; color: #3399E6;"></div>
-        <div class="legend-text"><span class="label">人材</span></div>
-      </div>
-      <div class="legend-item" onmouseenter="hoveredSphereType='資金';draw()"
-        onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #E6B333; color: #E6B333;"></div>
-        <div class="legend-text"><span class="label">資金</span></div>
-      </div>
-      <div class="legend-item" onmouseenter="hoveredSphereType='実績';draw()"
-        onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #4DCC80; color: #4DCC80;"></div>
-        <div class="legend-text"><span class="label">実績</span></div>
-      </div>
-      <div class="legend-item" onmouseenter="hoveredSphereType='時間';draw()"
-        onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #9966CC; color: #9966CC;"></div>
-        <div class="legend-text"><span class="label">時間</span></div>
-      </div>
-      <div class="legend-item" onmouseenter="hoveredSphereType='信頼';draw()"
-        onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #E68033; color: #E68033;"></div>
-        <div class="legend-text"><span class="label">信頼</span></div>
-      </div>
-      <div class="legend-item" onmouseenter="hoveredSphereType='技術';draw()"
-        onmouseleave="hoveredSphereType=null;draw()">
-        <div class="legend-sphere" style="background: #66B3E6; color: #66B3E6;"></div>
-        <div class="legend-text"><span class="label">技術</span></div>
-      </div>
-    </div>
-
-    <div id="metrics-panel">
-      <h2>現在の指標 <button class="toggle-btn" onclick="toggleMetrics()">▼</button></h2>
+    <div id="metrics-panel" class="panel">
+      <h2><span><i style="font-style:normal;color:var(--gold);margin-right:8px">02</i>現在の指標</span> <button class="toggle-btn" onclick="toggleMetrics()">▼</button></h2>
       <div class="metrics-content">
-        <div class="metric-row">
-          <label>年商</label>
-          <input type="number" id="metric-revenue" value="1500" onchange="updateMetrics()">
-          <span class="unit">万円</span>
-        </div>
-        <div class="metric-row">
-          <label>従業員数</label>
-          <input type="number" id="metric-employees" value="2" onchange="updateMetrics()">
-          <span class="unit">名</span>
-        </div>
-        <div class="metric-row">
-          <label>粗利率</label>
-          <input type="number" id="metric-margin" value="45" onchange="updateMetrics()">
-          <span class="unit">%</span>
-        </div>
-        <div class="metric-row">
-          <label>現預金</label>
-          <input type="number" id="metric-cash" value="800" onchange="updateMetrics()">
-          <span class="unit">万円</span>
-        </div>
+        <div class="metric-row"><label>年商</label><input type="number" id="metric-revenue" value="1500" onchange="updateMetrics()"><span class="unit">万円</span></div>
+        <div class="metric-row"><label>従業員数</label><input type="number" id="metric-employees" value="2" onchange="updateMetrics()"><span class="unit">名</span></div>
+        <div class="metric-row"><label>粗利率</label><input type="number" id="metric-margin" value="45" onchange="updateMetrics()"><span class="unit">%</span></div>
+        <div class="metric-row"><label>現預金</label><input type="number" id="metric-cash" value="800" onchange="updateMetrics()"><span class="unit">万円</span></div>
         <div class="metric-divider"></div>
-        <div style="color: #B88A08; font-size: 11px; margin-bottom: 8px; font-weight: 600;">保有スフィア</div>
+        <div style="margin-bottom: 8px;">保有スフィア</div>
         <div class="sphere-inventory" id="sphere-inventory"></div>
         <div class="metric-status">
           <div class="status-title">現在のステージ</div>
@@ -1105,12 +401,33 @@
       </div>
     </div>
 
+    <div id="legend" class="panel">
+      <h2><i style="font-style:normal;color:var(--gold);margin-right:8px">03</i>ノード状態</h2>
+      <div class="legend-item"><div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFF5CC, #FFD700); box-shadow: 0 0 14px #FFD700;"></div><div class="legend-text"><span class="label">定着</span><br><span class="desc">習得完了・定着済み</span></div></div>
+      <div class="legend-item"><div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #66E699, #33E680); box-shadow: 0 0 12px #33E680;"></div><div class="legend-text"><span class="label">解放済</span><br><span class="desc">習得中・実施中</span></div></div>
+      <div class="legend-item"><div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFE066, #FFD700); box-shadow: 0 0 10px rgba(255,215,0,0.6);"></div><div class="legend-text"><span class="label">解放可</span><br><span class="desc">条件クリア・解放可能</span></div></div>
+      <div class="legend-item"><div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #3A3E48, #2A2E38); border: 1px solid #4A4E58;"></div><div class="legend-text"><span class="label">未解放</span><br><span class="desc">条件未達成</span></div></div>
+      <h3>必要スフィア</h3>
+      <div class="legend-item" data-sphere="人材"><div class="legend-sphere" style="background:#3399E6;color:#3399E6"></div><div class="legend-text"><span class="label">人材</span></div></div>
+      <div class="legend-item" data-sphere="資金"><div class="legend-sphere" style="background:#E6B333;color:#E6B333"></div><div class="legend-text"><span class="label">資金</span></div></div>
+      <div class="legend-item" data-sphere="実績"><div class="legend-sphere" style="background:#4DCC80;color:#4DCC80"></div><div class="legend-text"><span class="label">実績</span></div></div>
+      <div class="legend-item" data-sphere="時間"><div class="legend-sphere" style="background:#9966CC;color:#9966CC"></div><div class="legend-text"><span class="label">時間</span></div></div>
+      <div class="legend-item" data-sphere="信頼"><div class="legend-sphere" style="background:#E68033;color:#E68033"></div><div class="legend-text"><span class="label">信頼</span></div></div>
+      <div class="legend-item" data-sphere="技術"><div class="legend-sphere" style="background:#66B3E6;color:#66B3E6"></div><div class="legend-text"><span class="label">技術</span></div></div>
+    </div>
 
-    <button id="editor-toggle" onclick="toggleEditor()">📝 編集モード</button>
-    <div id="drag-hint" class="drag-hint">🖱️ ノードをドラッグして移動できます</div>
+    <div id="hud">
+      <button onclick="zoomBy(1/1.25)" aria-label="縮小">−</button>
+      <div class="readout" id="zoom-readout">100%</div>
+      <button onclick="zoomBy(1.25)" aria-label="拡大">+</button>
+      <button onclick="resetView()" aria-label="表示をリセット" style="border-left:1px solid var(--line)">⌂</button>
+    </div>
+    <div id="keys"><b>DRAG</b> 移動 ／ <b>SCROLL</b> ズーム<br><b>HOVER</b> 最短ルート ／ <b>ESC</b> 選択解除 ／ <b>0</b> リセット</div>
+
+    <div id="drag-hint" class="drag-hint">ノードをドラッグして角度を調整</div>
 
     <div id="editor-panel">
-      <h2>スフィア盤エディタ<button class="close-btn" onclick="toggleEditor()">×</button></h2>
+      <h2>EDITOR<button class="close-btn" onclick="toggleEditor()">×</button></h2>
 
       <div class="editor-section">
         <h3>リング管理</h3>
@@ -1125,7 +442,7 @@
       </div>
 
       <div class="editor-section" id="node-editor" style="display: none;">
-        <h3>ノード編集 <span style="font-size:11px;color:#889;">(ドラッグでも移動可)</span></h3>
+        <h3>ノード編集</h3>
         <div class="form-row">
           <div class="form-group"><label>ID</label><input type="text" id="edit-id"></div>
           <div class="form-group"><label>リング</label><select id="edit-ring"></select></div>
@@ -1175,9 +492,9 @@
       <div id="export-section">
         <h3>データ管理</h3>
         <div class="btn-group">
-          <button class="btn btn-secondary btn-small" onclick="exportData()">📤 エクスポート</button>
-          <button class="btn btn-secondary btn-small" onclick="importData()">📥 インポート</button>
-          <button class="btn btn-secondary btn-small" onclick="downloadImage()">🖼️ 画像保存</button>
+          <button class="btn btn-secondary btn-small" onclick="exportData()">エクスポート</button>
+          <button class="btn btn-secondary btn-small" onclick="importData()">インポート</button>
+          <button class="btn btn-secondary btn-small" onclick="downloadImage()">画像保存</button>
         </div>
       </div>
     </div>
@@ -1209,7 +526,6 @@
     function logout() { if (confirm('ログアウトしますか？')) { localStorage.removeItem(AUTH_KEY); location.reload(); } }
     function showMainContent() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-content').classList.add('visible'); initApp(); }
     document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') attemptLogin(); });
-    if (checkAuth()) showMainContent(); else document.getElementById('password-input').focus();
 
     // CONFIG
     let CONFIG = {
@@ -1250,9 +566,11 @@
       nodeSizes: { MAJOR: 55, STANDARD: 45, MINOR: 35 }
     };
 
+
     let canvas, ctx, tooltip;
     let baseScale = 1, userZoom = 1, panX = 0, panY = 0;
-    let cx, cy;
+    let tZoom = 1, tPanX = 0, tPanY = 0;           // 目標値（慣性補間の行き先）
+    let cx, cy, vw = 0, vh = 0;
     let nodePositions = [];
     let selectedNodeId = null;
     let hoveredSphereType = null;
@@ -1262,36 +580,79 @@
     let isPanning = false;
     let dragNode = null;
     let lastPanPos = null;
+    let hoverId = null;
+    const hoverAmt = {};
+    const mouse = { x: 0, y: 0, sx: 0, sy: 0, inside: false };
+    const ring = { x: 0, y: 0 };
+    const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let introStart = 0, lastZoomText = '';
+    let stars = [];
+
+    const clamp01 = v => Math.max(0, Math.min(1, v));
+    const easeOut = t => 1 - Math.pow(1 - t, 3);
+    const nodeColor = n => ({ MASTERED: '#FFD700', UNLOCKED: '#33E680', ELIGIBLE: '#FFD700', LOCKED: '#4A4E58' }[n.state] || '#4A4E58');
+    const nodeById = id => CONFIG.nodes.find(n => n.id === id);
 
     function getScale() { return baseScale * userZoom; }
+
+    function initStars() {
+      let seed = 54321; const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+      // [個数, 最小径, 最大径, 最小透明度, 最大透明度, 視差の深さ]
+      [[170, 0.5, 1.2, 0.12, 0.45, 0.012], [70, 1, 2, 0.22, 0.6, 0.03], [26, 1.6, 2.8, 0.4, 0.85, 0.07]].forEach(([c, s1, s2, o1, o2, d]) => {
+        for (let i = 0; i < c; i++) stars.push({ x: rnd(), y: rnd(), r: s1 + rnd() * (s2 - s1), o: o1 + rnd() * (o2 - o1), ph: rnd() * 6.28, d, warm: rnd() > 0.82 });
+      });
+    }
 
     function initApp() {
       canvas = document.getElementById('canvas'); ctx = canvas.getContext('2d'); tooltip = document.getElementById('tooltip');
       window.addEventListener('resize', resize); canvas.addEventListener('mousemove', handleMouseMove); canvas.addEventListener('mousedown', handleMouseDown);
-      canvas.addEventListener('mouseup', handleMouseUp); canvas.addEventListener('mouseleave', handleMouseLeave); canvas.addEventListener('wheel', handleWheel, { passive: false });
-      resize(); updateMetrics();
-      setupLegendInteractions(); // Add Legend Listeners
+      window.addEventListener('mouseup', handleMouseUp); canvas.addEventListener('mouseleave', handleMouseLeave); canvas.addEventListener('wheel', handleWheel, { passive: false });
+      window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.inside = true; const r = document.getElementById('cursor-ring'); r.classList.add('on'); });
+      document.addEventListener('mouseleave', () => document.getElementById('cursor-ring').classList.remove('on'));
+      window.addEventListener('keydown', handleKey);
+      initTouch();
+      initStars(); resize(); updateMetrics(); setupLegendInteractions();
+      const intro = document.getElementById('intro');
+      if (!REDUCED) { intro.classList.add('play'); setTimeout(() => intro.classList.remove('play'), 2400); }
+      introStart = performance.now() + (REDUCED ? -10000 : 900);
       requestAnimationFrame(animate);
     }
 
     function setupLegendInteractions() {
-      document.querySelectorAll('.legend-item').forEach(item => {
-        const label = item.querySelector('.legend-text .label');
-        if (label && CONFIG.sphereTypes[label.textContent]) {
-          item.style.cursor = 'pointer';
-          item.addEventListener('mouseenter', () => { hoveredSphereType = label.textContent; draw(); });
-          item.addEventListener('mouseleave', () => { hoveredSphereType = null; draw(); });
-        }
+      document.querySelectorAll('.legend-item[data-sphere]').forEach(item => {
+        item.addEventListener('mouseenter', () => { hoveredSphereType = item.dataset.sphere; });
+        item.addEventListener('mouseleave', () => { hoveredSphereType = null; });
       });
     }
 
-    function animate() { draw(); requestAnimationFrame(animate); }
+    function animate(now) {
+      // ズーム・パンの慣性
+      const k = REDUCED ? 1 : 0.15;
+      userZoom += (tZoom - userZoom) * k; panX += (tPanX - panX) * k; panY += (tPanY - panY) * k;
+      if (Math.abs(tZoom - userZoom) < 0.0005) userZoom = tZoom;
+      mouse.sx += (mouse.x - mouse.sx) * 0.08; mouse.sy += (mouse.y - mouse.sy) * 0.08;
+      // カーソルリング
+      ring.x += (mouse.x - ring.x) * 0.2; ring.y += (mouse.y - ring.y) * 0.2;
+      const rEl = document.getElementById('cursor-ring'); rEl.style.transform = `translate(${ring.x}px,${ring.y}px)`;
+      rEl.classList.toggle('hot', !!hoverId && !isPanning); rEl.classList.toggle('grab', isPanning);
+      // ノードのホバー量
+      CONFIG.nodes.forEach(n => { const t = (n.id === hoverId || n.id === selectedNodeId) ? 1 : 0; hoverAmt[n.id] = (hoverAmt[n.id] || 0) + (t - (hoverAmt[n.id] || 0)) * 0.18; });
+      const z = Math.round(userZoom * 100) + '%'; if (z !== lastZoomText) { lastZoomText = z; document.getElementById('zoom-readout').textContent = z; }
+      draw(now); requestAnimationFrame(animate);
+    }
 
     function resize() {
-      const dpr = window.devicePixelRatio || 1, w = window.innerWidth, h = window.innerHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr; canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); baseScale = Math.min(w / CONFIG.width, h / CONFIG.height) * 0.9; cx = w / 2; cy = h / 2;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2); vw = window.innerWidth; vh = window.innerHeight;
+      canvas.width = vw * dpr; canvas.height = vh * dpr; canvas.style.width = vw + 'px'; canvas.style.height = vh + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); baseScale = Math.min(vw / CONFIG.width, vh / CONFIG.height) * 0.9; cx = vw / 2; cy = vh / 2;
     }
+
+    function zoomBy(f, ax, ay) {
+      const old = tZoom; tZoom = Math.max(0.25, Math.min(4, tZoom * f));
+      const x = ax ?? cx, y = ay ?? cy, r = tZoom / old;
+      tPanX -= (x - cx - tPanX) * (r - 1); tPanY -= (y - cy - tPanY) * (r - 1);
+    }
+    function resetView() { tZoom = 1; tPanX = 0; tPanY = 0; }
 
     function toggleMetrics() { const p = document.getElementById('metrics-panel'); p.classList.toggle('collapsed'); const btn = p.querySelector('.toggle-btn'); btn.textContent = p.classList.contains('collapsed') ? '▲' : '▼'; }
 
@@ -1299,159 +660,218 @@
       const revenue = +document.getElementById('metric-revenue').value, employees = +document.getElementById('metric-employees').value, margin = +document.getElementById('metric-margin').value, cash = +document.getElementById('metric-cash').value;
       const inventory = { '人材': Math.max(0, employees - 1), '資金': Math.floor(cash / 200), '実績': Math.floor(revenue / 500), '時間': Math.min(5, Math.floor(revenue / 1000) + 1), '信頼': Math.floor(margin / 10), '技術': Math.floor(revenue / 800) };
       const invEl = document.getElementById('sphere-inventory'); invEl.innerHTML = '';
-      Object.entries(inventory).forEach(([type, count]) => { const color = CONFIG.sphereTypes[type]?.color || '#888'; invEl.innerHTML += `<div class="sphere-inv-item"><div class="sphere-dot" style="background:${color}; box-shadow:0 0 8px ${color}"></div><span style="font-size:10px; color:#8899aa">${type}</span><input type="number" value="${count}" readonly></div>`; });
+      Object.entries(inventory).forEach(([type, count]) => { const color = CONFIG.sphereTypes[type]?.color || '#888'; invEl.innerHTML += `<div class="sphere-inv-item"><div class="sphere-dot" style="background:${color}; box-shadow:0 0 10px ${color}"></div><span style="font-size:10px; color:#7C8AA5">${type}</span><input type="number" value="${count}" readonly></div>`; });
       const stageEl = document.getElementById('current-stage'); stageEl.className = 'status-value'; let stage = "創業期 (Seed)";
       if (revenue >= 10000) { stage = "拡大期 (Expansion)"; stageEl.classList.add('good'); } else if (revenue >= 3000) { stage = "成長期 (Growth)"; stageEl.classList.add('good'); } else if (revenue >= 1000) { stage = "立上げ期 (Startup)"; stageEl.classList.add('warning'); } else { stageEl.classList.add('bad'); } stageEl.textContent = stage;
     }
 
-    function draw() {
+    function draw(now) {
       if (!ctx) return;
       try {
-        const w = canvas.width / (window.devicePixelRatio || 1), h = canvas.height / (window.devicePixelRatio || 1);
-        const grd = ctx.createRadialGradient(cx + panX, cy + panY, 0, cx + panX, cy + panY, Math.max(w, h)); grd.addColorStop(0, '#0a1628'); grd.addColorStop(1, '#03060f'); ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
-        drawStars(w, h); drawGlow(); drawRings(); drawEdges(); nodePositions = [];
-        // Sort once or handle visibility elsewhere. Ideally don't sort every frame.
-        // For now, simpler iteration. CORE usually comes first in list, so we might want to draw it last?
-        // Let's just draw in order.
-        CONFIG.nodes.forEach(n => { const p = drawNode(n); nodePositions.push({ id: n.id, ...p }); });
+        const it = (performance.now() - introStart) / 1000;       // イントロ経過秒（負なら開始前）
+        const time = performance.now();
+        const grd = ctx.createRadialGradient(cx + panX, cy + panY, 0, cx + panX, cy + panY, Math.max(vw, vh) * 0.9);
+        grd.addColorStop(0, '#0b1a33'); grd.addColorStop(0.55, '#050a16'); grd.addColorStop(1, '#03060d'); ctx.fillStyle = grd; ctx.fillRect(0, 0, vw, vh);
+        drawStars(time); drawSpotlight(); drawPolarGrid(it); drawGlow(); drawRings(it, time); drawEdges(it, time); nodePositions = [];
+        CONFIG.nodes.forEach((n, i) => { const p = drawNode(n, i, it, time); nodePositions.push({ id: n.id, ...p }); });
         if (hoveredSphereType) drawSphereConnections();
       } catch (e) {
         console.error('Draw error:', e);
       }
     }
 
-    function drawStars(w, h) {
-      const time = Date.now() * 0.0005; let seed = 54321; const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
-      [[150, 0.5, 1.2, 0.1, 0.3], [70, 1, 2, 0.2, 0.5], [30, 2, 4, 0.4, 0.8]].forEach(([c, s1, s2, o1, o2], idx) => {
-        for (let i = 0; i < c; i++) {
-          const rx = rnd(), ry = rnd(), pScale = 1 + idx * 0.2;
-          const x = (rx * w + Math.sin(time * pScale + rx * 10) * 10) % w, y = (ry * h + Math.cos(time * pScale + ry * 10) * 10) % h;
-          if (Math.sqrt((x - (cx + panX)) ** 2 + (y - (cy + panY)) ** 2) < 120 * getScale()) continue;
-          const sz = s1 + rnd() * (s2 - s1), op = o1 + rnd() * (o2 - o1) * (0.5 + 0.5 * Math.sin(time + rx * 20));
-          ctx.beginPath(); ctx.arc(x, y, sz, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,255,255,${op})`; ctx.fill();
-        }
-      });
+    function drawStars(time) {
+      const t = time * 0.001, mx = mouse.sx - vw / 2, my = mouse.sy - vh / 2;
+      for (const s of stars) {
+        const x = (((s.x * vw - mx * s.d * 2 + panX * s.d * 3) % vw) + vw) % vw, y = (((s.y * vh - my * s.d * 2 + panY * s.d * 3) % vh) + vh) % vh;
+        const op = s.o * (0.65 + 0.35 * Math.sin(t * 1.3 + s.ph));
+        ctx.fillStyle = s.warm ? `rgba(255,226,160,${op})` : `rgba(210,225,255,${op})`;
+        ctx.beginPath(); ctx.arc(x, y, s.r, 0, 6.2832); ctx.fill();
+      }
+    }
+
+    function drawSpotlight() {
+      if (!mouse.inside) return;
+      const g = ctx.createRadialGradient(mouse.sx, mouse.sy, 0, mouse.sx, mouse.sy, 320);
+      g.addColorStop(0, 'rgba(120,170,255,0.085)'); g.addColorStop(1, 'rgba(120,170,255,0)');
+      ctx.fillStyle = g; ctx.fillRect(mouse.sx - 320, mouse.sy - 320, 640, 640);
+    }
+
+    function maxRadius() { return Math.max(...CONFIG.rings.map(r => r.radius)); }
+
+    function drawPolarGrid(it) {
+      const scale = getScale(), R = (maxRadius() + 90) * scale, a = easeOut(clamp01((it - 0.1) / 1.2));
+      if (a <= 0) return;
+      ctx.save(); ctx.lineWidth = 1;
+      for (let d = 0; d < 360; d += 15) {
+        const rad = d * Math.PI / 180, major = d % 90 === 0, mid = d % 30 === 0;
+        ctx.strokeStyle = `rgba(110,160,230,${(major ? 0.16 : mid ? 0.075 : 0.03) * a})`;
+        ctx.beginPath(); ctx.moveTo(cx + panX + Math.cos(rad) * 60 * scale, cy + panY + Math.sin(rad) * 60 * scale);
+        ctx.lineTo(cx + panX + Math.cos(rad) * R * a, cy + panY + Math.sin(rad) * R * a); ctx.stroke();
+      }
+      ctx.restore();
     }
 
     function drawGlow() {
-      const scale = getScale(); const r = 600 * scale;
+      const scale = getScale(); const r = 640 * scale;
       const g = ctx.createRadialGradient(cx + panX, cy + panY, 0, cx + panX, cy + panY, r);
-      g.addColorStop(0, 'rgba(30,56,106,0.5)'); g.addColorStop(0.5, 'rgba(20,36,66,0.2)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      g.addColorStop(0, 'rgba(40,74,138,0.45)'); g.addColorStop(0.5, 'rgba(20,36,66,0.18)'); g.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
     }
 
-    function drawRings() {
-      const scale = getScale(); CONFIG.rings.forEach((ring, i) => {
-        const r = ring.radius * scale; const intensity = 1 - i * 0.15;
-        // Outer Glow Layer
-        ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(74,122,184,${0.2 * intensity})`; ctx.lineWidth = 12 * scale; ctx.stroke();
-        // Inner Core Line Layer
-        ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(100,160,230,${0.6 + 0.2 * intensity})`; ctx.lineWidth = 2 * scale; ctx.stroke();
-        // Label
-        ctx.font = `600 ${Math.max(10, 11 * scale)}px "Outfit", sans-serif`;
-        ctx.fillStyle = `rgba(200,225,255,${0.6 + 0.3 * intensity})`; ctx.textAlign = 'center';
-        ctx.fillText(ring.label.toUpperCase(), cx + panX, cy + panY - r - 12 * scale);
+    function drawRings(it, time) {
+      const scale = getScale(), ox = cx + panX, oy = cy + panY, sorted = [...CONFIG.rings].sort((a, b) => a.radius - b.radius);
+      const outerR = maxRadius();
+      sorted.forEach((ringDef, i) => {
+        const r = ringDef.radius * scale, intensity = 1 - i * 0.15, rev = easeOut(clamp01((it - 0.15 * i) / 1.3));
+        if (rev <= 0) return;
+        const a0 = -Math.PI / 2, a1 = a0 + Math.PI * 2 * rev;
+        ctx.beginPath(); ctx.arc(ox, oy, r, a0, a1); ctx.strokeStyle = `rgba(74,122,184,${0.14 * intensity})`; ctx.lineWidth = 14 * scale; ctx.stroke();
+        ctx.beginPath(); ctx.arc(ox, oy, r, a0, a1); ctx.strokeStyle = `rgba(110,165,235,${0.55 + 0.2 * intensity})`; ctx.lineWidth = 1.6 * scale; ctx.stroke();
+        // 回転する点線（内側）
+        ctx.save(); ctx.translate(ox, oy); ctx.rotate(time * 0.00004 * (i % 2 ? -1 : 1) * (1 + i * 0.4));
+        ctx.setLineDash([2 * scale, 16 * scale]); ctx.beginPath(); ctx.arc(0, 0, r - 11 * scale, 0, Math.PI * 2 * rev);
+        ctx.strokeStyle = `rgba(200,225,255,${0.3 * rev})`; ctx.lineWidth = 2.2 * scale; ctx.stroke(); ctx.restore(); ctx.setLineDash([]);
+        // ラベル
+        ctx.globalAlpha = rev; ctx.font = `500 ${Math.max(9, 10 * scale)}px "JetBrains Mono", monospace`;
+        ctx.fillStyle = `rgba(200,225,255,${0.55 + 0.3 * intensity})`; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+        ctx.fillText(String(ringDef.label).toUpperCase().split('').join(String.fromCharCode(8202)), ox, oy - r - 14 * scale); ctx.globalAlpha = 1;
       });
+      // 外周の目盛り
+      const R = outerR * scale + 30 * scale, rev = easeOut(clamp01((it - 0.5) / 1.2));
+      if (rev > 0) {
+        ctx.save(); ctx.translate(ox, oy); ctx.rotate(time * 0.000012);
+        for (let d = 0; d < 360; d += 3) {
+          const rad = d * Math.PI / 180, big = d % 30 === 0, mid = d % 15 === 0, len = (big ? 14 : mid ? 8 : 4) * scale;
+          if ((d / 360) > rev) break;
+          ctx.strokeStyle = big ? 'rgba(255,215,0,0.7)' : `rgba(150,190,240,${mid ? 0.4 : 0.2})`; ctx.lineWidth = big ? 1.4 : 1;
+          ctx.beginPath(); ctx.moveTo(Math.cos(rad) * R, Math.sin(rad) * R); ctx.lineTo(Math.cos(rad) * (R + len), Math.sin(rad) * (R + len)); ctx.stroke();
+        }
+        ctx.restore();
+      }
     }
 
-    function drawEdges() {
-      const scale = getScale(); const time = Date.now() * 0.002;
-      CONFIG.edges.forEach(edge => {
-        const from = CONFIG.nodes.find(n => n.id === edge.from), to = CONFIG.nodes.find(n => n.id === edge.to); if (!from || !to) return;
-        const p1 = getNodePos(from), p2 = getNodePos(to), isPath = highlightedPathNodes.has(from.id) && highlightedPathNodes.has(to.id);
+    function drawEdges(it, time) {
+      const scale = getScale(), t = time * 0.00045;
+      CONFIG.edges.forEach((edge, ei) => {
+        const from = nodeById(edge.from), to = nodeById(edge.to); if (!from || !to) return;
+        const rev = easeOut(clamp01((it - 0.5 - ei * 0.06) / 1.1)); if (rev <= 0) return;
+        const p1 = getNodePos(from), full = getNodePos(to);
+        const p2 = { x: p1.x + (full.x - p1.x) * rev, y: p1.y + (full.y - p1.y) * rev };
+        const isPath = highlightedPathNodes.has(from.id) && highlightedPathNodes.has(to.id);
         const isMain = edge.type === 'MAIN', isCross = edge.type === 'CROSS_DOMAIN';
+        const active = to.state !== 'LOCKED' && from.state !== 'LOCKED';
 
-        // Background line (Thick)
-        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = isPath ? 'rgba(255,215,0,0.15)' : `rgba(58,96,144,${isMain ? 0.3 : 0.15})`;
-        ctx.lineWidth = (isMain ? 10 : 6) * scale; ctx.lineCap = 'round'; ctx.stroke();
+        // 太い背景
+        ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = isPath ? 'rgba(255,215,0,0.16)' : (active ? 'rgba(90,150,220,0.2)' : `rgba(58,96,144,${isMain ? 0.22 : 0.1})`);
+        ctx.lineWidth = (isMain ? 10 : 6) * scale; ctx.stroke();
 
-        // Core line (Sharp)
-        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-        if (isPath) {
-          ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 3 * scale; ctx.shadowBlur = 10; ctx.shadowColor = '#FFD700';
-        } else {
-          ctx.strokeStyle = isCross ? 'rgba(184,138,8,0.6)' : `rgba(74,122,184,${isMain ? 0.8 : 0.5})`;
-          ctx.lineWidth = (isMain ? 2.5 : 1.2) * scale; ctx.shadowBlur = 0;
-        }
-        if (edge.type === 'OPTIONAL') ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
-        ctx.stroke(); ctx.setLineDash([]); ctx.shadowBlur = 0;
+        // コア線（始点→終点のグラデーション）
+        const g = ctx.createLinearGradient(p1.x, p1.y, full.x, full.y);
+        if (isPath) { g.addColorStop(0, '#FFD700'); g.addColorStop(1, '#FFF1A0'); }
+        else if (isCross) { g.addColorStop(0, 'rgba(184,138,8,0.8)'); g.addColorStop(1, 'rgba(184,138,8,0.35)'); }
+        else if (active) { g.addColorStop(0, 'rgba(255,215,0,0.85)'); g.addColorStop(1, 'rgba(90,170,240,0.75)'); }
+        else { g.addColorStop(0, `rgba(86,140,210,${isMain ? 0.8 : 0.5})`); g.addColorStop(1, `rgba(60,100,160,${isMain ? 0.45 : 0.25})`); }
+        ctx.strokeStyle = g; ctx.lineWidth = (isPath ? 3 : isMain ? 2.2 : 1.2) * scale;
+        if (isPath) { ctx.shadowBlur = 12; ctx.shadowColor = '#FFD700'; }
+        if (edge.type === 'OPTIONAL') ctx.setLineDash([5 * scale, 6 * scale]);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); ctx.setLineDash([]); ctx.shadowBlur = 0;
 
-        // Animate particles on main path
-        if (isMain && !isPath) {
-          const dist = Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
-          const dotPos = (time % 1) * dist; const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-          const dx = p1.x + Math.cos(angle) * dotPos, dy = p1.y + Math.sin(angle) * dotPos;
-          ctx.beginPath(); ctx.arc(dx, dy, 1.5 * scale, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fill();
+        // 流れる光（尾を引く）
+        if ((isMain || isPath) && rev > 0.95) {
+          const n = isPath ? 3 : 2;
+          for (let k = 0; k < n; k++) {
+            const head = ((t * (isPath ? 1.8 : 1) + k / n + ei * 0.17) % 1);
+            for (let j = 0; j < 6; j++) {
+              const u = head - j * 0.012; if (u < 0) continue;
+              const x = p1.x + (full.x - p1.x) * u, y = p1.y + (full.y - p1.y) * u;
+              ctx.beginPath(); ctx.arc(x, y, (1.9 - j * 0.25) * scale * (isPath ? 1.3 : 1), 0, 6.2832);
+              ctx.fillStyle = isPath ? `rgba(255,240,170,${0.95 - j * 0.15})` : `rgba(210,230,255,${0.8 - j * 0.13})`; ctx.fill();
+            }
+          }
         }
       });
     }
 
-    function drawNode(node) {
-      const scale = getScale(), pos = getNodePos(node), baseSize = CONFIG.nodeSizes[node.importance] || 45, size = baseSize * (node.sizeMultiplier || 1) * scale;
-      const isSelected = selectedNodeId === node.id, isPath = highlightedPathNodes.has(node.id), hasSph = hoveredSphereType && node.requirements?.some(r => r.type === hoveredSphereType);
-      const time = Date.now() * 0.003;
+    function shapePath(shape, x, y, r) {
+      if (shape === 'hexagon') drawPoly(x, y, r, 6, Math.PI / 2); else if (shape === 'diamond') drawPoly(x, y, r, 4, 0);
+      else if (shape === 'octagon') drawPoly(x, y, r, 8, Math.PI / 8); else ctx.arc(x, y, r, 0, Math.PI * 2);
+    }
 
-      // Outer Glow & Pulsing
+    function drawNode(node, idx, it, time) {
+      const scale = getScale(), pos = getNodePos(node), baseSize = CONFIG.nodeSizes[node.importance] || 45;
+      const rev = easeOut(clamp01((it - 0.9 - idx * 0.07) / 0.8)), h = hoverAmt[node.id] || 0;
+      const size = baseSize * (node.sizeMultiplier || 1) * scale * (0.55 + 0.45 * rev) * (1 + 0.12 * h);
+      const isSelected = selectedNodeId === node.id, isPath = highlightedPathNodes.has(node.id), hasSph = hoveredSphereType && node.requirements?.some(r => r.type === hoveredSphereType);
+      const tt = time * 0.003;
+      const hit = { x: pos.x, y: pos.y, size: baseSize * (node.sizeMultiplier || 1) * scale };
+      if (rev <= 0.01) return hit;
+      ctx.globalAlpha = rev;
+
+      // 外側の光
       if (node.state !== 'LOCKED' || isPath || hasSph) {
-        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * (1.25 + Math.sin(time) * 0.05), 0, Math.PI * 2);
-        const g = ctx.createRadialGradient(pos.x, pos.y, size * 0.7, pos.x, pos.y, size * 1.5);
-        let gc = node.state === 'MASTERED' ? '#FFD700' : (node.state === 'UNLOCKED' ? '#33E680' : '#FFD700');
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * (1.3 + Math.sin(tt + idx) * 0.05 + h * 0.15), 0, Math.PI * 2);
+        const g = ctx.createRadialGradient(pos.x, pos.y, size * 0.7, pos.x, pos.y, size * 1.6);
+        let gc = node.state === 'UNLOCKED' ? '#33E680' : '#FFD700';
         if (hasSph) gc = CONFIG.sphereTypes[hoveredSphereType].color;
-        g.addColorStop(0, gc + '55'); g.addColorStop(1, gc + '00'); ctx.fillStyle = g; ctx.fill();
+        g.addColorStop(0, gc + (h > 0.5 ? '77' : '55')); g.addColorStop(1, gc + '00'); ctx.fillStyle = g; ctx.fill();
+      }
+      // 解放可：波紋
+      if (node.state === 'ELIGIBLE') {
+        for (let k = 0; k < 2; k++) {
+          const ph = ((time * 0.00045 + idx * 0.31 + k * 0.5) % 1);
+          ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size * (1.05 + ph * 0.75));
+          ctx.strokeStyle = `rgba(255,215,0,${(1 - ph) * 0.45})`; ctx.lineWidth = 1.2 * scale; ctx.stroke();
+        }
+      }
+      // 定着：回る軌道リング
+      if (node.state === 'MASTERED') {
+        ctx.save(); ctx.translate(pos.x, pos.y); ctx.rotate(time * 0.0004 * (idx % 2 ? 1 : -1));
+        ctx.setLineDash([3 * scale, 7 * scale]); ctx.beginPath(); ctx.arc(0, 0, size * 1.28, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(255,215,0,0.55)'; ctx.lineWidth = 1.2 * scale; ctx.stroke(); ctx.restore(); ctx.setLineDash([]);
       }
 
-      // Node Body
-      ctx.beginPath();
-      if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, size, 6, Math.PI / 2);
-      else if (node.shape === 'diamond') drawPoly(pos.x, pos.y, size, 4, 0);
-      else if (node.shape === 'octagon') drawPoly(pos.x, pos.y, size, 8, Math.PI / 8);
-      else ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
-
-      const baseFill = node.state === 'LOCKED' ? '#2A2E38' : (node.state === 'MASTERED' ? '#B88A08' : (node.state === 'UNLOCKED' ? '#146B3A' : '#B88A08'));
+      // 本体
+      ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size);
+      const baseFill = node.state === 'LOCKED' ? '#2A2E38' : (node.state === 'UNLOCKED' ? '#146B3A' : '#B88A08');
       const grd = ctx.createRadialGradient(pos.x - size * 0.3, pos.y - size * 0.3, size * 0.1, pos.x, pos.y, size * 1.1);
-      grd.addColorStop(0, lighten(baseFill, 0.4)); grd.addColorStop(0.5, baseFill); grd.addColorStop(1, darken(baseFill, 0.4));
+      grd.addColorStop(0, lighten(baseFill, 0.4 + h * 0.1)); grd.addColorStop(0.5, baseFill); grd.addColorStop(1, darken(baseFill, 0.4));
       ctx.fillStyle = grd; ctx.fill();
 
-      // Reflections (Gloss)
-      ctx.save();
-      ctx.beginPath();
-      const clipSize = size * 0.98;
-      if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, clipSize, 6, Math.PI / 2); else if (node.shape === 'diamond') drawPoly(pos.x, pos.y, clipSize, 4, 0); else if (node.shape === 'octagon') drawPoly(pos.x, pos.y, clipSize, 8, Math.PI / 8); else ctx.arc(pos.x, pos.y, clipSize, 0, Math.PI * 2);
-      ctx.clip();
-
-      // Top Highlight
+      // ツヤ
+      ctx.save(); ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size * 0.98); ctx.clip();
       const glossGrd = ctx.createLinearGradient(pos.x, pos.y - size, pos.x, pos.y);
-      glossGrd.addColorStop(0, 'rgba(255,255,255,0.4)'); glossGrd.addColorStop(0.5, 'rgba(255,255,255,0.05)'); glossGrd.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.beginPath(); ctx.ellipse(pos.x, pos.y - size * 0.4, size * 0.7, size * 0.4, 0, 0, Math.PI * 2);
-      ctx.fillStyle = glossGrd; ctx.fill();
-
-      // Bottom Reflection
+      glossGrd.addColorStop(0, 'rgba(255,255,255,0.42)'); glossGrd.addColorStop(0.5, 'rgba(255,255,255,0.05)'); glossGrd.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.beginPath(); ctx.ellipse(pos.x, pos.y - size * 0.4, size * 0.7, size * 0.4, 0, 0, Math.PI * 2); ctx.fillStyle = glossGrd; ctx.fill();
       const botGlow = ctx.createRadialGradient(pos.x, pos.y + size * 0.8, 0, pos.x, pos.y + size * 0.8, size * 0.5);
       botGlow.addColorStop(0, 'rgba(255,255,255,0.2)'); botGlow.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.beginPath(); ctx.ellipse(pos.x, pos.y + size * 0.7, size * 0.5, size * 0.2, 0, 0, Math.PI * 2);
-      ctx.fillStyle = botGlow; ctx.fill();
-
+      ctx.beginPath(); ctx.ellipse(pos.x, pos.y + size * 0.7, size * 0.5, size * 0.2, 0, 0, Math.PI * 2); ctx.fillStyle = botGlow; ctx.fill();
       ctx.restore();
 
-      // Border
-      ctx.beginPath();
-      if (node.shape === 'hexagon') drawPoly(pos.x, pos.y, size, 6, Math.PI / 2); else if (node.shape === 'diamond') drawPoly(pos.x, pos.y, size, 4, 0); else if (node.shape === 'octagon') drawPoly(pos.x, pos.y, size, 8, Math.PI / 8); else ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
-      ctx.strokeStyle = isSelected ? '#fff' : (node.state === 'LOCKED' ? '#4A4E58' : '#FFD700');
-      ctx.lineWidth = (isSelected || node.state === 'MASTERED' ? 3 : 1.5) * scale;
-      if (isSelected) { ctx.shadowBlur = 10; ctx.shadowColor = '#fff'; }
+      // 縁
+      ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size);
+      ctx.strokeStyle = isSelected || h > 0.5 ? '#fff' : (node.state === 'LOCKED' ? '#4A4E58' : '#FFD700');
+      ctx.lineWidth = (isSelected || node.state === 'MASTERED' ? 2.6 : 1.5) * scale;
+      if (isSelected) { ctx.shadowBlur = 12; ctx.shadowColor = '#fff'; }
       ctx.stroke(); ctx.shadowBlur = 0;
 
-      // Text
-      ctx.font = `600 ${Math.max(8, 11 * scale)}px "Outfit", sans-serif`;
-      ctx.fillStyle = node.state === 'LOCKED' ? '#8899aa' : '#fff';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      // 選択：照準ブラケット
+      if (isSelected) {
+        const b = size * 1.55, l = size * 0.32; ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 1.4 * scale;
+        [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sy]) => {
+          ctx.beginPath(); ctx.moveTo(pos.x + sx * b, pos.y + sy * (b - l)); ctx.lineTo(pos.x + sx * b, pos.y + sy * b); ctx.lineTo(pos.x + sx * (b - l), pos.y + sy * b); ctx.stroke();
+        });
+      }
+
+      // ラベル
+      ctx.font = `600 ${Math.max(8, 11 * scale)}px "Zen Kaku Gothic New", "Outfit", sans-serif`;
+      ctx.fillStyle = node.state === 'LOCKED' ? '#8899aa' : '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       const lines = node.label.split('\n'), lh = 14 * scale, startY = pos.y - ((lines.length - 1) * lh) / 2; lines.forEach((l, i) => ctx.fillText(l, pos.x, startY + i * lh));
 
       if (node.state === 'LOCKED') { ctx.font = `${10 * scale}px serif`; ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.fillText('🔒', pos.x + size * 0.7, pos.y - size * 0.7); }
-      return { x: pos.x, y: pos.y, size };
+      ctx.globalAlpha = 1;
+      return hit;
     }
 
     function getNodePos(node) {
@@ -1463,64 +883,98 @@
     function drawPoly(x, y, r, sides, rot = 0) { ctx.moveTo(x + r * Math.cos(rot), y + r * Math.sin(rot)); for (let i = 1; i <= sides; i++) { const a = rot + (i * 2 * Math.PI) / sides; ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); } ctx.closePath(); }
 
     function drawSphereConnections() {
-      const color = CONFIG.sphereTypes[hoveredSphereType].color, w = canvas.width / (window.devicePixelRatio || 1);
-      nodePositions.filter(p => CONFIG.nodes.find(n => n.id === p.id)?.requirements?.some(r => r.type === hoveredSphereType)).forEach(p => {
+      const color = CONFIG.sphereTypes[hoveredSphereType].color, w = vw;
+      nodePositions.filter(p => nodeById(p.id)?.requirements?.some(r => r.type === hoveredSphereType)).forEach(p => {
         ctx.beginPath(); ctx.setLineDash([5, 5]); ctx.lineDashOffset = -Date.now() * 0.01;
-        ctx.moveTo(w - 100, 200); ctx.quadraticCurveTo((w - 100 + p.x) / 2, 150, p.x, p.y); ctx.strokeStyle = color + '44'; ctx.lineWidth = 2; ctx.stroke(); ctx.setLineDash([]);
+        ctx.moveTo(w - 240, 120); ctx.quadraticCurveTo((w - 240 + p.x) / 2, 90, p.x, p.y); ctx.strokeStyle = color + '77'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.setLineDash([]);
       });
     }
 
+    function hitTest(x, y) { for (let i = nodePositions.length - 1; i >= 0; i--) { const p = nodePositions[i]; if (Math.hypot(x - p.x, y - p.y) < p.size) return p; } return null; }
+
     function handleMouseMove(e) {
       const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
-      if (isPanning && lastPanPos) { panX += x - lastPanPos.x; panY += y - lastPanPos.y; lastPanPos = { x, y }; return; }
-      if (dragNode) { const dx = x - (cx + panX), dy = y - (cy + panY); dragNode.angleDeg = Math.atan2(dy, dx) * 180 / Math.PI; return; }
-      const node = nodePositions.find(p => Math.sqrt((x - p.x) ** 2 + (y - p.y) ** 2) < p.size);
-      if (node) { canvas.style.cursor = 'pointer'; const n = CONFIG.nodes.find(v => v.id === node.id); if (n) showTooltip(n, e.clientX, e.clientY); }
-      else { canvas.style.cursor = isPanning ? 'move' : (isEditorOpen ? 'crosshair' : 'default'); hideTooltip(); if (highlightedPathNodes.size > 0) highlightedPathNodes.clear(); }
+      if (isPanning && lastPanPos) { const dx = x - lastPanPos.x, dy = y - lastPanPos.y; panX += dx; panY += dy; tPanX += dx; tPanY += dy; lastPanPos = { x, y }; hideTooltip(); return; }
+      if (dragNode) { const dx = x - (cx + panX), dy = y - (cy + panY); dragNode.angleDeg = Math.round(Math.atan2(dy, dx) * 180 / Math.PI); return; }
+      const hit = hitTest(x, y);
+      if (hit) { hoverId = hit.id; canvas.style.cursor = 'pointer'; const n = nodeById(hit.id); if (n) showTooltip(n, e.clientX, e.clientY); }
+      else { hoverId = null; canvas.style.cursor = ''; hideTooltip(); if (highlightedPathNodes.size > 0) highlightedPathNodes.clear(); }
     }
 
     function handleMouseDown(e) {
       const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
-      if (e.button === 1 || (e.button === 0 && e.altKey)) { isPanning = true; lastPanPos = { x, y }; canvas.classList.add('panning'); return; }
-      const node = nodePositions.find(p => Math.sqrt((x - p.x) ** 2 + (y - p.y) ** 2) < p.size);
-      if (node) { if (isEditorOpen) dragNode = CONFIG.nodes.find(v => v.id === node.id); selectNode(node.id); }
-      else { selectedNodeId = null; if (isEditorOpen) document.getElementById('node-editor').style.display = 'none'; }
+      const hit = hitTest(x, y);
+      if (e.button === 1 || (e.button === 0 && (e.altKey || !hit))) {
+        if (!hit) { selectedNodeId = null; if (isEditorOpen) document.getElementById('node-editor').style.display = 'none'; }
+        isPanning = true; lastPanPos = { x, y }; canvas.classList.add('panning'); return;
+      }
+      if (hit) { if (isEditorOpen) dragNode = nodeById(hit.id); selectNode(hit.id); }
     }
 
-    function handleMouseUp() { isPanning = false; dragNode = null; lastPanPos = null; canvas.classList.remove('panning'); }
-    function handleMouseLeave() { handleMouseUp(); hideTooltip(); }
+    function handleMouseUp() { isPanning = false; dragNode = null; lastPanPos = null; if (canvas) canvas.classList.remove('panning'); }
+    function handleMouseLeave() { hoverId = null; hideTooltip(); }
     function handleWheel(e) {
-      e.preventDefault(); const delta = e.deltaY > 0 ? 0.9 : 1.1;
-      const oldZoom = userZoom; userZoom = Math.max(0.25, Math.min(4, userZoom * delta));
-      const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left, y = e.clientY - rect.top;
-      const sx = baseScale * oldZoom, nx = baseScale * userZoom;
-      panX -= (x - cx - panX) * (nx / sx - 1); panY -= (y - cy - panY) * (nx / sx - 1);
+      e.preventDefault(); const rect = canvas.getBoundingClientRect();
+      zoomBy(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - rect.left, e.clientY - rect.top);
+    }
+    function handleKey(e) {
+      if (e.target.matches('input, textarea, select')) return;
+      if (e.key === 'Escape') { selectedNodeId = null; highlightedPathNodes.clear(); hideTooltip(); }
+      else if (e.key === '0') resetView(); else if (e.key === '+' || e.key === '=') zoomBy(1.2); else if (e.key === '-') zoomBy(1 / 1.2);
+    }
+    // タッチ：1本指でパン、2本指でピンチズーム
+    function initTouch() {
+      let pts = {}, lastD = 0;
+      canvas.addEventListener('pointerdown', e => { if (e.pointerType !== 'touch') return; pts[e.pointerId] = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); });
+      canvas.addEventListener('pointermove', e => {
+        if (e.pointerType !== 'touch' || !pts[e.pointerId]) return;
+        const prev = pts[e.pointerId], ids = Object.keys(pts); pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+        if (ids.length === 1) { const dx = e.clientX - prev.x, dy = e.clientY - prev.y; panX += dx; panY += dy; tPanX += dx; tPanY += dy; }
+        else if (ids.length === 2) { const [a, b] = ids.map(k => pts[k]), d = Math.hypot(a.x - b.x, a.y - b.y); if (lastD) zoomBy(d / lastD, (a.x + b.x) / 2, (a.y + b.y) / 2); lastD = d; }
+      });
+      const up = e => { delete pts[e.pointerId]; lastD = 0; };
+      canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
     }
 
     function getPathToCore(id) { const p = []; let c = id; while (c) { p.push(c); if (c === 'CORE') break; const e = CONFIG.edges.find(x => x.to === c); c = e ? e.from : null; } return p; }
-    function calculateTotalCost(ids) { const t = {}; ids.forEach(id => { const n = CONFIG.nodes.find(v => v.id === id); if (n && n.state === 'LOCKED') n.requirements?.forEach(r => { t[r.type] = (t[r.type] || 0) + r.count; }); }); return t; }
+    function calculateTotalCost(ids) { const t = {}; ids.forEach(id => { const n = nodeById(id); if (n && n.state === 'LOCKED') n.requirements?.forEach(r => { t[r.type] = (t[r.type] || 0) + r.count; }); }); return t; }
 
+    let tipFor = null;
     function showTooltip(node, x, y) {
-      highlightedPathNodes = new Set(getPathToCore(node.id)); const cost = calculateTotalCost(Array.from(highlightedPathNodes));
-      let h = `<h3>${node.label.replace('\n', ' ')}</h3><span class="state ${node.state}">${getStateName(node.state)}</span><div class="description">${node.description || ''}</div>`;
-      if (node.requirements?.length) { h += '<div class="requirements"><h4>必要スフィア</h4>'; node.requirements.forEach(r => { const c = CONFIG.sphereTypes[r.type]?.color || '#888'; h += `<span class="sphere-item" style="background:${c}22;color:${c};border:1px solid ${c}44">${r.type} ×${r.count}</span>`; }); h += '</div>'; }
-      if (Object.keys(cost).length > 0) { h += `<div class="total-cost" style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(74, 122, 184, 0.2)"><h4 style="color:#FFD700; font-size:11px; margin-bottom:6px;">最短ルート累計コスト</h4>`; Object.entries(cost).forEach(([t, c]) => { const cl = CONFIG.sphereTypes[t]?.color || '#888'; h += `<div style="display:inline-flex; align-items:center; margin-right:12px; font-size:11px;"><div style="width:8px; height:8px; border-radius:50%; background:${cl}; margin-right:6px; box-shadow:0 0 6px ${cl}"></div><span>${t} ×${c}</span></div>`; }); h += '</div>'; }
-      if (node.effect) h += `<div class="effect">→ ${node.effect}</div>`;
-      tooltip.innerHTML = h; tooltip.style.display = 'block'; const tr = tooltip.getBoundingClientRect();
-      let l = x + 15, t = y + 15; if (l + tr.width > window.innerWidth) l = x - tr.width - 15; if (t + tr.height > window.innerHeight) t = y - tr.height - 15;
-      tooltip.style.left = l + 'px'; tooltip.style.top = t + 'px';
+      if (tipFor !== node.id) {
+        tipFor = node.id;
+        highlightedPathNodes = new Set(getPathToCore(node.id)); const cost = calculateTotalCost(Array.from(highlightedPathNodes));
+        let h = `<h3>${node.label.replace('\n', ' ')}</h3><span class="state ${node.state}">${getStateName(node.state)}</span><div class="description">${node.description || ''}</div>`;
+        if (node.requirements?.length) { h += '<div class="requirements"><h4>必要スフィア</h4>'; node.requirements.forEach(r => { const c = CONFIG.sphereTypes[r.type]?.color || '#888'; h += `<span class="sphere-item" style="background:${c}22;color:${c};border:1px solid ${c}55">${r.type} ×${r.count}</span>`; }); h += '</div>'; }
+        if (Object.keys(cost).length > 0) { h += `<div class="total-cost" style="margin-top:8px; padding-top:12px; border-top:1px solid rgba(150,180,230,.14)"><h4 style="color:#FFD700">最短ルート累計コスト</h4>`; Object.entries(cost).forEach(([t, c]) => { const cl = CONFIG.sphereTypes[t]?.color || '#888'; h += `<div style="display:inline-flex; align-items:center; margin-right:14px; font-size:11px;"><div style="width:8px; height:8px; border-radius:50%; background:${cl}; margin-right:6px; box-shadow:0 0 6px ${cl}"></div><span>${t} ×${c}</span></div>`; }); h += '</div>'; }
+        if (node.effect) h += `<div class="effect">→ ${node.effect}</div>`;
+        tooltip.innerHTML = h; tooltip.style.display = 'block';
+        tooltip.style.animation = 'none'; void tooltip.offsetWidth; tooltip.style.animation = '';
+      }
+      const tr = tooltip.getBoundingClientRect();
+      let l = x + 22, t = y + 22; if (l + tr.width > window.innerWidth - 12) l = x - tr.width - 22; if (t + tr.height > window.innerHeight - 12) t = y - tr.height - 22;
+      tooltip.style.left = Math.max(12, l) + 'px'; tooltip.style.top = Math.max(12, t) + 'px';
     }
 
-    function hideTooltip() { if (tooltip) tooltip.style.display = 'none'; }
+    function hideTooltip() { tipFor = null; if (tooltip) tooltip.style.display = 'none'; }
     function getStateName(s) { return { MASTERED: '定着', UNLOCKED: '解放済', ELIGIBLE: '解放可', LOCKED: '未解放' }[s] || '未解放'; }
     function lighten(hex, amt) { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? `rgb(${Math.min(255, parseInt(m[1], 16) + amt * 255)},${Math.min(255, parseInt(m[2], 16) + amt * 255)},${Math.min(255, parseInt(m[3], 16) + amt * 255)})` : hex; }
     function darken(hex, amt) { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? `rgb(${Math.max(0, parseInt(m[1], 16) - amt * 255)},${Math.max(0, parseInt(m[2], 16) - amt * 255)},${Math.max(0, parseInt(m[3], 16) - amt * 255)})` : hex; }
 
+    // 編集モードで未定義だった関数
+    function addNewNode() {
+      const id = 'NODE_' + Date.now().toString(36).toUpperCase(), r = CONFIG.rings[0];
+      CONFIG.nodes.push({ id, label: '新規\nノード', ring: r.id, angleDeg: 0, state: 'LOCKED', importance: 'STANDARD', shape: 'circle', description: '', effect: '', requirements: [] });
+      CONFIG.edges.push({ from: 'CORE', to: id, type: 'MAIN' }); updateNodeList(); selectNode(id);
+    }
+    function cancelEdit() { selectedNodeId = null; document.getElementById('node-editor').style.display = 'none'; updateNodeList(); }
 
     // --- Editor & IO ---
     function toggleEditor() {
       isEditorOpen = !isEditorOpen; document.getElementById('editor-panel').classList.toggle('open', isEditorOpen);
-      const btn = document.getElementById('editor-toggle'); btn.classList.toggle('active', isEditorOpen); btn.textContent = isEditorOpen ? '✓ 編集モード' : '📝 編集モード';
+      document.getElementById('main-content').classList.toggle('editing', isEditorOpen);
+      const btn = document.getElementById('editor-toggle'); btn.classList.toggle('active', isEditorOpen); btn.textContent = isEditorOpen ? '編集中 ✓' : '編集モード';
+      const hint = document.getElementById('drag-hint'); hint.classList.toggle('visible', isEditorOpen); if (isEditorOpen) setTimeout(() => hint.classList.remove('visible'), 4000);
       if (isEditorOpen) { updateRingList(); updateNodeList(); updateRingSelect(); }
     }
 
@@ -1608,6 +1062,8 @@
       }; i.click();
     }
     function downloadImage() { const a = document.createElement('a'); a.download = 'grid.png'; a.href = canvas.toDataURL('image/png'); a.click(); }
+
+    if (checkAuth()) showMainContent(); else document.getElementById('password-input').focus();
   </script>
 </body>
 
