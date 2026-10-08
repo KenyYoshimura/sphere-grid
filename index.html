@@ -7,134 +7,73 @@
   <title>WG Sphere Grid - 企業スフィア盤</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #04070e;
-      --ink: #EAF0FA;
-      --mute: #7C8AA5;
-      --dim: #4B5870;
-      --line: rgba(150, 180, 230, .14);
-      --line-strong: rgba(150, 180, 230, .28);
-      --gold: #FFD700;
-      --gold-deep: #B88A08;
-      --blue: #6FA3F0;
-      --green: #33E680;
-      --panel: rgba(7, 12, 24, .58);
-      --ease: cubic-bezier(.2, .8, .2, 1);
-      --font-display: 'Outfit', 'Zen Kaku Gothic New', sans-serif;
-      --font-body: 'Zen Kaku Gothic New', 'Outfit', 'Hiragino Sans', sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --ink: #0A0A0A;
+      --paper: #F2F1EC;
+      --acc: #D7FF2F;
+      --mute: rgba(242, 241, 236, .55);
+      --dim: rgba(242, 241, 236, .3);
+      --line: rgba(242, 241, 236, .18);
+      --ease: cubic-bezier(.76, 0, .24, 1);
+      --out: cubic-bezier(.16, 1, .3, 1);
+      --display: 'Inter Tight', 'Zen Kaku Gothic New', sans-serif;
+      --body: 'Inter Tight', 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+      --serif: 'Instrument Serif', 'Zen Kaku Gothic New', serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--ink); color: var(--paper); font-family: var(--body); overflow: hidden; -webkit-font-smoothing: antialiased; }
+    button { font-family: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
+    ::selection { background: var(--acc); color: var(--ink); }
+    .serif { font-family: var(--serif); font-style: italic; font-weight: 400; }
+    .note { font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+    .note b { color: var(--acc); font-weight: 500; }
 
-    body {
-      background: var(--bg);
-      font-family: var(--font-body);
-      color: var(--ink);
-      overflow: hidden;
-      -webkit-font-smoothing: antialiased;
+    /* ---------- 反転レンズ ---------- */
+    #lens {
+      position: fixed; left: 0; top: 0; width: 76px; height: 76px; margin: -38px 0 0 -38px; border-radius: 50%;
+      background: #fff; mix-blend-mode: difference; pointer-events: none; z-index: 9900; opacity: 0;
+      transition: width .5s var(--out), height .5s var(--out), margin .5s var(--out), opacity .3s;
     }
-
-    button { font-family: inherit; color: inherit; cursor: pointer; }
-
-    ::selection { background: var(--gold); color: #000; }
-
-    /* ---------- 共通オーバーレイ（粒子ノイズ・ビネット） ---------- */
-    #grain, #vignette { position: fixed; inset: 0; pointer-events: none; z-index: 900; }
-    #grain {
-      opacity: .07; mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-    }
-    #vignette { background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .55) 100%); }
-
-    /* ---------- カーソル追従リング ---------- */
-    #cursor-ring {
-      position: fixed; left: 0; top: 0; width: 36px; height: 36px; margin: -18px 0 0 -18px;
-      border: 1px solid rgba(255, 255, 255, .55); border-radius: 50%;
-      pointer-events: none; z-index: 9500; opacity: 0;
-      transition: width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease), border-color .3s, background .3s, opacity .3s;
-      mix-blend-mode: difference;
-    }
-    #cursor-ring.on { opacity: 1; }
-    #cursor-ring.hot { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: rgba(255, 255, 255, .9); border-color: transparent; }
-    #cursor-ring.grab { width: 22px; height: 22px; margin: -11px 0 0 -11px; background: rgba(255, 255, 255, .9); }
-    @media (hover: none) { #cursor-ring { display: none; } }
+    #lens.on { opacity: 1; }
+    #lens.big { width: 170px; height: 170px; margin: -85px 0 0 -85px; }
+    #lens.dot { width: 18px; height: 18px; margin: -9px 0 0 -9px; }
+    @media (hover: none) { #lens { display: none; } }
 
     /* ---------- ログイン ---------- */
-    #login-screen {
-      position: fixed; inset: 0; z-index: 10000; overflow: hidden;
-      background: radial-gradient(ellipse at 50% 55%, #0b1a33 0%, #050912 55%, #03060d 100%);
-      display: flex; justify-content: center; align-items: center;
-      transition: opacity .6s var(--ease), visibility .6s;
-    }
-    #login-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-
-    .orbit { position: absolute; left: 50%; top: 50%; border-radius: 50%; border: 1px solid var(--line); pointer-events: none; }
-    .orbit::after { content: ''; position: absolute; top: -4px; left: 50%; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 14px var(--gold); }
-    .orbit.o1 { width: 420px; height: 420px; margin: -210px 0 0 -210px; animation: spin 38s linear infinite; }
-    .orbit.o2 { width: 680px; height: 680px; margin: -340px 0 0 -340px; animation: spin 64s linear infinite reverse; border-style: dashed; }
-    .orbit.o2::after { background: var(--blue); box-shadow: 0 0 14px var(--blue); }
-    .orbit.o3 { width: 980px; height: 980px; margin: -490px 0 0 -490px; animation: spin 110s linear infinite; }
-    .orbit.o3::after { width: 4px; height: 4px; background: #fff; box-shadow: 0 0 10px #fff; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .login-box {
-      position: relative; width: min(420px, calc(100vw - 40px)); text-align: center;
-      animation: rise 1s var(--ease) both;
-    }
-    @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-
-    .login-eyebrow { font: 500 10px var(--font-mono); letter-spacing: .4em; color: var(--mute); margin-bottom: 22px; }
-    .login-box h1 {
-      font: 200 clamp(34px, 6vw, 52px)/1.05 var(--font-display); letter-spacing: .16em; margin-bottom: 6px;
-      background: linear-gradient(180deg, #fff 30%, #9db4da 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .login-box h1 em { font-style: normal; color: var(--gold); -webkit-text-fill-color: var(--gold); font-weight: 400; }
-    .login-box .subtitle { color: var(--mute); font-size: 12px; letter-spacing: .3em; margin-bottom: 40px; }
-
-    .field { position: relative; margin-bottom: 18px; }
-    .login-box input[type="password"] {
-      width: 100%; padding: 14px 4px; background: transparent; border: 0; border-bottom: 1px solid var(--line-strong);
-      color: #fff; font: 400 18px var(--font-mono); text-align: center; letter-spacing: .5em; outline: none; transition: border-color .3s;
-    }
-    .login-box input[type="password"]::placeholder { letter-spacing: .15em; font: 400 12px var(--font-body); color: var(--dim); }
-    .field::after {
-      content: ''; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%; background: var(--gold);
-      transform: scaleX(0); transition: transform .5s var(--ease);
-    }
-    .field:focus-within::after { transform: scaleX(1); }
-
-    .login-box button.enter {
-      position: relative; width: 100%; padding: 15px; margin-top: 10px; overflow: hidden;
-      background: transparent; border: 1px solid var(--line-strong); color: var(--ink);
-      font: 500 11px var(--font-mono); letter-spacing: .4em; transition: color .4s var(--ease), border-color .4s;
-    }
-    .login-box button.enter::before {
-      content: ''; position: absolute; inset: 0; background: var(--gold); transform: translateY(101%); transition: transform .45s var(--ease); z-index: -1;
-    }
-    .login-box button.enter { z-index: 0; isolation: isolate; }
-    .login-box button.enter:hover { color: #000; border-color: var(--gold); }
+    #login-screen { position: fixed; inset: 0; z-index: 10000; background: var(--ink); overflow: hidden; display: flex; align-items: center; justify-content: center; transition: transform .9s var(--ease); }
+    #login-screen.hidden { transform: translateY(-101%); pointer-events: none; }
+    .marquee { position: absolute; left: 0; top: 50%; transform: translateY(-50%); white-space: nowrap; font: 800 clamp(160px, 26vw, 420px)/.8 var(--display); letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1px rgba(242, 241, 236, .16); animation: slide 48s linear infinite; user-select: none; pointer-events: none; }
+    .marquee.two { top: 78%; animation-duration: 70s; animation-direction: reverse; -webkit-text-stroke-color: rgba(215, 255, 47, .14); font-size: clamp(90px, 14vw, 230px); }
+    @keyframes slide { to { transform: translate(-50%, -50%); } }
+    .marquee.two { animation-name: slide2; }
+    @keyframes slide2 { from { transform: translate(-50%, -50%); } to { transform: translate(0, -50%); } }
+    .login-box { position: relative; width: min(380px, calc(100vw - 32px)); background: var(--paper); color: var(--ink); padding: 22px 24px 24px; animation: pop 1s .15s var(--out) both; }
+    @keyframes pop { from { opacity: 0; transform: translateY(40px) rotate(1.2deg); } to { opacity: 1; transform: none; } }
+    .login-top { display: flex; justify-content: space-between; font: 500 13px var(--body); color: rgba(10, 10, 10, .55); }
+    .login-box h1 { margin-top: 110px; font: 800 52px/.92 var(--display); letter-spacing: -.045em; }
+    .login-box h1 .serif { letter-spacing: -.02em; font-size: 1.04em; }
+    .login-box .subtitle { margin: 14px 0 28px; font: 500 12px var(--mono); color: rgba(10, 10, 10, .55); letter-spacing: .04em; }
+    .login-box input[type="password"] { width: 100%; padding: 12px 0; background: transparent; border: 0; border-bottom: 2px solid var(--ink); color: var(--ink); font: 500 20px var(--mono); letter-spacing: .4em; outline: none; border-radius: 0; }
+    .login-box input::placeholder { letter-spacing: 0; font: 500 13px var(--body); color: rgba(10, 10, 10, .4); }
+    .login-box input:focus { border-bottom-color: #6c8400; }
+    .login-box button.enter { position: relative; overflow: hidden; width: 100%; margin-top: 18px; padding: 15px 18px; background: var(--acc); color: var(--ink); display: flex; justify-content: space-between; font: 700 13px var(--body); letter-spacing: .06em; text-transform: uppercase; isolation: isolate; }
+    .login-box button.enter::before { content: ''; position: absolute; inset: 0; background: var(--ink); transform: translateY(101%); transition: transform .5s var(--out); z-index: -1; }
+    .login-box button.enter:hover { color: var(--acc); }
     .login-box button.enter:hover::before { transform: none; }
-    .login-error { color: #ff7a8a; font-size: 12px; min-height: 18px; margin-top: 14px; }
-    .login-hint { color: var(--dim); font: 400 10px var(--font-mono); letter-spacing: .2em; margin-top: 26px; }
+    .login-error { color: #d40f2a; font: 500 12px var(--body); min-height: 18px; margin-top: 12px; }
+    .login-hint { font: 500 10px var(--mono); color: rgba(10, 10, 10, .45); letter-spacing: .06em; text-transform: uppercase; }
 
-    /* ---------- イントロ幕 ---------- */
-    #intro { position: fixed; inset: 0; z-index: 9800; pointer-events: none; display: none; }
+    /* ---------- イントロ（巨大カウンタ） ---------- */
+    #intro { position: fixed; inset: 0; z-index: 9800; background: var(--ink); display: none; transition: transform 1s var(--ease); }
     #intro.play { display: block; }
-    #intro .half { position: absolute; left: 0; width: 100%; height: 50.2%; background: #03060d; }
-    #intro .top { top: 0; animation: curtainUp 1.1s .95s var(--ease) forwards; }
-    #intro .bot { bottom: 0; animation: curtainDown 1.1s .95s var(--ease) forwards; }
-    #intro .word {
-      position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px;
-      font: 200 clamp(22px, 4vw, 44px) var(--font-display); letter-spacing: .5em; padding-left: .5em; color: #fff;
-      animation: wordIn 1.5s var(--ease) forwards;
-    }
-    #intro .word small { font: 400 10px var(--font-mono); letter-spacing: .5em; color: var(--gold); }
-    @keyframes curtainUp { to { transform: translateY(-101%); } }
-    @keyframes curtainDown { to { transform: translateY(101%); } }
-    @keyframes wordIn { 0% { opacity: 0; letter-spacing: .9em; } 40% { opacity: 1; } 75% { opacity: 1; letter-spacing: .5em; } 100% { opacity: 0; letter-spacing: .5em; } }
+    #intro.lift { transform: translateY(-101%); }
+    #intro .ld-top { position: absolute; left: 26px; top: 24px; font: 500 15px var(--body); }
+    #intro .ld-top span { color: var(--mute); }
+    #intro .ld-num { position: absolute; left: 20px; bottom: 6px; font: 800 clamp(120px, 30vw, 460px)/.78 var(--display); letter-spacing: -.07em; color: var(--paper); font-variant-numeric: tabular-nums; }
+    #intro .ld-bar { position: absolute; left: 0; bottom: 0; height: 5px; background: var(--acc); width: 0; }
 
     /* ---------- メイン ---------- */
     #main-content { display: none; position: fixed; inset: 0; }
@@ -143,256 +82,209 @@
     #canvas { display: block; touch-action: none; cursor: grab; }
     #canvas.panning { cursor: grabbing; }
 
-    /* 共通パネル */
-    .panel {
-      position: fixed; z-index: 100; background: var(--panel);
-      -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2);
-      border: 1px solid var(--line);
-      opacity: 0; transform: translateY(12px);
-    }
-    .visible .panel { animation: panelIn .9s var(--ease) forwards; }
+    .panel { position: fixed; z-index: 100; background: rgba(10, 10, 10, .86); border: 1px solid var(--line); opacity: 0; transform: translateY(16px); }
+    .visible .panel { animation: panelIn 1s var(--out) forwards; }
     @keyframes panelIn { to { opacity: 1; transform: none; } }
-    #gates { animation-delay: 1.9s !important; }
-    #metrics-panel { animation-delay: 2.05s !important; }
-    #legend { animation-delay: 2.2s !important; }
-
-    /* 角のトンボ */
-    .panel::before, .panel::after { content: ''; position: absolute; width: 9px; height: 9px; border: 1px solid var(--gold); opacity: .8; pointer-events: none; }
-    .panel::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
-    .panel::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
-
-    .eyebrow { font: 500 9.5px var(--font-mono); letter-spacing: .28em; text-transform: uppercase; color: var(--mute); }
-    .eyebrow i { font-style: normal; color: var(--gold); margin-right: 8px; }
+    #metrics-panel { animation-delay: 1.9s !important; } #legend { animation-delay: 2.05s !important; } #gates { animation-delay: 2.2s !important; }
 
     /* ヘッダー */
-    #topbar {
-      position: fixed; z-index: 200; top: 0; left: 0; right: 0; height: 68px; padding: 0 28px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: linear-gradient(180deg, rgba(4, 7, 14, .85), transparent);
-      opacity: 0; animation: panelIn 1s 1.7s var(--ease) forwards;
-    }
-    .brand { display: flex; align-items: center; gap: 14px; }
-    .brand-mark {
-      width: 26px; height: 26px; border-radius: 50%; position: relative;
-      background: radial-gradient(circle at 32% 30%, #FFF3B0, var(--gold) 45%, var(--gold-deep));
-      box-shadow: 0 0 22px rgba(255, 215, 0, .45);
-    }
-    .brand-mark::after { content: ''; position: absolute; inset: -6px; border: 1px solid rgba(255, 215, 0, .35); border-radius: 50%; animation: spin 14s linear infinite; border-top-color: transparent; }
-    .brand b { display: block; font: 600 13px var(--font-display); letter-spacing: .32em; }
-    .brand small { display: block; margin-top: 3px; font: 400 9.5px var(--font-mono); letter-spacing: .3em; color: var(--mute); }
-    .top-actions { display: flex; gap: 10px; }
+    #topbar { position: fixed; z-index: 200; top: 0; left: 0; right: 0; height: 64px; padding: 0 24px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; opacity: 0; animation: panelIn 1s 1.8s var(--out) forwards; pointer-events: none; }
+    #topbar > * { pointer-events: auto; }
+    .brand { display: flex; align-items: baseline; gap: 12px; }
+    .brand b { font: 800 22px var(--display); letter-spacing: -.05em; }
+    .brand span { font: 500 13px var(--body); color: var(--mute); }
+    .brand .serif { font-size: 20px; color: var(--acc); }
+    #mode-chips { display: flex; gap: 6px; padding: 5px; background: rgba(10, 10, 10, .86); border: 1px solid var(--line); }
+    .chip { position: relative; padding: 9px 16px; font: 700 12px var(--body); letter-spacing: .02em; color: var(--paper); border: 1px solid transparent; transition: background .3s, color .3s, border-color .3s; }
+    .chip i { font: 500 10px var(--mono); color: var(--mute); margin-right: 8px; font-style: normal; }
+    .chip:hover { border-color: var(--paper); }
+    .chip.active { background: var(--acc); color: var(--ink); }
+    .chip.active i { color: rgba(10, 10, 10, .55); }
+    .top-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .btn-top { padding: 11px 18px; border: 1px solid var(--line); background: rgba(10, 10, 10, .86); font: 700 12px var(--body); transition: background .3s, color .3s, border-color .3s; }
+    .btn-top:hover { background: var(--paper); color: var(--ink); }
+    .btn-top.active { background: var(--acc); color: var(--ink); border-color: var(--acc); }
+    #editor-toggle { background: var(--acc); color: var(--ink); border-color: var(--acc); }
+    #editor-toggle:hover { background: var(--paper); border-color: var(--paper); }
 
-    .pill {
-      position: relative; padding: 9px 16px; background: rgba(8, 14, 26, .5); border: 1px solid var(--line-strong);
-      font: 500 10px var(--font-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--ink);
-      transition: background .3s, color .3s, border-color .3s; overflow: hidden;
-    }
-    .pill:hover { background: var(--gold); color: #000; border-color: var(--gold); }
-    .pill.active { background: var(--gold); color: #000; border-color: var(--gold); }
-
-    /* 左カラム */
-    #gates { top: 92px; left: 28px; width: 252px; padding: 20px 20px 18px; }
-    #gates h2 { font: 300 15px var(--font-display); letter-spacing: .24em; margin: 10px 0 2px; }
-    #gates .subtitle { color: var(--mute); font-size: 11px; letter-spacing: .2em; margin-bottom: 16px; }
-    #gates h3 { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--gold); margin-bottom: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
-    #gates ul { list-style: none; counter-reset: g; }
-    #gates li { counter-increment: g; display: flex; gap: 12px; padding: 5px 0; font-size: 12px; color: #c4cfe3; border-bottom: 1px solid rgba(150, 180, 230, .06); }
-    #gates li::before { content: counter(g, decimal-leading-zero); font: 400 10px/1.9 var(--font-mono); color: var(--gold); opacity: .8; }
-
-    #metrics-panel { left: 28px; bottom: 28px; width: 252px; padding: 16px 20px 18px; max-height: calc(100vh - 440px); min-height: 56px; overflow: auto; scrollbar-width: none; }
+    /* 左：指標 */
+    #metrics-panel { top: 84px; left: 24px; width: 268px; padding: 16px 18px 18px; max-height: calc(100vh - 340px); overflow: auto; scrollbar-width: none; }
     #metrics-panel::-webkit-scrollbar { display: none; }
-    #metrics-panel h2 { display: flex; justify-content: space-between; align-items: center; font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--mute); text-transform: uppercase; }
-    #metrics-panel h2 .toggle-btn { width: 24px; height: 24px; background: transparent; border: 1px solid var(--line-strong); font-size: 8px; color: var(--ink); transition: .3s; }
-    #metrics-panel h2 .toggle-btn:hover { background: var(--gold); color: #000; }
-    #metrics-panel.collapsed .metrics-content { display: none; }
-    .metrics-content { margin-top: 14px; }
-    .metric-row { display: grid; grid-template-columns: 60px 1fr 28px; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(150, 180, 230, .06); }
-    .metric-row label { font-size: 11px; color: var(--mute); }
-    .metric-row input { width: 100%; background: transparent; border: 0; color: var(--ink); font: 400 16px var(--font-display); text-align: right; outline: none; padding: 2px 0; -moz-appearance: textfield; }
-    .metric-row input:focus { color: var(--gold); }
+    #metrics-panel h2, #legend h2, #gates h2 { display: flex; justify-content: space-between; align-items: center; font: 700 13px var(--body); }
+    #metrics-panel h2 .note, #legend h2 .note, #gates h2 .note { margin-right: 10px; }
+    .toggle-btn { width: 24px; height: 24px; border: 1px solid var(--line); font-size: 8px; transition: .25s; }
+    .toggle-btn:hover { background: var(--acc); color: var(--ink); border-color: var(--acc); }
+    #metrics-panel.collapsed .metrics-content, #gates.collapsed .gates-body { display: none; }
+    .metrics-content { margin-top: 12px; }
+    .metric-row { display: grid; grid-template-columns: 62px 1fr 26px; align-items: center; gap: 6px; padding: 5px 0; border-top: 1px solid var(--line); }
+    .metric-row label { font-size: 12px; color: var(--mute); }
+    .metric-row input { width: 100%; background: transparent; border: 0; color: var(--paper); font: 700 22px var(--display); letter-spacing: -.03em; text-align: right; outline: none; -moz-appearance: textfield; }
+    .metric-row input:focus { color: var(--acc); }
     .metric-row input::-webkit-outer-spin-button, .metric-row input::-webkit-inner-spin-button { -webkit-appearance: none; }
     .metric-row .unit { font-size: 10px; color: var(--dim); }
-    .metric-divider { height: 14px; }
-    .metrics-content > div[style] { font: 500 9.5px var(--font-mono) !important; letter-spacing: .28em; text-transform: uppercase; color: var(--gold) !important; }
-    .sphere-inventory { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 14px; }
-    .sphere-inv-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 5px 4px; border: 1px solid var(--line); background: rgba(255, 255, 255, .02); }
-    .sphere-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .sphere-inv-item input { width: 100%; background: transparent; border: 0; text-align: center; color: var(--ink); font: 300 17px var(--font-display); outline: none; }
-    .metric-status { padding-top: 12px; border-top: 1px solid var(--line); }
-    .status-title { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--mute); text-transform: uppercase; margin-bottom: 6px; }
-    .status-value { font: 300 18px var(--font-display); letter-spacing: .08em; }
-    .status-value.good { color: var(--green); } .status-value.warning { color: var(--gold); } .status-value.bad { color: #ff7a8a; }
+    .metric-divider { height: 10px; }
+    .metrics-content > div[style] { font: 500 10px var(--mono) !important; letter-spacing: .08em; text-transform: uppercase; color: var(--acc) !important; }
+    .sphere-inventory { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 12px; }
+    .sphere-inv-item { display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 6px 8px 4px; border: 1px solid var(--line); position: relative; }
+    .sphere-inv-item span { font-size: 10px !important; color: var(--mute) !important; }
+    .sphere-dot { position: absolute; top: 8px; right: 8px; width: 7px; height: 7px; border-radius: 0; box-shadow: none !important; }
+    .sphere-inv-item input { width: 100%; background: transparent; border: 0; color: var(--paper); font: 800 26px/1 var(--display); letter-spacing: -.04em; outline: none; }
+    .metric-status { padding-top: 10px; border-top: 1px solid var(--line); }
+    .status-title { font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); margin-bottom: 4px; }
+    .status-value { font: 700 20px var(--display); letter-spacing: -.02em; }
+    .status-value.good { color: var(--acc); } .status-value.warning { color: var(--paper); } .status-value.bad { color: #ff6b7e; }
 
-    /* 右カラム（凡例） */
-    #legend { top: 92px; right: 28px; width: 214px; padding: 20px 20px 16px; transition: opacity .5s var(--ease), transform .5s var(--ease) !important; }
-    .editing #legend { opacity: 0 !important; transform: translateX(30px) !important; pointer-events: none; }
-    #legend h2 { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--mute); text-transform: uppercase; margin-bottom: 12px; }
-    #legend h3 { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--gold); text-transform: uppercase; margin: 16px 0 8px; padding-top: 14px; border-top: 1px solid var(--line); }
-    .legend-item { display: flex; align-items: center; gap: 12px; padding: 6px 6px; margin: 0 -6px; transition: background .25s, transform .35s var(--ease); }
+    /* 左下：巨大カウンタ */
+    #counter { position: fixed; z-index: 90; left: 20px; bottom: 14px; pointer-events: none; opacity: 0; animation: panelIn 1.1s 2.1s var(--out) forwards; mix-blend-mode: difference; }
+    #counter .num { font: 800 clamp(96px, 15vw, 230px)/.78 var(--display); letter-spacing: -.07em; color: #fff; font-variant-numeric: tabular-nums; }
+    #counter .num small { font-size: .26em; letter-spacing: -.03em; margin-left: .16em; opacity: .55; }
+    #counter .cap { margin: 14px 0 0 6px; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #fff; }
+
+    /* 右：凡例・ゲート */
+    #legend { top: 84px; right: 24px; width: 220px; padding: 16px 18px 12px; transition: opacity .5s var(--out), transform .5s var(--out) !important; }
+    .editing #legend, .editing #gates { opacity: 0 !important; transform: translateX(30px) !important; pointer-events: none; }
+    #legend h3 { font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acc); margin: 12px 0 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+    #legend h2 { margin-bottom: 8px; }
+    .legend-item { display: flex; align-items: center; gap: 12px; padding: 5px 6px; margin: 0 -6px; transition: background .25s, color .25s, padding .35s var(--out); }
     .legend-item[data-sphere] { cursor: pointer; }
-    .legend-item[data-sphere]:hover { background: rgba(255, 255, 255, .05); transform: translateX(4px); }
-    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
-    .legend-sphere { width: 9px; height: 9px; border-radius: 50%; flex: none; box-shadow: 0 0 12px currentColor; margin: 0 1.5px; }
-    .legend-text { font-size: 12px; line-height: 1.35; }
-    .legend-text .label { color: var(--ink); }
-    .legend-text .desc { color: var(--dim); font-size: 10px; }
+    .legend-item[data-sphere]:hover { background: var(--paper); color: var(--ink); padding-left: 12px; }
+    .legend-item[data-sphere]:hover .desc { color: rgba(10, 10, 10, .6); }
+    .legend-dot { width: 13px; height: 13px; flex: none; border-radius: 50%; }
+    .legend-dot.s-m { background: var(--acc); } .legend-dot.s-u { background: var(--paper); }
+    .legend-dot.s-e { border: 2px solid var(--acc); } .legend-dot.s-l { border: 1px solid var(--dim); }
+    .legend-sphere { width: 10px; height: 10px; flex: none; }
+    .legend-text { font-size: 12.5px; font-weight: 700; line-height: 1.3; }
+    .legend-text .desc { color: var(--mute); font-size: 10px; font-weight: 500; }
+    #gates { top: auto; right: 24px; bottom: 24px; width: 220px; padding: 14px 18px; }
+    #gates .gates-body { margin-top: 10px; }
+    #gates ul { list-style: none; counter-reset: g; }
+    #gates li { counter-increment: g; display: flex; gap: 10px; padding: 6px 0; font-size: 12px; border-top: 1px solid var(--line); color: var(--paper); }
+    #gates li::before { content: counter(g, decimal-leading-zero); font: 500 10px/1.8 var(--mono); color: var(--acc); }
 
     /* HUD */
-    #hud { position: fixed; z-index: 150; left: 50%; bottom: 26px; transform: translateX(-50%); display: flex; align-items: center; gap: 0; opacity: 0; animation: panelIn 1s 2.3s var(--ease) forwards; background: var(--panel); border: 1px solid var(--line); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
-    #hud button { width: 38px; height: 38px; background: transparent; border: 0; font: 300 16px var(--font-display); transition: background .25s, color .25s; }
-    #hud button:hover { background: var(--gold); color: #000; }
-    #hud .readout { min-width: 64px; text-align: center; font: 400 11px var(--font-mono); letter-spacing: .1em; color: var(--mute); border-left: 1px solid var(--line); border-right: 1px solid var(--line); line-height: 38px; }
-    #keys { position: fixed; z-index: 120; right: 28px; bottom: 32px; font: 400 9.5px var(--font-mono); letter-spacing: .22em; color: var(--dim); text-align: right; line-height: 1.9; opacity: 0; animation: panelIn 1s 2.4s var(--ease) forwards; }
-    #keys b { color: var(--mute); font-weight: 500; }
+    #hud { position: fixed; z-index: 150; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; background: rgba(10, 10, 10, .86); border: 1px solid var(--line); opacity: 0; animation: panelIn 1s 2.3s var(--out) forwards; }
+    #hud button { width: 40px; height: 40px; font: 500 17px var(--display); transition: background .25s, color .25s; }
+    #hud button:hover { background: var(--acc); color: var(--ink); }
+    #hud .readout { min-width: 66px; text-align: center; font: 500 11px/40px var(--mono); color: var(--mute); border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
 
-    /* ツールチップ */
-    #tooltip {
-      display: none; position: fixed; z-index: 1000; pointer-events: none; width: 270px; padding: 18px 18px 16px;
-      background: rgba(6, 11, 22, .86); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-      border: 1px solid var(--line-strong); box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
-      animation: tipIn .35s var(--ease);
-    }
-    @keyframes tipIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
-    #tooltip::before { content: ''; position: absolute; top: -1px; left: -1px; width: 9px; height: 9px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
-    #tooltip h3 { font: 500 17px var(--font-body); letter-spacing: .06em; margin-bottom: 8px; }
-    #tooltip .state { display: inline-block; font: 500 9.5px var(--font-mono); letter-spacing: .24em; padding: 3px 9px; border: 1px solid; margin-bottom: 12px; }
-    #tooltip .state.MASTERED { color: var(--gold); border-color: rgba(255, 215, 0, .5); background: rgba(255, 215, 0, .08); }
-    #tooltip .state.UNLOCKED { color: var(--green); border-color: rgba(51, 230, 128, .5); background: rgba(51, 230, 128, .08); }
-    #tooltip .state.ELIGIBLE { color: #FFE066; border-color: rgba(255, 224, 102, .4); }
-    #tooltip .state.LOCKED { color: var(--mute); border-color: var(--line-strong); }
-    #tooltip .description { color: #b6c2d9; font-size: 12px; line-height: 1.75; margin-bottom: 12px; }
-    #tooltip h4 { font: 500 9.5px var(--font-mono); letter-spacing: .26em; color: var(--mute); text-transform: uppercase; margin-bottom: 8px; }
-    #tooltip .sphere-item { display: inline-block; font-size: 11px; padding: 3px 10px; margin: 0 6px 6px 0; }
-    #tooltip .effect { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--gold); font-size: 12px; }
+    /* ツールチップ＝ポスターカード */
+    #tooltip { display: none; position: fixed; z-index: 1000; pointer-events: none; width: 300px; background: var(--paper); color: var(--ink); padding: 14px 16px 16px; clip-path: inset(0 0 0 0); box-shadow: 0 30px 60px rgba(0, 0, 0, .5); }
+    #tooltip.pop { animation: card .5s var(--out); }
+    @keyframes card { from { clip-path: inset(100% 0 0 0); transform: translateY(14px); } to { clip-path: inset(0 0 0 0); transform: none; } }
+    #tooltip .tip-top { display: flex; justify-content: space-between; font: 500 11px var(--mono); color: rgba(10, 10, 10, .5); }
+    #tooltip h3 { margin: 38px 0 10px; font: 800 30px/.95 var(--display); letter-spacing: -.045em; }
+    #tooltip .state { display: inline-block; font: 700 11px var(--body); padding: 3px 10px; background: var(--ink); color: var(--paper); margin-bottom: 12px; }
+    #tooltip .state.MASTERED { background: var(--acc); color: var(--ink); outline: 1px solid var(--ink); }
+    #tooltip .state.UNLOCKED { background: #fff; color: var(--ink); outline: 1px solid var(--ink); }
+    #tooltip .state.ELIGIBLE { background: transparent; color: var(--ink); outline: 2px solid var(--ink); }
+    #tooltip .state.LOCKED { background: rgba(10, 10, 10, .12); color: rgba(10, 10, 10, .6); }
+    #tooltip .description { font-size: 12.5px; line-height: 1.7; font-weight: 500; margin-bottom: 12px; }
+    #tooltip h4 { font: 500 10px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: rgba(10, 10, 10, .5); margin-bottom: 7px; }
+    #tooltip .sphere-item { display: inline-flex; align-items: center; gap: 6px; font: 700 11.5px var(--body); padding: 3px 8px 3px 6px; margin: 0 5px 5px 0; border: 1px solid var(--ink); }
+    #tooltip .sphere-item i { width: 8px; height: 8px; display: block; }
+    #tooltip .total-cost { margin-top: 6px; padding-top: 10px; border-top: 2px solid var(--ink); }
+    #tooltip .effect { margin-top: 12px; padding: 9px 11px; background: var(--acc); font: 700 13px var(--body); }
 
-    /* 編集モード */
-    #editor-panel {
-      position: fixed; z-index: 300; top: 0; right: 0; bottom: 0; width: 340px; padding: 84px 24px 24px; overflow-y: auto;
-      background: rgba(5, 9, 18, .88); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
-      border-left: 1px solid var(--line-strong); transform: translateX(105%); transition: transform .7s var(--ease);
-      scrollbar-width: thin; scrollbar-color: var(--dim) transparent;
-    }
+    /* 編集パネル（紙面） */
+    #editor-panel { position: fixed; z-index: 300; top: 0; right: 0; bottom: 0; width: 360px; padding: 84px 22px 24px; overflow-y: auto; background: var(--paper); color: var(--ink); transform: translateX(104%); transition: transform .8s var(--ease); scrollbar-width: thin; scrollbar-color: var(--ink) transparent; }
     #editor-panel.open { transform: none; }
-    #editor-panel h2 { display: flex; justify-content: space-between; align-items: center; font: 300 18px var(--font-display); letter-spacing: .22em; margin-bottom: 22px; }
-    #editor-panel .close-btn { width: 30px; height: 30px; background: transparent; border: 1px solid var(--line-strong); font-size: 16px; line-height: 1; transition: .3s; }
-    #editor-panel .close-btn:hover { background: var(--gold); color: #000; transform: rotate(90deg); }
-    .editor-section { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
-    .editor-section h3, #export-section h3 { font: 500 9.5px var(--font-mono); letter-spacing: .28em; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+    #editor-panel h2 { display: flex; justify-content: space-between; align-items: flex-start; font: 800 44px/.9 var(--display); letter-spacing: -.05em; margin-bottom: 24px; }
+    #editor-panel .close-btn { width: 34px; height: 34px; border: 1px solid var(--ink); font-size: 18px; line-height: 1; transition: .35s var(--out); }
+    #editor-panel .close-btn:hover { background: var(--ink); color: var(--paper); transform: rotate(90deg); }
+    .editor-section { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 2px solid var(--ink); }
+    .editor-section h3, #export-section h3 { font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+    .editor-section h3::before, #export-section h3::before { content: '{ '; } .editor-section h3::after, #export-section h3::after { content: ' }'; }
     .ring-list, .node-list { margin-bottom: 10px; }
-    .node-list { max-height: 190px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--dim) transparent; }
-    .ring-item { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+    .node-list { max-height: 190px; overflow-y: auto; }
+    .ring-item { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
     .ring-item input { flex: 1; min-width: 0; }
-    .delete-ring { width: 28px; height: 28px; background: transparent; border: 1px solid var(--line-strong); color: #ff7a8a; }
-    .delete-ring:hover { background: #ff7a8a; color: #000; }
-    .node-list-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; cursor: pointer; border-left: 2px solid transparent; transition: background .25s, border-color .25s, padding-left .3s var(--ease); }
-    .node-list-item:hover { background: rgba(255, 255, 255, .04); padding-left: 14px; }
-    .node-list-item.selected { background: rgba(255, 215, 0, .07); border-left-color: var(--gold); }
-    .node-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
-    .node-name { flex: 1; font-size: 12px; }
-    .node-ring { font: 400 10px var(--font-mono); color: var(--dim); }
+    .delete-ring { width: 28px; height: 28px; border: 1px solid var(--ink); color: #c20b25; }
+    .delete-ring:hover { background: #c20b25; color: #fff; }
+    .node-list-item { display: flex; align-items: center; gap: 10px; padding: 7px 8px; cursor: pointer; border-bottom: 1px solid rgba(10, 10, 10, .15); transition: background .2s, padding .3s var(--out); }
+    .node-list-item:hover { background: rgba(10, 10, 10, .06); padding-left: 14px; }
+    .node-list-item.selected { background: var(--acc); }
+    .node-dot { width: 9px; height: 9px; flex: none; border: 1px solid var(--ink); }
+    .node-name { flex: 1; font: 700 12.5px var(--body); }
+    .node-ring { font: 500 10px var(--mono); color: rgba(10, 10, 10, .5); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font: 500 9.5px var(--font-mono); letter-spacing: .2em; color: var(--mute); margin-bottom: 5px; }
-    #editor-panel input[type="text"], #editor-panel input[type="number"], #editor-panel select, #editor-panel textarea {
-      width: 100%; padding: 8px 10px; background: rgba(255, 255, 255, .03); border: 1px solid var(--line); border-radius: 0;
-      color: var(--ink); font: 400 12px var(--font-body); outline: none; transition: border-color .25s, background .25s;
-    }
-    #editor-panel select option { background: #0a1220; }
-    #editor-panel textarea { min-height: 62px; resize: vertical; }
-    #editor-panel input:focus, #editor-panel select:focus, #editor-panel textarea:focus { border-color: var(--gold); background: rgba(255, 215, 0, .04); }
-    .sphere-editor { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .sphere-tag { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; font-size: 11px; border: 1px solid currentColor; }
-    .sphere-tag input { width: 38px !important; padding: 2px 4px !important; text-align: center; border: 0 !important; background: rgba(0, 0, 0, .3) !important; }
-    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-    .btn { padding: 10px 14px; background: transparent; border: 1px solid var(--line-strong); font: 500 10px var(--font-mono); letter-spacing: .14em; transition: background .25s, color .25s, border-color .25s; }
-    .btn:hover:not(:disabled) { background: var(--ink); color: #000; }
-    .btn:disabled { opacity: .3; cursor: default; }
-    .btn-primary { background: var(--gold); border-color: var(--gold); color: #000; }
-    .btn-primary:hover:not(:disabled) { background: #fff; }
-    .btn-danger { color: #ff7a8a; border-color: rgba(255, 122, 138, .4); }
-    .btn-danger:hover:not(:disabled) { background: #ff7a8a; color: #000; }
-    .btn-small { padding: 6px 10px; font-size: 9px; }
+    .form-group label { display: block; font: 500 10px var(--mono); text-transform: uppercase; letter-spacing: .06em; color: rgba(10, 10, 10, .55); margin-bottom: 4px; }
+    #editor-panel input[type="text"], #editor-panel input[type="number"], #editor-panel select, #editor-panel textarea { width: 100%; padding: 8px 0; background: transparent; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; color: var(--ink); font: 500 13px var(--body); outline: none; transition: background .2s, padding .25s; }
+    #editor-panel textarea { min-height: 64px; resize: vertical; border: 1px solid var(--ink); padding: 8px; }
+    #editor-panel input:focus, #editor-panel select:focus { background: var(--acc); padding-left: 8px; }
+    #editor-panel textarea:focus { background: var(--acc); }
+    .sphere-editor { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .sphere-tag { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; font: 700 11.5px var(--body); border: 1px solid var(--ink); background: var(--paper); border-left-width: 6px; }
+    .sphere-tag input { width: 38px !important; padding: 2px 4px !important; text-align: center; border: 0 !important; background: rgba(10, 10, 10, .08) !important; }
+    .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .btn { padding: 10px 14px; border: 1px solid var(--ink); font: 700 12px var(--body); transition: background .25s, color .25s; }
+    .btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+    .btn:disabled { opacity: .25; cursor: default; }
+    .btn-primary { background: var(--acc); } .btn-danger { color: #c20b25; border-color: #c20b25; } .btn-danger:hover:not(:disabled) { background: #c20b25; border-color: #c20b25; }
+    .btn-small { padding: 6px 10px; font-size: 11px; }
 
-    .drag-hint {
-      position: fixed; z-index: 160; left: 50%; top: 84px; transform: translate(-50%, -10px); opacity: 0; pointer-events: none;
-      padding: 9px 18px; background: var(--gold); color: #000; font: 500 10px var(--font-mono); letter-spacing: .2em;
-      transition: opacity .5s var(--ease), transform .5s var(--ease);
-    }
+    .drag-hint { position: fixed; z-index: 160; left: 50%; top: 80px; transform: translate(-50%, -10px); opacity: 0; pointer-events: none; padding: 9px 16px; background: var(--acc); color: var(--ink); font: 700 12px var(--body); transition: opacity .5s var(--out), transform .5s var(--out); }
     .drag-hint.visible { opacity: 1; transform: translate(-50%, 0); }
 
-    @media (max-width: 1280px) { #keys { display: none; } }
+    @media (max-width: 1100px) { #gates { display: none; } }
     @media (max-width: 960px) {
-      #gates, #legend, #keys { display: none; }
-      #metrics-panel { left: 12px; right: 12px; width: auto; max-height: 40vh; bottom: 74px; }
-      #topbar { padding: 0 14px; } .brand small { display: none; }
+      #legend, #counter { display: none; }
+      #topbar { grid-template-columns: auto 1fr; padding: 0 12px; } .brand span { display: none; } #mode-chips { display: none; }
+      #metrics-panel { left: 12px; right: 12px; width: auto; max-height: 38vh; top: auto; bottom: 74px; }
       #editor-panel { width: 100%; }
     }
     @media (prefers-reduced-motion: reduce) {
-      #intro { display: none !important; }
-      .panel, #topbar, #hud, #keys { animation-duration: .01s !important; animation-delay: 0s !important; }
-      .orbit { animation: none; }
+      #intro { display: none !important; } .marquee { animation: none; }
+      .panel, #topbar, #hud, #counter { animation-duration: .01s !important; animation-delay: 0s !important; }
     }
   </style>
 </head>
 
 <body>
-  <div id="grain"></div>
-  <div id="vignette"></div>
-  <div id="cursor-ring"></div>
+  <div id="lens"></div>
 
   <div id="login-screen">
-    <div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div>
+    <div class="marquee">SPHERE GRID — SPHERE GRID — SPHERE GRID — SPHERE GRID —&nbsp;</div>
+    <div class="marquee two">WONDERFUL GROWTH · WONDERFUL GROWTH · WONDERFUL GROWTH · WONDERFUL GROWTH ·&nbsp;</div>
     <div class="login-box">
-      <div class="login-eyebrow">MEMBERS ONLY — 社内限定</div>
-      <h1>WONDERFUL<br><em>GROWTH</em></h1>
-      <div class="subtitle">企業スフィア盤</div>
-      <div class="field"><input type="password" id="password-input" placeholder="パスワードを入力" autocomplete="off"></div>
-      <button class="enter" onclick="attemptLogin()">ENTER</button>
+      <div class="login-top"><span>Wonderful Growth</span><span>{ 社内限定 }</span></div>
+      <h1>企業<br>スフィア<span class="serif">盤</span></h1>
+      <div class="subtitle">SPHERE GRID — MEMBERS ONLY</div>
+      <input type="password" id="password-input" placeholder="パスワードを入力" autocomplete="off">
+      <button class="enter" onclick="attemptLogin()"><span>Enter</span><span>→</span></button>
       <div class="login-error" id="login-error"></div>
       <div class="login-hint">社内メンバー用アクセスキー</div>
     </div>
   </div>
 
-  <div id="intro"><div class="half top"></div><div class="half bot"></div><div class="word">WONDERFUL GROWTH<small>SPHERE GRID</small></div></div>
+  <div id="intro"><div class="ld-top">Loading board <span>— WONDERFUL GROWTH</span></div><div class="ld-num" id="ld-num">0</div><div class="ld-bar" id="ld-bar"></div></div>
 
   <div id="main-content">
     <div id="container"><canvas id="canvas"></canvas></div>
     <div id="tooltip"></div>
 
     <header id="topbar">
-      <div class="brand">
-        <div class="brand-mark"></div>
-        <div><b>WONDERFUL GROWTH</b><small>SPHERE GRID / 企業スフィア盤</small></div>
+      <div class="brand"><b>WG</b><span>Sphere Grid <i class="serif" style="font-style:italic">/ 企業スフィア盤</i></span></div>
+      <div id="mode-chips">
+        <button class="chip active" data-mode="RING" onclick="setMode('RING')"><i>1</i>放射</button>
+        <button class="chip" data-mode="STATE" onclick="setMode('STATE')"><i>2</i>状態別</button>
+        <button class="chip" data-mode="COST" onclick="setMode('COST')"><i>3</i>必要数順</button>
       </div>
       <div class="top-actions">
-        <button id="editor-toggle" class="pill" onclick="toggleEditor()">編集モード</button>
-        <button id="logout-btn" class="pill" onclick="logout()">ログアウト</button>
+        <button id="editor-toggle" class="btn-top" onclick="toggleEditor()">編集モード</button>
+        <button id="logout-btn" class="btn-top" onclick="logout()">ログアウト</button>
       </div>
     </header>
 
-    <div id="gates" class="panel">
-      <div class="eyebrow"><i>01</i>Foundation Gate</div>
-      <h2>WONDERFUL GROWTH</h2>
-      <div class="subtitle">企業スフィア盤</div>
-      <h3>基盤ゲート達成条件</h3>
-      <ul>
-        <li>現預金：固定費4ヶ月分以上</li>
-        <li>粗利率：40%以上</li>
-        <li>稼働率：100%</li>
-        <li>採用：契約済みBacklogのみ</li>
-        <li>オフィス：賃料 ≤ 粗利15%</li>
-      </ul>
-    </div>
-
     <div id="metrics-panel" class="panel">
-      <h2><span><i style="font-style:normal;color:var(--gold);margin-right:8px">02</i>現在の指標</span> <button class="toggle-btn" onclick="toggleMetrics()">▼</button></h2>
+      <h2><span><span class="note"><b>{ 01 }</b></span>現在の指標</span> <button class="toggle-btn" onclick="toggleMetrics()">▼</button></h2>
       <div class="metrics-content">
         <div class="metric-row"><label>年商</label><input type="number" id="metric-revenue" value="1500" onchange="updateMetrics()"><span class="unit">万円</span></div>
         <div class="metric-row"><label>従業員数</label><input type="number" id="metric-employees" value="2" onchange="updateMetrics()"><span class="unit">名</span></div>
         <div class="metric-row"><label>粗利率</label><input type="number" id="metric-margin" value="45" onchange="updateMetrics()"><span class="unit">%</span></div>
         <div class="metric-row"><label>現預金</label><input type="number" id="metric-cash" value="800" onchange="updateMetrics()"><span class="unit">万円</span></div>
         <div class="metric-divider"></div>
-        <div style="margin-bottom: 8px;">保有スフィア</div>
+        <div style="margin-bottom: 6px;">保有スフィア</div>
         <div class="sphere-inventory" id="sphere-inventory"></div>
         <div class="metric-status">
           <div class="status-title">現在のステージ</div>
@@ -401,19 +293,34 @@
       </div>
     </div>
 
+    <div id="counter"><div class="num"><span id="count-num">00</span><small>/<span id="count-total">13</span></small></div><div class="cap">{ 解放済みノード }</div></div>
+
     <div id="legend" class="panel">
-      <h2><i style="font-style:normal;color:var(--gold);margin-right:8px">03</i>ノード状態</h2>
-      <div class="legend-item"><div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFF5CC, #FFD700); box-shadow: 0 0 14px #FFD700;"></div><div class="legend-text"><span class="label">定着</span><br><span class="desc">習得完了・定着済み</span></div></div>
-      <div class="legend-item"><div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #66E699, #33E680); box-shadow: 0 0 12px #33E680;"></div><div class="legend-text"><span class="label">解放済</span><br><span class="desc">習得中・実施中</span></div></div>
-      <div class="legend-item"><div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #FFE066, #FFD700); box-shadow: 0 0 10px rgba(255,215,0,0.6);"></div><div class="legend-text"><span class="label">解放可</span><br><span class="desc">条件クリア・解放可能</span></div></div>
-      <div class="legend-item"><div class="legend-dot" style="background: radial-gradient(circle at 30% 30%, #3A3E48, #2A2E38); border: 1px solid #4A4E58;"></div><div class="legend-text"><span class="label">未解放</span><br><span class="desc">条件未達成</span></div></div>
+      <h2><span><span class="note"><b>{ 02 }</b></span>ノード状態</span></h2>
+      <div class="legend-item"><div class="legend-dot s-m"></div><div class="legend-text">定着<br><span class="desc">習得完了・定着済み</span></div></div>
+      <div class="legend-item"><div class="legend-dot s-u"></div><div class="legend-text">解放済<br><span class="desc">習得中・実施中</span></div></div>
+      <div class="legend-item"><div class="legend-dot s-e"></div><div class="legend-text">解放可<br><span class="desc">条件クリア・解放可能</span></div></div>
+      <div class="legend-item"><div class="legend-dot s-l"></div><div class="legend-text">未解放<br><span class="desc">条件未達成</span></div></div>
       <h3>必要スフィア</h3>
-      <div class="legend-item" data-sphere="人材"><div class="legend-sphere" style="background:#3399E6;color:#3399E6"></div><div class="legend-text"><span class="label">人材</span></div></div>
-      <div class="legend-item" data-sphere="資金"><div class="legend-sphere" style="background:#E6B333;color:#E6B333"></div><div class="legend-text"><span class="label">資金</span></div></div>
-      <div class="legend-item" data-sphere="実績"><div class="legend-sphere" style="background:#4DCC80;color:#4DCC80"></div><div class="legend-text"><span class="label">実績</span></div></div>
-      <div class="legend-item" data-sphere="時間"><div class="legend-sphere" style="background:#9966CC;color:#9966CC"></div><div class="legend-text"><span class="label">時間</span></div></div>
-      <div class="legend-item" data-sphere="信頼"><div class="legend-sphere" style="background:#E68033;color:#E68033"></div><div class="legend-text"><span class="label">信頼</span></div></div>
-      <div class="legend-item" data-sphere="技術"><div class="legend-sphere" style="background:#66B3E6;color:#66B3E6"></div><div class="legend-text"><span class="label">技術</span></div></div>
+      <div class="legend-item" data-sphere="人材"><div class="legend-sphere" style="background:#3399E6"></div><div class="legend-text">人材</div></div>
+      <div class="legend-item" data-sphere="資金"><div class="legend-sphere" style="background:#E6B333"></div><div class="legend-text">資金</div></div>
+      <div class="legend-item" data-sphere="実績"><div class="legend-sphere" style="background:#4DCC80"></div><div class="legend-text">実績</div></div>
+      <div class="legend-item" data-sphere="時間"><div class="legend-sphere" style="background:#9966CC"></div><div class="legend-text">時間</div></div>
+      <div class="legend-item" data-sphere="信頼"><div class="legend-sphere" style="background:#E68033"></div><div class="legend-text">信頼</div></div>
+      <div class="legend-item" data-sphere="技術"><div class="legend-sphere" style="background:#66B3E6"></div><div class="legend-text">技術</div></div>
+    </div>
+
+    <div id="gates" class="panel collapsed">
+      <h2><span><span class="note"><b>{ 03 }</b></span>基盤ゲート条件</span> <button class="toggle-btn" onclick="toggleGates()">▲</button></h2>
+      <div class="gates-body">
+        <ul>
+          <li>現預金：固定費4ヶ月分以上</li>
+          <li>粗利率：40%以上</li>
+          <li>稼働率：100%</li>
+          <li>採用：契約済みBacklogのみ</li>
+          <li>オフィス：賃料 ≤ 粗利15%</li>
+        </ul>
+      </div>
     </div>
 
     <div id="hud">
@@ -422,12 +329,11 @@
       <button onclick="zoomBy(1.25)" aria-label="拡大">+</button>
       <button onclick="resetView()" aria-label="表示をリセット" style="border-left:1px solid var(--line)">⌂</button>
     </div>
-    <div id="keys"><b>DRAG</b> 移動 ／ <b>SCROLL</b> ズーム<br><b>HOVER</b> 最短ルート ／ <b>ESC</b> 選択解除 ／ <b>0</b> リセット</div>
 
     <div id="drag-hint" class="drag-hint">ノードをドラッグして角度を調整</div>
 
     <div id="editor-panel">
-      <h2>EDITOR<button class="close-btn" onclick="toggleEditor()">×</button></h2>
+      <h2>EDIT<button class="close-btn" onclick="toggleEditor()">×</button></h2>
 
       <div class="editor-section">
         <h3>リング管理</h3>
@@ -567,55 +473,76 @@
     };
 
 
+    const INK = '#0A0A0A', PAPER = '#F2F1EC', ACC = '#D7FF2F';
+    const FONT = '"Inter Tight","Zen Kaku Gothic New",sans-serif', MONO = '"JetBrains Mono",monospace';
+
     let canvas, ctx, tooltip;
     let baseScale = 1, userZoom = 1, panX = 0, panY = 0;
-    let tZoom = 1, tPanX = 0, tPanY = 0;           // 目標値（慣性補間の行き先）
+    let tZoom = 1, tPanX = 0, tPanY = 0;
     let cx, cy, vw = 0, vh = 0;
     let nodePositions = [];
-    let selectedNodeId = null;
-    let hoveredSphereType = null;
+    let selectedNodeId = null, hoveredSphereType = null, hoverId = null;
     let highlightedPathNodes = new Set();
-    let isEditorOpen = false;
-    let isDragging = false;
-    let isPanning = false;
-    let dragNode = null;
-    let lastPanPos = null;
-    let hoverId = null;
-    const hoverAmt = {};
+    let isEditorOpen = false, isPanning = false, dragNode = null, lastPanPos = null;
+    const hoverAmt = {}, disp = {};
     const mouse = { x: 0, y: 0, sx: 0, sy: 0, inside: false };
-    const ring = { x: 0, y: 0 };
     const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let introStart = 0, lastZoomText = '';
-    let stars = [];
+    let mode = 'RING', ringA = 1, colA = 0, focus = 0, dispCount = 0, lastCount = '';
 
     const clamp01 = v => Math.max(0, Math.min(1, v));
     const easeOut = t => 1 - Math.pow(1 - t, 3);
-    const nodeColor = n => ({ MASTERED: '#FFD700', UNLOCKED: '#33E680', ELIGIBLE: '#FFD700', LOCKED: '#4A4E58' }[n.state] || '#4A4E58');
+    const pad2 = n => String(n).padStart(2, '0');
     const nodeById = id => CONFIG.nodes.find(n => n.id === id);
+    const totalReq = n => (n.requirements || []).reduce((s, r) => s + r.count, 0);
+    const getScale = () => baseScale * userZoom;
 
-    function getScale() { return baseScale * userZoom; }
-
-    function initStars() {
-      let seed = 54321; const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
-      // [個数, 最小径, 最大径, 最小透明度, 最大透明度, 視差の深さ]
-      [[170, 0.5, 1.2, 0.12, 0.45, 0.012], [70, 1, 2, 0.22, 0.6, 0.03], [26, 1.6, 2.8, 0.4, 0.85, 0.07]].forEach(([c, s1, s2, o1, o2, d]) => {
-        for (let i = 0; i < c; i++) stars.push({ x: rnd(), y: rnd(), r: s1 + rnd() * (s2 - s1), o: o1 + rnd() * (o2 - o1), ph: rnd() * 6.28, d, warm: rnd() > 0.82 });
-      });
+    // ---------- 並びモード ----------
+    const COLS = {
+      STATE: [{ t: '定着', f: n => n.state === 'MASTERED' }, { t: '解放済', f: n => n.state === 'UNLOCKED' }, { t: '解放可', f: n => n.state === 'ELIGIBLE' }, { t: '未解放', f: n => n.state === 'LOCKED' }],
+      COST: [{ t: '必要なし', f: n => totalReq(n) === 0 }, { t: '1–2', f: n => { const c = totalReq(n); return c >= 1 && c <= 2; } }, { t: '3–5', f: n => { const c = totalReq(n); return c >= 3 && c <= 5; } }, { t: '6+', f: n => totalReq(n) >= 6 }],
+    };
+    const COL_GAP = 310, ROW_GAP = 112;
+    const colOf = n => Math.max(0, COLS[mode].findIndex(c => c.f(n)));
+    function radialTarget(n) {
+      if (n.id === 'CORE') return { x: 0, y: 0 };
+      const r = CONFIG.rings.find(v => v.id === n.ring)?.radius || 0, a = (n.angleDeg || 0) * Math.PI / 180;
+      return { x: Math.cos(a) * r, y: Math.sin(a) * r };
+    }
+    const PER_COL = 5, SUB_GAP = 200;
+    function worldTarget(n) {
+      if (mode === 'RING') return radialTarget(n);
+      const ci = colOf(n), members = CONFIG.nodes.filter(m => colOf(m) === ci), j = members.indexOf(n), rows = Math.min(PER_COL, members.length);
+      return { x: (ci - (COLS[mode].length - 1) / 2) * COL_GAP + Math.floor(j / PER_COL) * SUB_GAP - 135, y: ((j % PER_COL) - (rows - 1) / 2) * ROW_GAP + 70 };
+    }
+    function getDisp(n) { return disp[n.id] || (disp[n.id] = radialTarget(n)); }
+    function setMode(m) {
+      mode = m; hideTooltip(); highlightedPathNodes.clear(); resetView();
+      document.querySelectorAll('#mode-chips .chip').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
     }
 
     function initApp() {
       canvas = document.getElementById('canvas'); ctx = canvas.getContext('2d'); tooltip = document.getElementById('tooltip');
       window.addEventListener('resize', resize); canvas.addEventListener('mousemove', handleMouseMove); canvas.addEventListener('mousedown', handleMouseDown);
       window.addEventListener('mouseup', handleMouseUp); canvas.addEventListener('mouseleave', handleMouseLeave); canvas.addEventListener('wheel', handleWheel, { passive: false });
-      window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.inside = true; const r = document.getElementById('cursor-ring'); r.classList.add('on'); });
-      document.addEventListener('mouseleave', () => document.getElementById('cursor-ring').classList.remove('on'));
+      window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; if (!mouse.inside) { mouse.sx = mouse.x; mouse.sy = mouse.y; } mouse.inside = true; });
+      document.addEventListener('mouseleave', () => { mouse.inside = false; });
       window.addEventListener('keydown', handleKey);
-      initTouch();
-      initStars(); resize(); updateMetrics(); setupLegendInteractions();
-      const intro = document.getElementById('intro');
-      if (!REDUCED) { intro.classList.add('play'); setTimeout(() => intro.classList.remove('play'), 2400); }
-      introStart = performance.now() + (REDUCED ? -10000 : 900);
+      initTouch(); resize(); updateMetrics(); setupLegendInteractions();
+      if (!REDUCED) runIntro();
+      introStart = performance.now() + (REDUCED ? -10000 : 1400);
       requestAnimationFrame(animate);
+    }
+
+    function runIntro() {
+      const intro = document.getElementById('intro'), num = document.getElementById('ld-num'), bar = document.getElementById('ld-bar');
+      intro.classList.add('play'); setTimeout(() => intro.classList.remove('play', 'lift'), 3500); const t0 = performance.now(), D = 1250;
+      (function tick() {
+        const p = clamp01((performance.now() - t0) / D), v = Math.round(100 * p * p * (3 - 2 * p));
+        num.textContent = v; bar.style.width = v + '%';
+        if (p < 1) requestAnimationFrame(tick);
+        else { setTimeout(() => intro.classList.add('lift'), 150); setTimeout(() => intro.classList.remove('play', 'lift'), 1300); }
+      })();
     }
 
     function setupLegendInteractions() {
@@ -625,20 +552,29 @@
       });
     }
 
-    function animate(now) {
-      // ズーム・パンの慣性
+    function animate() {
       const k = REDUCED ? 1 : 0.15;
       userZoom += (tZoom - userZoom) * k; panX += (tPanX - panX) * k; panY += (tPanY - panY) * k;
       if (Math.abs(tZoom - userZoom) < 0.0005) userZoom = tZoom;
-      mouse.sx += (mouse.x - mouse.sx) * 0.08; mouse.sy += (mouse.y - mouse.sy) * 0.08;
-      // カーソルリング
-      ring.x += (mouse.x - ring.x) * 0.2; ring.y += (mouse.y - ring.y) * 0.2;
-      const rEl = document.getElementById('cursor-ring'); rEl.style.transform = `translate(${ring.x}px,${ring.y}px)`;
-      rEl.classList.toggle('hot', !!hoverId && !isPanning); rEl.classList.toggle('grab', isPanning);
-      // ノードのホバー量
-      CONFIG.nodes.forEach(n => { const t = (n.id === hoverId || n.id === selectedNodeId) ? 1 : 0; hoverAmt[n.id] = (hoverAmt[n.id] || 0) + (t - (hoverAmt[n.id] || 0)) * 0.18; });
+      mouse.sx += (mouse.x - mouse.sx) * 0.22; mouse.sy += (mouse.y - mouse.sy) * 0.22;
+      const lens = document.getElementById('lens');
+      lens.style.transform = `translate(${mouse.sx}px,${mouse.sy}px)`;
+      lens.classList.toggle('on', mouse.inside); lens.classList.toggle('big', !!hoverId && !isPanning); lens.classList.toggle('dot', isPanning);
+      // モード遷移・ノード位置の補間
+      ringA += ((mode === 'RING' ? 1 : 0) - ringA) * (REDUCED ? 1 : 0.12); colA += ((mode === 'RING' ? 0 : 1) - colA) * (REDUCED ? 1 : 0.12);
+      CONFIG.nodes.forEach(n => {
+        const t = worldTarget(n), d = getDisp(n), kk = (REDUCED || dragNode === n) ? 1 : 0.11;
+        d.x += (t.x - d.x) * kk; d.y += (t.y - d.y) * kk;
+        const h = (n.id === hoverId || n.id === selectedNodeId) ? 1 : 0; hoverAmt[n.id] = (hoverAmt[n.id] || 0) + (h - (hoverAmt[n.id] || 0)) * 0.2;
+      });
+      focus += (((highlightedPathNodes.size > 0 && hoverId) || hoveredSphereType ? 1 : 0) - focus) * 0.14;
+      // カウンタ
+      const target = CONFIG.nodes.filter(n => n.state === 'MASTERED' || n.state === 'UNLOCKED').length;
+      if ((performance.now() - introStart) > 300) dispCount += (target - dispCount) * 0.08;
+      const txt = pad2(Math.round(dispCount)); if (txt !== lastCount) { lastCount = txt; document.getElementById('count-num').textContent = txt; }
+      document.getElementById('count-total').textContent = pad2(CONFIG.nodes.length);
       const z = Math.round(userZoom * 100) + '%'; if (z !== lastZoomText) { lastZoomText = z; document.getElementById('zoom-readout').textContent = z; }
-      draw(now); requestAnimationFrame(animate);
+      draw(); requestAnimationFrame(animate);
     }
 
     function resize() {
@@ -654,143 +590,118 @@
     }
     function resetView() { tZoom = 1; tPanX = 0; tPanY = 0; }
 
-    function toggleMetrics() { const p = document.getElementById('metrics-panel'); p.classList.toggle('collapsed'); const btn = p.querySelector('.toggle-btn'); btn.textContent = p.classList.contains('collapsed') ? '▲' : '▼'; }
+    function toggleMetrics() { const p = document.getElementById('metrics-panel'); p.classList.toggle('collapsed'); p.querySelector('.toggle-btn').textContent = p.classList.contains('collapsed') ? '▲' : '▼'; }
+    function toggleGates() { const p = document.getElementById('gates'); p.classList.toggle('collapsed'); p.querySelector('.toggle-btn').textContent = p.classList.contains('collapsed') ? '▲' : '▼'; }
 
     function updateMetrics() {
       const revenue = +document.getElementById('metric-revenue').value, employees = +document.getElementById('metric-employees').value, margin = +document.getElementById('metric-margin').value, cash = +document.getElementById('metric-cash').value;
       const inventory = { '人材': Math.max(0, employees - 1), '資金': Math.floor(cash / 200), '実績': Math.floor(revenue / 500), '時間': Math.min(5, Math.floor(revenue / 1000) + 1), '信頼': Math.floor(margin / 10), '技術': Math.floor(revenue / 800) };
       const invEl = document.getElementById('sphere-inventory'); invEl.innerHTML = '';
-      Object.entries(inventory).forEach(([type, count]) => { const color = CONFIG.sphereTypes[type]?.color || '#888'; invEl.innerHTML += `<div class="sphere-inv-item"><div class="sphere-dot" style="background:${color}; box-shadow:0 0 10px ${color}"></div><span style="font-size:10px; color:#7C8AA5">${type}</span><input type="number" value="${count}" readonly></div>`; });
+      Object.entries(inventory).forEach(([type, count]) => { const color = CONFIG.sphereTypes[type]?.color || '#888'; invEl.innerHTML += `<div class="sphere-inv-item"><div class="sphere-dot" style="background:${color}"></div><span>${type}</span><input type="number" value="${count}" readonly></div>`; });
       const stageEl = document.getElementById('current-stage'); stageEl.className = 'status-value'; let stage = "創業期 (Seed)";
       if (revenue >= 10000) { stage = "拡大期 (Expansion)"; stageEl.classList.add('good'); } else if (revenue >= 3000) { stage = "成長期 (Growth)"; stageEl.classList.add('good'); } else if (revenue >= 1000) { stage = "立上げ期 (Startup)"; stageEl.classList.add('warning'); } else { stageEl.classList.add('bad'); } stageEl.textContent = stage;
     }
 
-    function draw(now) {
+    // ---------- 描画 ----------
+    function draw() {
       if (!ctx) return;
       try {
-        const it = (performance.now() - introStart) / 1000;       // イントロ経過秒（負なら開始前）
-        const time = performance.now();
-        const grd = ctx.createRadialGradient(cx + panX, cy + panY, 0, cx + panX, cy + panY, Math.max(vw, vh) * 0.9);
-        grd.addColorStop(0, '#0b1a33'); grd.addColorStop(0.55, '#050a16'); grd.addColorStop(1, '#03060d'); ctx.fillStyle = grd; ctx.fillRect(0, 0, vw, vh);
-        drawStars(time); drawSpotlight(); drawPolarGrid(it); drawGlow(); drawRings(it, time); drawEdges(it, time); nodePositions = [];
+        const it = (performance.now() - introStart) / 1000, time = performance.now();
+        ctx.fillStyle = INK; ctx.fillRect(0, 0, vw, vh);
+        drawDots(it); drawPolar(it); drawRings(it, time); drawColumns(it); drawEdges(it, time); nodePositions = [];
         CONFIG.nodes.forEach((n, i) => { const p = drawNode(n, i, it, time); nodePositions.push({ id: n.id, ...p }); });
         if (hoveredSphereType) drawSphereConnections();
-      } catch (e) {
-        console.error('Draw error:', e);
-      }
+      } catch (e) { console.error('Draw error:', e); }
     }
 
-    function drawStars(time) {
-      const t = time * 0.001, mx = mouse.sx - vw / 2, my = mouse.sy - vh / 2;
-      for (const s of stars) {
-        const x = (((s.x * vw - mx * s.d * 2 + panX * s.d * 3) % vw) + vw) % vw, y = (((s.y * vh - my * s.d * 2 + panY * s.d * 3) % vh) + vh) % vh;
-        const op = s.o * (0.65 + 0.35 * Math.sin(t * 1.3 + s.ph));
-        ctx.fillStyle = s.warm ? `rgba(255,226,160,${op})` : `rgba(210,225,255,${op})`;
-        ctx.beginPath(); ctx.arc(x, y, s.r, 0, 6.2832); ctx.fill();
-      }
-    }
-
-    function drawSpotlight() {
-      if (!mouse.inside) return;
-      const g = ctx.createRadialGradient(mouse.sx, mouse.sy, 0, mouse.sx, mouse.sy, 320);
-      g.addColorStop(0, 'rgba(120,170,255,0.085)'); g.addColorStop(1, 'rgba(120,170,255,0)');
-      ctx.fillStyle = g; ctx.fillRect(mouse.sx - 320, mouse.sy - 320, 640, 640);
+    function drawDots(it) {
+      const a = easeOut(clamp01(it / 1.2)); if (a <= 0) return;
+      let sp = 44 * getScale(); while (sp < 18) sp *= 2;
+      const ox = ((cx + panX) % sp + sp) % sp, oy = ((cy + panY) % sp + sp) % sp;
+      ctx.fillStyle = `rgba(242,241,236,${0.2 * a})`;
+      for (let x = ox - sp; x < vw + sp; x += sp) for (let y = oy - sp; y < vh + sp; y += sp) ctx.fillRect(Math.round(x) - 0.5, Math.round(y) - 0.5, 1.5, 1.5);
     }
 
     function maxRadius() { return Math.max(...CONFIG.rings.map(r => r.radius)); }
 
-    function drawPolarGrid(it) {
-      const scale = getScale(), R = (maxRadius() + 90) * scale, a = easeOut(clamp01((it - 0.1) / 1.2));
-      if (a <= 0) return;
-      ctx.save(); ctx.lineWidth = 1;
-      for (let d = 0; d < 360; d += 15) {
-        const rad = d * Math.PI / 180, major = d % 90 === 0, mid = d % 30 === 0;
-        ctx.strokeStyle = `rgba(110,160,230,${(major ? 0.16 : mid ? 0.075 : 0.03) * a})`;
-        ctx.beginPath(); ctx.moveTo(cx + panX + Math.cos(rad) * 60 * scale, cy + panY + Math.sin(rad) * 60 * scale);
-        ctx.lineTo(cx + panX + Math.cos(rad) * R * a, cy + panY + Math.sin(rad) * R * a); ctx.stroke();
+    function drawPolar(it) {
+      const a = ringA * easeOut(clamp01((it - 0.1) / 1.2)); if (a < 0.01) return;
+      const scale = getScale(), ox = cx + panX, oy = cy + panY, R = (maxRadius() + 70) * scale;
+      ctx.lineWidth = 1;
+      for (let d = 0; d < 360; d += 30) {
+        const rad = d * Math.PI / 180; ctx.strokeStyle = `rgba(242,241,236,${(d % 90 === 0 ? 0.16 : 0.07) * a})`;
+        ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + Math.cos(rad) * R * a, oy + Math.sin(rad) * R * a); ctx.stroke();
       }
-      ctx.restore();
-    }
-
-    function drawGlow() {
-      const scale = getScale(); const r = 640 * scale;
-      const g = ctx.createRadialGradient(cx + panX, cy + panY, 0, cx + panX, cy + panY, r);
-      g.addColorStop(0, 'rgba(40,74,138,0.45)'); g.addColorStop(0.5, 'rgba(20,36,66,0.18)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.beginPath(); ctx.arc(cx + panX, cy + panY, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
     }
 
     function drawRings(it, time) {
+      if (ringA < 0.01) return;
       const scale = getScale(), ox = cx + panX, oy = cy + panY, sorted = [...CONFIG.rings].sort((a, b) => a.radius - b.radius);
-      const outerR = maxRadius();
-      sorted.forEach((ringDef, i) => {
-        const r = ringDef.radius * scale, intensity = 1 - i * 0.15, rev = easeOut(clamp01((it - 0.15 * i) / 1.3));
-        if (rev <= 0) return;
-        const a0 = -Math.PI / 2, a1 = a0 + Math.PI * 2 * rev;
-        ctx.beginPath(); ctx.arc(ox, oy, r, a0, a1); ctx.strokeStyle = `rgba(74,122,184,${0.14 * intensity})`; ctx.lineWidth = 14 * scale; ctx.stroke();
-        ctx.beginPath(); ctx.arc(ox, oy, r, a0, a1); ctx.strokeStyle = `rgba(110,165,235,${0.55 + 0.2 * intensity})`; ctx.lineWidth = 1.6 * scale; ctx.stroke();
-        // 回転する点線（内側）
-        ctx.save(); ctx.translate(ox, oy); ctx.rotate(time * 0.00004 * (i % 2 ? -1 : 1) * (1 + i * 0.4));
-        ctx.setLineDash([2 * scale, 16 * scale]); ctx.beginPath(); ctx.arc(0, 0, r - 11 * scale, 0, Math.PI * 2 * rev);
-        ctx.strokeStyle = `rgba(200,225,255,${0.3 * rev})`; ctx.lineWidth = 2.2 * scale; ctx.stroke(); ctx.restore(); ctx.setLineDash([]);
-        // ラベル
-        ctx.globalAlpha = rev; ctx.font = `500 ${Math.max(9, 10 * scale)}px "JetBrains Mono", monospace`;
-        ctx.fillStyle = `rgba(200,225,255,${0.55 + 0.3 * intensity})`; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-        ctx.fillText(String(ringDef.label).toUpperCase().split('').join(String.fromCharCode(8202)), ox, oy - r - 14 * scale); ctx.globalAlpha = 1;
+      sorted.forEach((def, i) => {
+        const r = def.radius * scale, ra = easeOut(clamp01((it - 0.1 * i) / 1.3)), rev = ra * ringA; if (rev <= 0.01) return;
+        ctx.beginPath(); ctx.arc(ox, oy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * ra);
+        ctx.strokeStyle = `rgba(242,241,236,${0.45 * ringA})`; ctx.lineWidth = 1; ctx.stroke();
+        // 30°ごとの＋印
+        for (let d = 0; d < 360; d += 30) { const rad = d * Math.PI / 180, px = ox + Math.cos(rad) * r, py = oy + Math.sin(rad) * r, s = 4 * scale; ctx.strokeStyle = `rgba(215,255,47,${0.75 * rev})`; ctx.beginPath(); ctx.moveTo(px - s, py); ctx.lineTo(px + s, py); ctx.moveTo(px, py - s); ctx.lineTo(px, py + s); ctx.stroke(); }
+        // タグ
+        const fs = Math.max(10, 12 * scale); ctx.font = `700 ${fs}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        const w = ctx.measureText(def.label).width + 16, h = fs + 10, ty = oy - r;
+        ctx.globalAlpha = rev; ctx.fillStyle = PAPER; ctx.fillRect(ox - w / 2, ty - h / 2, w, h); ctx.fillStyle = INK; ctx.fillText(def.label, ox, ty + 0.5); ctx.globalAlpha = 1;
       });
       // 外周の目盛り
-      const R = outerR * scale + 30 * scale, rev = easeOut(clamp01((it - 0.5) / 1.2));
-      if (rev > 0) {
-        ctx.save(); ctx.translate(ox, oy); ctx.rotate(time * 0.000012);
-        for (let d = 0; d < 360; d += 3) {
-          const rad = d * Math.PI / 180, big = d % 30 === 0, mid = d % 15 === 0, len = (big ? 14 : mid ? 8 : 4) * scale;
-          if ((d / 360) > rev) break;
-          ctx.strokeStyle = big ? 'rgba(255,215,0,0.7)' : `rgba(150,190,240,${mid ? 0.4 : 0.2})`; ctx.lineWidth = big ? 1.4 : 1;
+      const R = maxRadius() * scale + 26 * scale, rv = easeOut(clamp01((it - 0.5) / 1.2)) * ringA;
+      if (rv > 0.01) {
+        ctx.save(); ctx.translate(ox, oy); ctx.rotate(time * 0.00001);
+        for (let d = 0; d < 360; d += 5) {
+          if (d / 360 > rv) break; const rad = d * Math.PI / 180, big = d % 30 === 0, len = (big ? 16 : 6) * scale;
+          ctx.strokeStyle = big ? `rgba(242,241,236,${0.7 * ringA})` : `rgba(242,241,236,${0.25 * ringA})`; ctx.lineWidth = 1;
           ctx.beginPath(); ctx.moveTo(Math.cos(rad) * R, Math.sin(rad) * R); ctx.lineTo(Math.cos(rad) * (R + len), Math.sin(rad) * (R + len)); ctx.stroke();
         }
         ctx.restore();
       }
     }
 
+    function drawColumns(it) {
+      if (colA < 0.02 || mode === 'RING') return;
+      const scale = getScale(), a = colA * easeOut(clamp01((it - 0.1) / 1)), cols = COLS[mode];
+      cols.forEach((c, i) => {
+        const x = cx + panX + ((i - (cols.length - 1) / 2) * COL_GAP - 135) * scale, y = cy + panY - 360 * scale, count = CONFIG.nodes.filter(c.f).length;
+        ctx.globalAlpha = a; ctx.strokeStyle = 'rgba(242,241,236,0.14)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(x - 60 * scale, y + 20 * scale); ctx.lineTo(x - 60 * scale, cy + panY + 420 * scale); ctx.stroke();
+        ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+        ctx.font = `800 ${110 * scale}px ${FONT}`; ctx.lineWidth = 1.2; ctx.strokeStyle = PAPER; ctx.strokeText(pad2(count), x - 66 * scale, y + 100 * scale);
+        ctx.font = `700 ${18 * scale}px ${FONT}`; ctx.fillStyle = ACC; ctx.fillText(c.t, x - 60 * scale, y + 134 * scale);
+        ctx.font = `500 ${11 * scale}px ${MONO}`; ctx.fillStyle = 'rgba(242,241,236,0.5)'; ctx.fillText(`{ ${pad2(i + 1)} }`, x - 60 * scale, y + 12 * scale);
+        ctx.globalAlpha = 1;
+      });
+    }
+
+    function isActiveEdge(from, to) { return from.state !== 'LOCKED' && to.state !== 'LOCKED'; }
+    function nodeHasSphere(n) { return hoveredSphereType && n.requirements?.some(r => r.type === hoveredSphereType); }
+
     function drawEdges(it, time) {
-      const scale = getScale(), t = time * 0.00045;
+      const scale = getScale(), t = time * 0.0004;
       CONFIG.edges.forEach((edge, ei) => {
         const from = nodeById(edge.from), to = nodeById(edge.to); if (!from || !to) return;
         const rev = easeOut(clamp01((it - 0.5 - ei * 0.06) / 1.1)); if (rev <= 0) return;
-        const p1 = getNodePos(from), full = getNodePos(to);
-        const p2 = { x: p1.x + (full.x - p1.x) * rev, y: p1.y + (full.y - p1.y) * rev };
-        const isPath = highlightedPathNodes.has(from.id) && highlightedPathNodes.has(to.id);
-        const isMain = edge.type === 'MAIN', isCross = edge.type === 'CROSS_DOMAIN';
-        const active = to.state !== 'LOCKED' && from.state !== 'LOCKED';
-
-        // 太い背景
-        ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = isPath ? 'rgba(255,215,0,0.16)' : (active ? 'rgba(90,150,220,0.2)' : `rgba(58,96,144,${isMain ? 0.22 : 0.1})`);
-        ctx.lineWidth = (isMain ? 10 : 6) * scale; ctx.stroke();
-
-        // コア線（始点→終点のグラデーション）
-        const g = ctx.createLinearGradient(p1.x, p1.y, full.x, full.y);
-        if (isPath) { g.addColorStop(0, '#FFD700'); g.addColorStop(1, '#FFF1A0'); }
-        else if (isCross) { g.addColorStop(0, 'rgba(184,138,8,0.8)'); g.addColorStop(1, 'rgba(184,138,8,0.35)'); }
-        else if (active) { g.addColorStop(0, 'rgba(255,215,0,0.85)'); g.addColorStop(1, 'rgba(90,170,240,0.75)'); }
-        else { g.addColorStop(0, `rgba(86,140,210,${isMain ? 0.8 : 0.5})`); g.addColorStop(1, `rgba(60,100,160,${isMain ? 0.45 : 0.25})`); }
-        ctx.strokeStyle = g; ctx.lineWidth = (isPath ? 3 : isMain ? 2.2 : 1.2) * scale;
-        if (isPath) { ctx.shadowBlur = 12; ctx.shadowColor = '#FFD700'; }
-        if (edge.type === 'OPTIONAL') ctx.setLineDash([5 * scale, 6 * scale]);
-        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); ctx.setLineDash([]); ctx.shadowBlur = 0;
-
-        // 流れる光（尾を引く）
+        const p1 = getNodePos(from), full = getNodePos(to), p2 = { x: p1.x + (full.x - p1.x) * rev, y: p1.y + (full.y - p1.y) * rev };
+        const isPath = highlightedPathNodes.has(from.id) && highlightedPathNodes.has(to.id), active = isActiveEdge(from, to), isMain = edge.type === 'MAIN';
+        const rel = isPath || nodeHasSphere(from) || nodeHasSphere(to);
+        ctx.globalAlpha = 1 - 0.78 * focus * (rel ? 0 : 1);
+        ctx.lineCap = 'butt';
+        if (edge.type === 'OPTIONAL') ctx.setLineDash([6 * scale, 6 * scale]); else if (edge.type === 'CROSS_DOMAIN') ctx.setLineDash([1.5 * scale, 5 * scale]);
+        ctx.strokeStyle = isPath ? ACC : (active ? 'rgba(215,255,47,0.8)' : 'rgba(242,241,236,0.32)');
+        ctx.lineWidth = (isPath ? 3.2 : isMain ? 1.8 : 1.1) * scale; if (edge.type === 'CROSS_DOMAIN') ctx.lineWidth = 2 * scale;
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); ctx.setLineDash([]);
+        // 流れる四角
         if ((isMain || isPath) && rev > 0.95) {
-          const n = isPath ? 3 : 2;
+          const n = isPath ? 3 : 1;
           for (let k = 0; k < n; k++) {
-            const head = ((t * (isPath ? 1.8 : 1) + k / n + ei * 0.17) % 1);
-            for (let j = 0; j < 6; j++) {
-              const u = head - j * 0.012; if (u < 0) continue;
-              const x = p1.x + (full.x - p1.x) * u, y = p1.y + (full.y - p1.y) * u;
-              ctx.beginPath(); ctx.arc(x, y, (1.9 - j * 0.25) * scale * (isPath ? 1.3 : 1), 0, 6.2832);
-              ctx.fillStyle = isPath ? `rgba(255,240,170,${0.95 - j * 0.15})` : `rgba(210,230,255,${0.8 - j * 0.13})`; ctx.fill();
-            }
+            const u = (t * (isPath ? 1.8 : 0.8) + k / n + ei * 0.17) % 1, x = p1.x + (full.x - p1.x) * u, y = p1.y + (full.y - p1.y) * u, s = (isPath ? 5 : 3.2) * scale;
+            ctx.fillStyle = isPath ? PAPER : (active ? ACC : 'rgba(242,241,236,0.7)'); ctx.fillRect(x - s / 2, y - s / 2, s, s);
           }
         }
+        ctx.globalAlpha = 1;
       });
     }
 
@@ -802,108 +713,91 @@
     function drawNode(node, idx, it, time) {
       const scale = getScale(), pos = getNodePos(node), baseSize = CONFIG.nodeSizes[node.importance] || 45;
       const rev = easeOut(clamp01((it - 0.9 - idx * 0.07) / 0.8)), h = hoverAmt[node.id] || 0;
-      const size = baseSize * (node.sizeMultiplier || 1) * scale * (0.55 + 0.45 * rev) * (1 + 0.12 * h);
-      const isSelected = selectedNodeId === node.id, isPath = highlightedPathNodes.has(node.id), hasSph = hoveredSphereType && node.requirements?.some(r => r.type === hoveredSphereType);
-      const tt = time * 0.003;
+      const size = baseSize * (node.sizeMultiplier || 1) * scale * (0.5 + 0.5 * rev) * (1 + 0.1 * h);
+      const isSelected = selectedNodeId === node.id, isPath = highlightedPathNodes.has(node.id), hasSph = nodeHasSphere(node);
       const hit = { x: pos.x, y: pos.y, size: baseSize * (node.sizeMultiplier || 1) * scale };
       if (rev <= 0.01) return hit;
-      ctx.globalAlpha = rev;
+      const inFocus = isPath || hasSph || node.id === hoverId;
+      ctx.globalAlpha = rev * (1 - 0.72 * focus * (inFocus ? 0 : 1));
 
-      // 外側の光
-      if (node.state !== 'LOCKED' || isPath || hasSph) {
-        ctx.beginPath(); ctx.arc(pos.x, pos.y, size * (1.3 + Math.sin(tt + idx) * 0.05 + h * 0.15), 0, Math.PI * 2);
-        const g = ctx.createRadialGradient(pos.x, pos.y, size * 0.7, pos.x, pos.y, size * 1.6);
-        let gc = node.state === 'UNLOCKED' ? '#33E680' : '#FFD700';
-        if (hasSph) gc = CONFIG.sphereTypes[hoveredSphereType].color;
-        g.addColorStop(0, gc + (h > 0.5 ? '77' : '55')); g.addColorStop(1, gc + '00'); ctx.fillStyle = g; ctx.fill();
-      }
-      // 解放可：波紋
       if (node.state === 'ELIGIBLE') {
-        for (let k = 0; k < 2; k++) {
-          const ph = ((time * 0.00045 + idx * 0.31 + k * 0.5) % 1);
-          ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size * (1.05 + ph * 0.75));
-          ctx.strokeStyle = `rgba(255,215,0,${(1 - ph) * 0.45})`; ctx.lineWidth = 1.2 * scale; ctx.stroke();
-        }
+        for (let k = 0; k < 2; k++) { const ph = (time * 0.0004 + idx * 0.31 + k * 0.5) % 1; ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size * (1.05 + ph * 0.7)); ctx.strokeStyle = `rgba(215,255,47,${(1 - ph) * 0.55})`; ctx.lineWidth = 1.2 * scale; ctx.stroke(); }
       }
-      // 定着：回る軌道リング
       if (node.state === 'MASTERED') {
-        ctx.save(); ctx.translate(pos.x, pos.y); ctx.rotate(time * 0.0004 * (idx % 2 ? 1 : -1));
-        ctx.setLineDash([3 * scale, 7 * scale]); ctx.beginPath(); ctx.arc(0, 0, size * 1.28, 0, 6.2832);
-        ctx.strokeStyle = 'rgba(255,215,0,0.55)'; ctx.lineWidth = 1.2 * scale; ctx.stroke(); ctx.restore(); ctx.setLineDash([]);
+        ctx.save(); ctx.translate(pos.x, pos.y); ctx.rotate(time * 0.0003 * (idx % 2 ? 1 : -1)); ctx.setLineDash([4 * scale, 6 * scale]);
+        ctx.beginPath(); ctx.arc(0, 0, size * 1.3, 0, 6.2832); ctx.strokeStyle = 'rgba(215,255,47,0.75)'; ctx.lineWidth = 1.2 * scale; ctx.stroke(); ctx.restore(); ctx.setLineDash([]);
       }
-
-      // 本体
+      // 本体（フラット）
       ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size);
-      const baseFill = node.state === 'LOCKED' ? '#2A2E38' : (node.state === 'UNLOCKED' ? '#146B3A' : '#B88A08');
-      const grd = ctx.createRadialGradient(pos.x - size * 0.3, pos.y - size * 0.3, size * 0.1, pos.x, pos.y, size * 1.1);
-      grd.addColorStop(0, lighten(baseFill, 0.4 + h * 0.1)); grd.addColorStop(0.5, baseFill); grd.addColorStop(1, darken(baseFill, 0.4));
-      ctx.fillStyle = grd; ctx.fill();
-
-      // ツヤ
-      ctx.save(); ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size * 0.98); ctx.clip();
-      const glossGrd = ctx.createLinearGradient(pos.x, pos.y - size, pos.x, pos.y);
-      glossGrd.addColorStop(0, 'rgba(255,255,255,0.42)'); glossGrd.addColorStop(0.5, 'rgba(255,255,255,0.05)'); glossGrd.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.beginPath(); ctx.ellipse(pos.x, pos.y - size * 0.4, size * 0.7, size * 0.4, 0, 0, Math.PI * 2); ctx.fillStyle = glossGrd; ctx.fill();
-      const botGlow = ctx.createRadialGradient(pos.x, pos.y + size * 0.8, 0, pos.x, pos.y + size * 0.8, size * 0.5);
-      botGlow.addColorStop(0, 'rgba(255,255,255,0.2)'); botGlow.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.beginPath(); ctx.ellipse(pos.x, pos.y + size * 0.7, size * 0.5, size * 0.2, 0, 0, Math.PI * 2); ctx.fillStyle = botGlow; ctx.fill();
-      ctx.restore();
-
-      // 縁
-      ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size);
-      ctx.strokeStyle = isSelected || h > 0.5 ? '#fff' : (node.state === 'LOCKED' ? '#4A4E58' : '#FFD700');
-      ctx.lineWidth = (isSelected || node.state === 'MASTERED' ? 2.6 : 1.5) * scale;
-      if (isSelected) { ctx.shadowBlur = 12; ctx.shadowColor = '#fff'; }
-      ctx.stroke(); ctx.shadowBlur = 0;
-
-      // 選択：照準ブラケット
+      ctx.fillStyle = node.state === 'MASTERED' ? ACC : node.state === 'UNLOCKED' ? PAPER : INK; ctx.fill();
+      ctx.lineWidth = (node.state === 'ELIGIBLE' ? 2.4 : 1.3) * scale;
+      ctx.strokeStyle = node.state === 'ELIGIBLE' ? ACC : node.state === 'LOCKED' ? 'rgba(242,241,236,0.35)' : (node.state === 'MASTERED' ? ACC : PAPER); ctx.stroke();
+      if (node.state === 'LOCKED') { // 斜線ハッチ
+        ctx.save(); ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size - 2); ctx.clip(); ctx.strokeStyle = 'rgba(242,241,236,0.07)'; ctx.lineWidth = 1;
+        for (let k = -size * 2; k < size * 2; k += 7 * scale) { ctx.beginPath(); ctx.moveTo(pos.x + k, pos.y + size); ctx.lineTo(pos.x + k + size * 2, pos.y - size); ctx.stroke(); } ctx.restore();
+      }
+      // 番号
+      ctx.font = `700 ${Math.max(9, 12 * scale)}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = node.state === 'MASTERED' || node.state === 'UNLOCKED' ? INK : (node.state === 'ELIGIBLE' ? ACC : 'rgba(242,241,236,0.45)');
+      ctx.fillText(node.id === 'CORE' ? 'WG' : pad2(idx), pos.x, pos.y + 0.5);
+      // 選択ブラケット
       if (isSelected) {
-        const b = size * 1.55, l = size * 0.32; ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 1.4 * scale;
-        [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sy]) => {
-          ctx.beginPath(); ctx.moveTo(pos.x + sx * b, pos.y + sy * (b - l)); ctx.lineTo(pos.x + sx * b, pos.y + sy * b); ctx.lineTo(pos.x + sx * (b - l), pos.y + sy * b); ctx.stroke();
-        });
+        const b = size * 1.6, l = size * 0.34; ctx.strokeStyle = ACC; ctx.lineWidth = 2 * scale;
+        [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sy]) => { ctx.beginPath(); ctx.moveTo(pos.x + sx * b, pos.y + sy * (b - l)); ctx.lineTo(pos.x + sx * b, pos.y + sy * b); ctx.lineTo(pos.x + sx * (b - l), pos.y + sy * b); ctx.stroke(); });
       }
-
-      // ラベル
-      ctx.font = `600 ${Math.max(8, 11 * scale)}px "Zen Kaku Gothic New", "Outfit", sans-serif`;
-      ctx.fillStyle = node.state === 'LOCKED' ? '#8899aa' : '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      const lines = node.label.split('\n'), lh = 14 * scale, startY = pos.y - ((lines.length - 1) * lh) / 2; lines.forEach((l, i) => ctx.fillText(l, pos.x, startY + i * lh));
-
-      if (node.state === 'LOCKED') { ctx.font = `${10 * scale}px serif`; ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.fillText('🔒', pos.x + size * 0.7, pos.y - size * 0.7); }
+      drawLabel(node, pos, size, scale);
       ctx.globalAlpha = 1;
       return hit;
     }
 
-    function getNodePos(node) {
-      const radius = (CONFIG.rings.find(r => r.id === node.ring)?.radius || 0) * getScale(), angle = (node.angleDeg || 0) * Math.PI / 180;
-      if (node.id === 'CORE') return { x: cx + panX, y: cy + panY };
-      return { x: cx + panX + Math.cos(angle) * radius, y: cy + panY + Math.sin(angle) * radius };
-    }
-
-    function drawPoly(x, y, r, sides, rot = 0) { ctx.moveTo(x + r * Math.cos(rot), y + r * Math.sin(rot)); for (let i = 1; i <= sides; i++) { const a = rot + (i * 2 * Math.PI) / sides; ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); } ctx.closePath(); }
-
-    function drawSphereConnections() {
-      const color = CONFIG.sphereTypes[hoveredSphereType].color, w = vw;
-      nodePositions.filter(p => nodeById(p.id)?.requirements?.some(r => r.type === hoveredSphereType)).forEach(p => {
-        ctx.beginPath(); ctx.setLineDash([5, 5]); ctx.lineDashOffset = -Date.now() * 0.01;
-        ctx.moveTo(w - 240, 120); ctx.quadraticCurveTo((w - 240 + p.x) / 2, 90, p.x, p.y); ctx.strokeStyle = color + '77'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.setLineDash([]);
+    function drawLabel(node, pos, size, scale) {
+      const text = node.label.replace(/\n/g, ' ');
+      let dx = pos.x - (cx + panX), dy = pos.y - (cy + panY); const L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L;
+      if (node.id === 'CORE') { dx = 0; dy = 1; }
+      dx = dx * (1 - colA) + colA; dy = dy * (1 - colA);
+      const gap = size + 9 * scale, lx = pos.x + dx * gap, ly = pos.y + dy * gap;
+      const align = dx > 0.35 ? 'left' : dx < -0.35 ? 'right' : 'center', base = Math.abs(dx) > 0.35 ? 'middle' : (dy > 0 ? 'top' : 'bottom');
+      const locked = node.state === 'LOCKED', fs = Math.max(10, 13.5 * scale);
+      ctx.font = `700 ${fs}px ${FONT}`; ctx.textAlign = align; ctx.textBaseline = base; ctx.lineJoin = 'round';
+      ctx.lineWidth = 5 * scale; ctx.strokeStyle = INK; ctx.strokeText(text, lx, ly); ctx.fillStyle = locked ? 'rgba(242,241,236,0.55)' : PAPER; ctx.fillText(text, lx, ly);
+      // 必要スフィアの四角
+      const reqs = []; (node.requirements || []).forEach(r => { for (let k = 0; k < r.count && reqs.length < 14; k++) reqs.push(r.type); });
+      if (!reqs.length) return;
+      const s = 6 * scale, g = 2 * scale, w = reqs.length * (s + g) - g;
+      const sx = align === 'left' ? lx : align === 'right' ? lx - w : lx - w / 2;
+      const sy = base === 'bottom' ? ly - fs - 7 * scale : base === 'top' ? ly + fs + 5 * scale : ly + fs * 0.75 + 4 * scale;
+      reqs.forEach((type, i) => {
+        const dim = hoveredSphereType && type !== hoveredSphereType; ctx.globalAlpha *= dim ? 0.25 : (locked ? 0.7 : 1);
+        ctx.fillStyle = CONFIG.sphereTypes[type]?.color || '#888'; ctx.fillRect(sx + i * (s + g), sy, s, s);
+        ctx.globalAlpha /= dim ? 0.25 : (locked ? 0.7 : 1);
       });
     }
 
+    function getNodePos(node) { const d = getDisp(node), s = getScale(); return { x: cx + panX + d.x * s, y: cy + panY + d.y * s }; }
+    function drawPoly(x, y, r, sides, rot = 0) { ctx.moveTo(x + r * Math.cos(rot), y + r * Math.sin(rot)); for (let i = 1; i <= sides; i++) { const a = rot + (i * 2 * Math.PI) / sides; ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); } ctx.closePath(); }
+
+    function drawSphereConnections() {
+      const color = CONFIG.sphereTypes[hoveredSphereType].color;
+      nodePositions.filter(p => nodeById(p.id)?.requirements?.some(r => r.type === hoveredSphereType)).forEach(p => {
+        ctx.beginPath(); ctx.setLineDash([4, 5]); ctx.lineDashOffset = -Date.now() * 0.02;
+        ctx.moveTo(vw - 250, 140); ctx.lineTo(p.x, p.y); ctx.strokeStyle = color; ctx.globalAlpha = 0.7; ctx.lineWidth = 1.2; ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+      });
+    }
+
+    // ---------- 入力 ----------
     function hitTest(x, y) { for (let i = nodePositions.length - 1; i >= 0; i--) { const p = nodePositions[i]; if (Math.hypot(x - p.x, y - p.y) < p.size) return p; } return null; }
 
     function handleMouseMove(e) {
       const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
       if (isPanning && lastPanPos) { const dx = x - lastPanPos.x, dy = y - lastPanPos.y; panX += dx; panY += dy; tPanX += dx; tPanY += dy; lastPanPos = { x, y }; hideTooltip(); return; }
-      if (dragNode) { const dx = x - (cx + panX), dy = y - (cy + panY); dragNode.angleDeg = Math.round(Math.atan2(dy, dx) * 180 / Math.PI); return; }
+      if (dragNode && mode === 'RING') { const dx = x - (cx + panX), dy = y - (cy + panY); dragNode.angleDeg = Math.round(Math.atan2(dy, dx) * 180 / Math.PI); return; }
       const hit = hitTest(x, y);
       if (hit) { hoverId = hit.id; canvas.style.cursor = 'pointer'; const n = nodeById(hit.id); if (n) showTooltip(n, e.clientX, e.clientY); }
       else { hoverId = null; canvas.style.cursor = ''; hideTooltip(); if (highlightedPathNodes.size > 0) highlightedPathNodes.clear(); }
     }
 
     function handleMouseDown(e) {
-      const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
-      const hit = hitTest(x, y);
+      const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top, hit = hitTest(x, y);
       if (e.button === 1 || (e.button === 0 && (e.altKey || !hit))) {
         if (!hit) { selectedNodeId = null; if (isEditorOpen) document.getElementById('node-editor').style.display = 'none'; }
         isPanning = true; lastPanPos = { x, y }; canvas.classList.add('panning'); return;
@@ -913,18 +807,15 @@
 
     function handleMouseUp() { isPanning = false; dragNode = null; lastPanPos = null; if (canvas) canvas.classList.remove('panning'); }
     function handleMouseLeave() { hoverId = null; hideTooltip(); }
-    function handleWheel(e) {
-      e.preventDefault(); const rect = canvas.getBoundingClientRect();
-      zoomBy(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - rect.left, e.clientY - rect.top);
-    }
+    function handleWheel(e) { e.preventDefault(); const rect = canvas.getBoundingClientRect(); zoomBy(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - rect.left, e.clientY - rect.top); }
     function handleKey(e) {
       if (e.target.matches('input, textarea, select')) return;
       if (e.key === 'Escape') { selectedNodeId = null; highlightedPathNodes.clear(); hideTooltip(); }
       else if (e.key === '0') resetView(); else if (e.key === '+' || e.key === '=') zoomBy(1.2); else if (e.key === '-') zoomBy(1 / 1.2);
+      else if (e.key === '1') setMode('RING'); else if (e.key === '2') setMode('STATE'); else if (e.key === '3') setMode('COST');
     }
-    // タッチ：1本指でパン、2本指でピンチズーム
     function initTouch() {
-      let pts = {}, lastD = 0;
+      const pts = {}; let lastD = 0;
       canvas.addEventListener('pointerdown', e => { if (e.pointerType !== 'touch') return; pts[e.pointerId] = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); });
       canvas.addEventListener('pointermove', e => {
         if (e.pointerType !== 'touch' || !pts[e.pointerId]) return;
@@ -944,24 +835,20 @@
       if (tipFor !== node.id) {
         tipFor = node.id;
         highlightedPathNodes = new Set(getPathToCore(node.id)); const cost = calculateTotalCost(Array.from(highlightedPathNodes));
-        let h = `<h3>${node.label.replace('\n', ' ')}</h3><span class="state ${node.state}">${getStateName(node.state)}</span><div class="description">${node.description || ''}</div>`;
-        if (node.requirements?.length) { h += '<div class="requirements"><h4>必要スフィア</h4>'; node.requirements.forEach(r => { const c = CONFIG.sphereTypes[r.type]?.color || '#888'; h += `<span class="sphere-item" style="background:${c}22;color:${c};border:1px solid ${c}55">${r.type} ×${r.count}</span>`; }); h += '</div>'; }
-        if (Object.keys(cost).length > 0) { h += `<div class="total-cost" style="margin-top:8px; padding-top:12px; border-top:1px solid rgba(150,180,230,.14)"><h4 style="color:#FFD700">最短ルート累計コスト</h4>`; Object.entries(cost).forEach(([t, c]) => { const cl = CONFIG.sphereTypes[t]?.color || '#888'; h += `<div style="display:inline-flex; align-items:center; margin-right:14px; font-size:11px;"><div style="width:8px; height:8px; border-radius:50%; background:${cl}; margin-right:6px; box-shadow:0 0 6px ${cl}"></div><span>${t} ×${c}</span></div>`; }); h += '</div>'; }
+        const chip = (t, c) => `<span class="sphere-item"><i style="background:${CONFIG.sphereTypes[t]?.color || '#888'}"></i>${t} ×${c}</span>`;
+        let h = `<div class="tip-top"><span>{ ${node.id === 'CORE' ? 'WG' : pad2(CONFIG.nodes.indexOf(node))} }</span><span>${node.ring}</span></div><h3>${node.label.replace('\n', ' ')}</h3><span class="state ${node.state}">${getStateName(node.state)}</span><div class="description">${node.description || ''}</div>`;
+        if (node.requirements?.length) { h += '<div class="requirements"><h4>必要スフィア</h4>'; node.requirements.forEach(r => { h += chip(r.type, r.count); }); h += '</div>'; }
+        if (Object.keys(cost).length > 0) { h += `<div class="total-cost"><h4>最短ルート累計コスト</h4>`; Object.entries(cost).forEach(([t, c]) => { h += chip(t, c); }); h += '</div>'; }
         if (node.effect) h += `<div class="effect">→ ${node.effect}</div>`;
-        tooltip.innerHTML = h; tooltip.style.display = 'block';
-        tooltip.style.animation = 'none'; void tooltip.offsetWidth; tooltip.style.animation = '';
+        tooltip.innerHTML = h; tooltip.style.display = 'block'; tooltip.classList.remove('pop'); void tooltip.offsetWidth; tooltip.classList.add('pop');
       }
       const tr = tooltip.getBoundingClientRect();
-      let l = x + 22, t = y + 22; if (l + tr.width > window.innerWidth - 12) l = x - tr.width - 22; if (t + tr.height > window.innerHeight - 12) t = y - tr.height - 22;
+      let l = x + 28, t = y + 24; if (l + tr.width > window.innerWidth - 12) l = x - tr.width - 28; if (t + tr.height > window.innerHeight - 12) t = y - tr.height - 24;
       tooltip.style.left = Math.max(12, l) + 'px'; tooltip.style.top = Math.max(12, t) + 'px';
     }
-
     function hideTooltip() { tipFor = null; if (tooltip) tooltip.style.display = 'none'; }
     function getStateName(s) { return { MASTERED: '定着', UNLOCKED: '解放済', ELIGIBLE: '解放可', LOCKED: '未解放' }[s] || '未解放'; }
-    function lighten(hex, amt) { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? `rgb(${Math.min(255, parseInt(m[1], 16) + amt * 255)},${Math.min(255, parseInt(m[2], 16) + amt * 255)},${Math.min(255, parseInt(m[3], 16) + amt * 255)})` : hex; }
-    function darken(hex, amt) { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m ? `rgb(${Math.max(0, parseInt(m[1], 16) - amt * 255)},${Math.max(0, parseInt(m[2], 16) - amt * 255)},${Math.max(0, parseInt(m[3], 16) - amt * 255)})` : hex; }
 
-    // 編集モードで未定義だった関数
     function addNewNode() {
       const id = 'NODE_' + Date.now().toString(36).toUpperCase(), r = CONFIG.rings[0];
       CONFIG.nodes.push({ id, label: '新規\nノード', ring: r.id, angleDeg: 0, state: 'LOCKED', importance: 'STANDARD', shape: 'circle', description: '', effect: '', requirements: [] });
@@ -973,7 +860,7 @@
     function toggleEditor() {
       isEditorOpen = !isEditorOpen; document.getElementById('editor-panel').classList.toggle('open', isEditorOpen);
       document.getElementById('main-content').classList.toggle('editing', isEditorOpen);
-      const btn = document.getElementById('editor-toggle'); btn.classList.toggle('active', isEditorOpen); btn.textContent = isEditorOpen ? '編集中 ✓' : '編集モード';
+      const btn = document.getElementById('editor-toggle'); btn.textContent = isEditorOpen ? '編集中 ✓' : '編集モード';
       const hint = document.getElementById('drag-hint'); hint.classList.toggle('visible', isEditorOpen); if (isEditorOpen) setTimeout(() => hint.classList.remove('visible'), 4000);
       if (isEditorOpen) { updateRingList(); updateNodeList(); updateRingSelect(); }
     }
