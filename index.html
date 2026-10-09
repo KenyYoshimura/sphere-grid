@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
   <title>WG Sphere Grid - 企業スフィア盤</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -243,17 +245,15 @@
 <body>
   <div id="lens"></div>
 
-  <div id="login-screen">
+  <div id="login-screen" class="hidden">
     <div class="marquee">SPHERE GRID — SPHERE GRID — SPHERE GRID — SPHERE GRID —&nbsp;</div>
     <div class="marquee two">WONDERFUL GROWTH · WONDERFUL GROWTH · WONDERFUL GROWTH · WONDERFUL GROWTH ·&nbsp;</div>
     <div class="login-box">
-      <div class="login-top"><span>Wonderful Growth</span><span>{ 社内限定 }</span></div>
+      <div class="login-top"><span>Wonderful Growth</span><span>{ 閲覧制限 }</span></div>
       <h1>企業<br>スフィア<span class="serif">盤</span></h1>
-      <div class="subtitle">SPHERE GRID — MEMBERS ONLY</div>
-      <input type="password" id="password-input" placeholder="パスワードを入力" autocomplete="off">
-      <button class="enter" onclick="attemptLogin()"><span>Enter</span><span>→</span></button>
-      <div class="login-error" id="login-error"></div>
-      <div class="login-hint">社内メンバー用アクセスキー</div>
+      <div class="subtitle" id="lock-title">SPHERE GRID — MEMBERS ONLY</div>
+      <div class="login-error" id="lock-message" style="color:var(--ink);font-size:14px;line-height:1.7"></div>
+      <div class="login-hint">社内メンバー用ページ</div>
     </div>
   </div>
 
@@ -272,7 +272,6 @@
       </div>
       <div class="top-actions">
         <button id="editor-toggle" class="btn-top" onclick="toggleEditor()">編集モード</button>
-        <button id="logout-btn" class="btn-top" onclick="logout()">ログアウト</button>
       </div>
     </header>
 
@@ -398,6 +397,7 @@
       <div id="export-section">
         <h3>データ管理</h3>
         <div class="btn-group">
+          <button class="btn btn-primary btn-small" onclick="saveToServer()">保存（data.json＋暗号化）</button>
           <button class="btn btn-secondary btn-small" onclick="exportData()">エクスポート</button>
           <button class="btn btn-secondary btn-small" onclick="importData()">インポート</button>
           <button class="btn btn-secondary btn-small" onclick="downloadImage()">画像保存</button>
@@ -407,70 +407,41 @@
   </div>
 
   <script>
-    // 認証
-    const ACCESS_PASSWORD = 'wg2024';
-    const AUTH_KEY = 'wg_sphere_auth';
-    const AUTH_EXPIRY_DAYS = 7;
+    // ---------- データ読み込みとアクセス制御 ----------
+    // 公開版: data.enc（AES-GCM暗号文）を、URLの #k=鍵 で復号して閲覧専用で表示する。鍵は # 以降なのでサーバーには送信されない。
+    // 編集版: localhost / 127.0.0.1 で開いたときだけ有効。data.json（手元のみ・非公開）を読み、tools/serve.mjs 経由で保存する。
+    const IS_LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+    const IS_ADMIN = IS_LOCAL && !/[?&]view\b/.test(location.search);   // ?view を付けると閲覧モードを手元で確認できる
 
-    function checkAuth() {
-      const d = localStorage.getItem(AUTH_KEY);
-      if (!d) return false;
-      try {
-        const { hash, expiry } = JSON.parse(d);
-        if (Date.now() > expiry) { localStorage.removeItem(AUTH_KEY); return false; }
-        return hash === simpleHash(ACCESS_PASSWORD);
-      } catch { return false; }
-    }
-    function simpleHash(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h &= h; } return h.toString(36); }
-    function attemptLogin() {
-      const inp = document.getElementById('password-input');
-      if (inp.value === ACCESS_PASSWORD) {
-        localStorage.setItem(AUTH_KEY, JSON.stringify({ hash: simpleHash(ACCESS_PASSWORD), expiry: Date.now() + AUTH_EXPIRY_DAYS * 86400000 }));
-        showMainContent();
-      } else { document.getElementById('login-error').textContent = 'パスワードが正しくありません'; inp.value = ''; inp.focus(); }
-    }
-    function logout() { if (confirm('ログアウトしますか？')) { localStorage.removeItem(AUTH_KEY); location.reload(); } }
-    function showMainContent() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-content').classList.add('visible'); initApp(); }
-    document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') attemptLogin(); });
+    let CONFIG = { width: 1920, height: 1080, rings: [], sphereTypes: {}, nodes: [], edges: [], nodeSizes: { MAJOR: 55, STANDARD: 45, MINOR: 35 } };
 
-    // CONFIG
-    let CONFIG = {
-      width: 1920, height: 1080,
-      rings: [
-        { id: "R30", label: "年商 3,000万", radius: 180 },
-        { id: "R60", label: "年商 6,000万", radius: 300 },
-        { id: "R100", label: "年商 1億", radius: 420 },
-      ],
-      sphereTypes: {
-        "人材": { color: "#3399E6" }, "資金": { color: "#E6B333" }, "実績": { color: "#4DCC80" },
-        "時間": { color: "#9966CC" }, "信頼": { color: "#E68033" }, "技術": { color: "#66B3E6" },
-      },
-      nodes: [
-        { id: "CORE", label: "WG\nCORE", ring: "CORE", angleDeg: 0, state: "MASTERED", importance: "MAJOR", shape: "octagon", sizeMultiplier: 1.4, description: "企業の核心", effect: "全ノード解放", requirements: [] },
-        { id: "HIRE_3", label: "採用\n〜3名", ring: "R30", angleDeg: -45, state: "ELIGIBLE", importance: "STANDARD", shape: "circle", description: "最初の採用", effect: "キャパ+30%", requirements: [{ type: "資金", count: 2 }, { type: "実績", count: 1 }] },
-        { id: "OFFICE_15", label: "オフィス\n賃料≤15%", ring: "R30", angleDeg: 15, state: "ELIGIBLE", importance: "STANDARD", shape: "diamond", description: "適正コスト", effect: "固定費最適化", requirements: [{ type: "資金", count: 1 }] },
-        { id: "PRODUCTIZE", label: "型化\n研修商品", ring: "R30", angleDeg: 75, state: "ELIGIBLE", importance: "MAJOR", shape: "hexagon", sizeMultiplier: 1.15, description: "サービス標準化", effect: "再現性+50%", requirements: [{ type: "技術", count: 2 }, { type: "時間", count: 1 }] },
-        { id: "BACKOFFICE", label: "バック\nオフィス", ring: "R30", angleDeg: 150, state: "ELIGIBLE", importance: "STANDARD", shape: "circle", description: "管理基盤整備", effect: "管理効率+20%", requirements: [{ type: "資金", count: 1 }, { type: "人材", count: 1 }] },
-        { id: "WELFARE", label: "福利厚生\n導入", ring: "R60", angleDeg: -60, state: "LOCKED", importance: "STANDARD", shape: "circle", description: "満足度向上", effect: "定着率+15%", requirements: [{ type: "資金", count: 2 }, { type: "信頼", count: 1 }] },
-        { id: "HIRE_MORE", label: "採用\n追加", ring: "R60", angleDeg: -15, state: "LOCKED", importance: "MAJOR", shape: "circle", sizeMultiplier: 1.15, description: "人材確保", effect: "キャパ+50%", requirements: [{ type: "資金", count: 3 }, { type: "人材", count: 1 }, { type: "実績", count: 2 }] },
-        { id: "SEC_PREP", label: "セキュリティ\n認証準備", ring: "R60", angleDeg: 45, state: "LOCKED", importance: "STANDARD", shape: "diamond", description: "認証準備", effect: "大企業対応", requirements: [{ type: "技術", count: 2 }, { type: "時間", count: 2 }] },
-        { id: "SALES_PROCESS", label: "営業\nプロセス", ring: "R60", angleDeg: 115, state: "LOCKED", importance: "MAJOR", shape: "hexagon", sizeMultiplier: 1.15, description: "営業体系化", effect: "受注効率+40%", requirements: [{ type: "実績", count: 2 }, { type: "技術", count: 1 }] },
-        { id: "NEW_BIZ", label: "新規事業\n×1", ring: "R100", angleDeg: -30, state: "LOCKED", importance: "MAJOR", shape: "octagon", sizeMultiplier: 1.2, description: "新領域進出", effect: "収益多角化", requirements: [{ type: "資金", count: 5 }, { type: "人材", count: 2 }, { type: "実績", count: 3 }] },
-        { id: "FUNCTION_SPLIT", label: "専任機能\n分離", ring: "R100", angleDeg: 30, state: "LOCKED", importance: "STANDARD", shape: "circle", description: "専任体制", effect: "専門性深化", requirements: [{ type: "人材", count: 3 }, { type: "資金", count: 2 }] },
-        { id: "SEC_GET", label: "認証\n本取得", ring: "R100", angleDeg: 90, state: "LOCKED", importance: "MAJOR", shape: "diamond", sizeMultiplier: 1.15, description: "認証取得", effect: "大型案件獲得", requirements: [{ type: "技術", count: 3 }, { type: "時間", count: 3 }, { type: "資金", count: 2 }] },
-        { id: "LEAD_DEV", label: "リード\n育成", ring: "R100", angleDeg: 160, state: "LOCKED", importance: "MAJOR", shape: "circle", sizeMultiplier: 1.15, description: "リーダー育成", effect: "持続可能性", requirements: [{ type: "人材", count: 2 }, { type: "時間", count: 3 }, { type: "信頼", count: 2 }] },
-      ],
-      edges: [
-        { from: "CORE", to: "HIRE_3", type: "MAIN" }, { from: "CORE", to: "OFFICE_15", type: "MAIN" },
-        { from: "CORE", to: "PRODUCTIZE", type: "MAIN" }, { from: "CORE", to: "BACKOFFICE", type: "MAIN" },
-        { from: "HIRE_3", to: "WELFARE", type: "OPTIONAL" }, { from: "HIRE_3", to: "HIRE_MORE", type: "MAIN" },
-        { from: "HIRE_MORE", to: "FUNCTION_SPLIT", type: "MAIN" }, { from: "FUNCTION_SPLIT", to: "LEAD_DEV", type: "MAIN" },
-        { from: "PRODUCTIZE", to: "SALES_PROCESS", type: "MAIN" }, { from: "SALES_PROCESS", to: "NEW_BIZ", type: "MAIN" },
-        { from: "SALES_PROCESS", to: "SEC_PREP", type: "OPTIONAL" }, { from: "SEC_PREP", to: "SEC_GET", type: "MAIN" },
-        { from: "BACKOFFICE", to: "SEC_PREP", type: "CROSS_DOMAIN" },
-      ],
-      nodeSizes: { MAJOR: 55, STANDARD: 45, MINOR: 35 }
-    };
+    const fromB64 = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+    async function loadData() {
+      if (IS_ADMIN) { const r = await fetch('data.json', { cache: 'no-store' }); if (!r.ok) throw new Error('NODATA'); return r.json(); }
+      const m = /[#&]k=([A-Za-z0-9_-]+)/.exec(location.hash); if (!m) throw new Error('NOKEY');
+      const key = await crypto.subtle.importKey('raw', fromB64(m[1]), 'AES-GCM', false, ['decrypt']);
+      const r = await fetch('data.enc', { cache: 'no-store' }); if (!r.ok) throw new Error('NODATA');
+      const enc = await r.json();
+      try { return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(enc.iv) }, key, fromB64(enc.ct)))); }
+      catch { throw new Error('BADKEY'); }
+    }
+    function showLock(code) {
+      const msg = {
+        NOKEY: 'このページは、Notion に貼られた閲覧用リンクから開いてください。',
+        BADKEY: '閲覧用リンクが古い、または正しくありません。Notion のページから開き直してください。',
+        NODATA: IS_ADMIN ? 'data.json が見つかりません。`node tools/serve.mjs` で編集サーバーを起動して開いてください。' : 'データを読み込めませんでした。時間をおいて開き直してください。',
+      }[code] || '読み込みに失敗しました。';
+      document.getElementById('lock-message').textContent = msg; document.getElementById('login-screen').classList.remove('hidden');
+    }
+    function showMainContent() {
+      document.getElementById('login-screen').classList.add('hidden'); const mc = document.getElementById('main-content'); mc.classList.add('visible');
+      if (!IS_ADMIN) { // 閲覧専用：編集UIはDOMごと外す
+        mc.classList.add('viewer'); document.getElementById('editor-panel')?.remove();
+        document.querySelector('.top-actions').innerHTML = '<span class="note">{ VIEW ONLY }</span>';
+      }
+      initApp();
+    }
+    async function boot() { try { Object.assign(CONFIG, await loadData()); showMainContent(); } catch (e) { showLock(e.message); } }
 
 
     const INK = '#0A0A0A', PAPER = '#F2F1EC', ACC = '#D7FF2F';
@@ -802,7 +773,7 @@
         if (!hit) { selectedNodeId = null; if (isEditorOpen) document.getElementById('node-editor').style.display = 'none'; }
         isPanning = true; lastPanPos = { x, y }; canvas.classList.add('panning'); return;
       }
-      if (hit) { if (isEditorOpen) dragNode = nodeById(hit.id); selectNode(hit.id); }
+      if (hit) { if (isEditorOpen && IS_ADMIN) dragNode = nodeById(hit.id); selectNode(hit.id); }
     }
 
     function handleMouseUp() { isPanning = false; dragNode = null; lastPanPos = null; if (canvas) canvas.classList.remove('panning'); }
@@ -858,6 +829,7 @@
 
     // --- Editor & IO ---
     function toggleEditor() {
+      if (!IS_ADMIN) return;
       isEditorOpen = !isEditorOpen; document.getElementById('editor-panel').classList.toggle('open', isEditorOpen);
       document.getElementById('main-content').classList.toggle('editing', isEditorOpen);
       const btn = document.getElementById('editor-toggle'); btn.textContent = isEditorOpen ? '編集中 ✓' : '編集モード';
@@ -932,6 +904,13 @@
       selectedNodeId = null; document.getElementById('node-editor').style.display = 'none'; updateNodeList(); draw();
     }
 
+    async function saveToServer() {
+      const { width, height, rings, sphereTypes, nodes, edges, nodeSizes } = CONFIG;
+      try {
+        const r = await fetch('/api/save', { method: 'POST', headers: { 'content-type': 'application/json', 'x-wg-admin': '1' }, body: JSON.stringify({ width, height, rings, sphereTypes, nodes, edges, nodeSizes }) });
+        if (!r.ok) throw new Error(await r.text()); alert('保存しました（data.json と data.enc を更新）。公開するには git save を実行してください。');
+      } catch (e) { alert('保存に失敗しました: ' + e.message + '\n編集サーバー（node tools/serve.mjs）で開いていますか？'); }
+    }
     function exportData() {
       const blob = new Blob([JSON.stringify({ rings: CONFIG.rings, nodes: CONFIG.nodes, edges: CONFIG.edges }, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sphere-grid.json'; a.click();
@@ -950,7 +929,7 @@
     }
     function downloadImage() { const a = document.createElement('a'); a.download = 'grid.png'; a.href = canvas.toDataURL('image/png'); a.click(); }
 
-    if (checkAuth()) showMainContent(); else document.getElementById('password-input').focus();
+    boot();
   </script>
 </body>
 

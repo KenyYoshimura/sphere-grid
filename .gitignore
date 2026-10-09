@@ -20,3 +20,7 @@ Thumbs.db
 # Local development
 .env.local
 .env.*.local
+
+# スフィア盤: 平文データと暗号鍵は絶対にコミットしない（公開は data.enc のみ）
+data.json
+.sphere-key
