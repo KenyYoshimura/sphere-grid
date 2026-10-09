@@ -30,7 +30,7 @@
     button { font-family: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
     ::selection { background: var(--acc); color: var(--ink); }
     .serif { font-family: var(--serif); font-style: italic; font-weight: 400; }
-    .note { font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+    .note { font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
     .note b { color: var(--acc); font-weight: 500; }
 
     /* ---------- 反転レンズ ---------- */
@@ -97,13 +97,13 @@
     .brand span { font: 500 13px var(--body); color: var(--mute); }
     .brand .serif { font-size: 20px; color: var(--acc); }
     #mode-chips { display: flex; gap: 6px; padding: 5px; background: rgba(10, 10, 10, .86); border: 1px solid var(--line); }
-    .chip { position: relative; padding: 9px 16px; font: 700 12px var(--body); letter-spacing: .02em; color: var(--paper); border: 1px solid transparent; transition: background .3s, color .3s, border-color .3s; }
+    .chip { position: relative; padding: 9px 16px; font: 700 12.5px var(--body); letter-spacing: .02em; color: var(--paper); border: 1px solid transparent; transition: background .3s, color .3s, border-color .3s; }
     .chip i { font: 500 10px var(--mono); color: var(--mute); margin-right: 8px; font-style: normal; }
     .chip:hover { border-color: var(--paper); }
     .chip.active { background: var(--acc); color: var(--ink); }
     .chip.active i { color: rgba(10, 10, 10, .55); }
     .top-actions { display: flex; gap: 8px; justify-content: flex-end; }
-    .btn-top { padding: 11px 18px; border: 1px solid var(--line); background: rgba(10, 10, 10, .86); font: 700 12px var(--body); transition: background .3s, color .3s, border-color .3s; }
+    .btn-top { padding: 11px 18px; border: 1px solid var(--line); background: rgba(10, 10, 10, .86); font: 700 12.5px var(--body); transition: background .3s, color .3s, border-color .3s; }
     .btn-top:hover { background: var(--paper); color: var(--ink); }
     .btn-top.active { background: var(--acc); color: var(--ink); border-color: var(--acc); }
     #editor-toggle { background: var(--acc); color: var(--ink); border-color: var(--acc); }
@@ -112,23 +112,23 @@
     /* 左：指標 */
     #metrics-panel { top: 84px; left: 24px; width: 268px; padding: 16px 18px 18px; max-height: calc(100vh - 340px); overflow: auto; scrollbar-width: none; }
     #metrics-panel::-webkit-scrollbar { display: none; }
-    #metrics-panel h2, #legend h2, #gates h2 { display: flex; justify-content: space-between; align-items: center; font: 700 13px var(--body); }
+    #metrics-panel h2, #legend h2, #gates h2 { display: flex; justify-content: space-between; align-items: center; font: 700 13.5px var(--body); }
     #metrics-panel h2 .note, #legend h2 .note, #gates h2 .note { margin-right: 10px; }
     .toggle-btn { width: 24px; height: 24px; border: 1px solid var(--line); font-size: 8px; transition: .25s; }
     .toggle-btn:hover { background: var(--acc); color: var(--ink); border-color: var(--acc); }
     #metrics-panel.collapsed .metrics-content, #gates.collapsed .gates-body { display: none; }
     .metrics-content { margin-top: 12px; }
     .metric-row { display: grid; grid-template-columns: 62px 1fr 26px; align-items: center; gap: 6px; padding: 5px 0; border-top: 1px solid var(--line); }
-    .metric-row label { font-size: 12px; color: var(--mute); }
+    .metric-row label { font-size: 13px; color: rgba(242,241,236,.75); }
     .metric-row input { width: 100%; background: transparent; border: 0; color: var(--paper); font: 700 22px var(--display); letter-spacing: -.03em; text-align: right; outline: none; -moz-appearance: textfield; }
     .metric-row input:focus { color: var(--acc); }
     .metric-row input::-webkit-outer-spin-button, .metric-row input::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .metric-row .unit { font-size: 10px; color: var(--dim); }
+    .metric-row .unit { font-size: 11px; color: var(--mute); }
     .metric-divider { height: 10px; }
     .metrics-content > div[style] { font: 500 10px var(--mono) !important; letter-spacing: .08em; text-transform: uppercase; color: var(--acc) !important; }
     .sphere-inventory { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 12px; }
     .sphere-inv-item { display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 6px 8px 4px; border: 1px solid var(--line); position: relative; }
-    .sphere-inv-item span { font-size: 10px !important; color: var(--mute) !important; }
+    .sphere-inv-item span { font-size: 11.5px !important; color: rgba(242,241,236,.75) !important; }
     .sphere-dot { position: absolute; top: 8px; right: 8px; width: 7px; height: 7px; border-radius: 0; box-shadow: none !important; }
     .sphere-inv-item input { width: 100%; background: transparent; border: 0; color: var(--paper); font: 800 26px/1 var(--display); letter-spacing: -.04em; outline: none; }
     .metric-status { padding-top: 10px; border-top: 1px solid var(--line); }
@@ -143,24 +143,24 @@
     #counter .cap { margin: 14px 0 0 6px; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #fff; }
 
     /* 右：凡例・ゲート */
-    #legend { top: 84px; right: 24px; width: 220px; padding: 16px 18px 12px; transition: opacity .5s var(--out), transform .5s var(--out) !important; }
+    #legend { top: 84px; right: 24px; width: 232px; padding: 16px 18px 12px; transition: opacity .5s var(--out), transform .5s var(--out) !important; }
     .editing #legend, .editing #gates { opacity: 0 !important; transform: translateX(30px) !important; pointer-events: none; }
-    #legend h3 { font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acc); margin: 12px 0 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+    #legend h3 { font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acc); margin: 12px 0 6px; padding-top: 10px; border-top: 1px solid var(--line); }
     #legend h2 { margin-bottom: 8px; }
     .legend-item { display: flex; align-items: center; gap: 12px; padding: 5px 6px; margin: 0 -6px; transition: background .25s, color .25s, padding .35s var(--out); }
     .legend-item[data-sphere] { cursor: pointer; }
     .legend-item[data-sphere]:hover { background: var(--paper); color: var(--ink); padding-left: 12px; }
     .legend-item[data-sphere]:hover .desc { color: rgba(10, 10, 10, .6); }
-    .legend-dot { width: 13px; height: 13px; flex: none; border-radius: 50%; }
+    .legend-dot { width: 14px; height: 14px; flex: none; border-radius: 50%; }
     .legend-dot.s-m { background: var(--acc); } .legend-dot.s-u { background: var(--paper); }
     .legend-dot.s-e { border: 2px solid var(--acc); } .legend-dot.s-l { border: 1px solid var(--dim); }
-    .legend-sphere { width: 10px; height: 10px; flex: none; }
-    .legend-text { font-size: 12.5px; font-weight: 700; line-height: 1.3; }
-    .legend-text .desc { color: var(--mute); font-size: 10px; font-weight: 500; }
-    #gates { top: auto; right: 24px; bottom: 24px; width: 220px; padding: 14px 18px; }
+    .legend-sphere { width: 12px; height: 12px; flex: none; }
+    .legend-text { font-size: 13px; font-weight: 700; line-height: 1.3; }
+    .legend-text .desc { color: rgba(242,241,236,.7); font-size: 11.5px; font-weight: 500; }
+    #gates { top: auto; right: 24px; bottom: 24px; width: 232px; padding: 14px 18px; }
     #gates .gates-body { margin-top: 10px; }
     #gates ul { list-style: none; counter-reset: g; }
-    #gates li { counter-increment: g; display: flex; gap: 10px; padding: 6px 0; font-size: 12px; border-top: 1px solid var(--line); color: var(--paper); }
+    #gates li { counter-increment: g; display: flex; gap: 10px; padding: 6px 0; font-size: 13px; border-top: 1px solid var(--line); color: var(--paper); }
     #gates li::before { content: counter(g, decimal-leading-zero); font: 500 10px/1.8 var(--mono); color: var(--acc); }
 
     /* HUD */
@@ -175,17 +175,17 @@
     @keyframes card { from { clip-path: inset(100% 0 0 0); transform: translateY(14px); } to { clip-path: inset(0 0 0 0); transform: none; } }
     #tooltip .tip-top { display: flex; justify-content: space-between; font: 500 11px var(--mono); color: rgba(10, 10, 10, .5); }
     #tooltip h3 { margin: 38px 0 10px; font: 800 30px/.95 var(--display); letter-spacing: -.045em; }
-    #tooltip .state { display: inline-block; font: 700 11px var(--body); padding: 3px 10px; background: var(--ink); color: var(--paper); margin-bottom: 12px; }
+    #tooltip .state { display: inline-block; font: 700 12.5px var(--body); padding: 3px 10px; background: var(--ink); color: var(--paper); margin-bottom: 12px; }
     #tooltip .state.MASTERED { background: var(--acc); color: var(--ink); outline: 1px solid var(--ink); }
     #tooltip .state.UNLOCKED { background: #fff; color: var(--ink); outline: 1px solid var(--ink); }
     #tooltip .state.ELIGIBLE { background: transparent; color: var(--ink); outline: 2px solid var(--ink); }
     #tooltip .state.LOCKED { background: rgba(10, 10, 10, .12); color: rgba(10, 10, 10, .6); }
-    #tooltip .description { font-size: 12.5px; line-height: 1.7; font-weight: 500; margin-bottom: 12px; }
-    #tooltip h4 { font: 500 10px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: rgba(10, 10, 10, .5); margin-bottom: 7px; }
-    #tooltip .sphere-item { display: inline-flex; align-items: center; gap: 6px; font: 700 11.5px var(--body); padding: 3px 8px 3px 6px; margin: 0 5px 5px 0; border: 1px solid var(--ink); }
+    #tooltip .description { font-size: 14px; line-height: 1.7; font-weight: 500; margin-bottom: 12px; }
+    #tooltip h4 { font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: rgba(10, 10, 10, .5); margin-bottom: 7px; }
+    #tooltip .sphere-item { display: inline-flex; align-items: center; gap: 6px; font: 700 13px var(--body); padding: 3px 8px 3px 6px; margin: 0 5px 5px 0; border: 1px solid var(--ink); }
     #tooltip .sphere-item i { width: 8px; height: 8px; display: block; }
     #tooltip .total-cost { margin-top: 6px; padding-top: 10px; border-top: 2px solid var(--ink); }
-    #tooltip .effect { margin-top: 12px; padding: 9px 11px; background: var(--acc); font: 700 13px var(--body); }
+    #tooltip .effect { margin-top: 12px; padding: 9px 11px; background: var(--acc); font: 700 14px var(--body); }
 
     /* 編集パネル（紙面） */
     #editor-panel { position: fixed; z-index: 300; top: 0; right: 0; bottom: 0; width: 360px; padding: 84px 22px 24px; overflow-y: auto; background: var(--paper); color: var(--ink); transform: translateX(104%); transition: transform .8s var(--ease); scrollbar-width: thin; scrollbar-color: var(--ink) transparent; }
@@ -300,6 +300,10 @@
       <div class="legend-item"><div class="legend-dot s-u"></div><div class="legend-text">解放済<br><span class="desc">習得中・実施中</span></div></div>
       <div class="legend-item"><div class="legend-dot s-e"></div><div class="legend-text">解放可<br><span class="desc">条件クリア・解放可能</span></div></div>
       <div class="legend-item"><div class="legend-dot s-l"></div><div class="legend-text">未解放<br><span class="desc">条件未達成</span></div></div>
+      <h3>道の見方</h3>
+      <div class="legend-item"><svg width="38" height="14" viewBox="0 0 38 14" style="flex:none"><line x1="0" y1="3" x2="38" y2="3" stroke="#D7FF2F" stroke-width="1.2"/><line x1="0" y1="11" x2="38" y2="11" stroke="#D7FF2F" stroke-width="1.2"/><polyline points="6,4 10,7 6,10" fill="none" stroke="#D7FF2F" stroke-width="1.6"/><polyline points="16,4 20,7 16,10" fill="none" stroke="#D7FF2F" stroke-width="1.6"/><polygon points="38,7 29,2 29,12" fill="#D7FF2F"/></svg><div class="legend-text">次の一手<br><span class="desc">矢印の先へ進める</span></div></div>
+      <div class="legend-item"><svg width="38" height="14" viewBox="0 0 38 14" style="flex:none"><line x1="0" y1="3" x2="38" y2="3" stroke="rgba(215,255,47,.8)" stroke-width="1.2"/><line x1="0" y1="11" x2="38" y2="11" stroke="rgba(215,255,47,.8)" stroke-width="1.2"/><circle cx="6" cy="7" r="2" fill="#D7FF2F"/><circle cx="16" cy="7" r="2" fill="#D7FF2F"/><circle cx="26" cy="7" r="2" fill="#D7FF2F"/><circle cx="35" cy="7" r="2" fill="#D7FF2F"/></svg><div class="legend-text">進行済み<br><span class="desc">すでに通った道</span></div></div>
+      <div class="legend-item"><svg width="38" height="14" viewBox="0 0 38 14" style="flex:none"><line x1="0" y1="3" x2="38" y2="3" stroke="rgba(242,241,236,.3)" stroke-width="1.2"/><line x1="0" y1="11" x2="38" y2="11" stroke="rgba(242,241,236,.3)" stroke-width="1.2"/><circle cx="6" cy="7" r="1.6" fill="rgba(242,241,236,.4)"/><circle cx="16" cy="7" r="1.6" fill="rgba(242,241,236,.4)"/><circle cx="26" cy="7" r="1.6" fill="rgba(242,241,236,.4)"/><circle cx="35" cy="7" r="1.6" fill="rgba(242,241,236,.4)"/></svg><div class="legend-text">まだ先<br><span class="desc">手前の解放が必要</span></div></div>
       <h3>必要スフィア</h3>
       <div class="legend-item" data-sphere="人材"><div class="legend-sphere" style="background:#3399E6"></div><div class="legend-text">人材</div></div>
       <div class="legend-item" data-sphere="資金"><div class="legend-sphere" style="background:#E6B333"></div><div class="legend-text">資金</div></div>
@@ -615,7 +619,7 @@
         // 30°ごとの＋印
         for (let d = 0; d < 360; d += 30) { const rad = d * Math.PI / 180, px = ox + Math.cos(rad) * r, py = oy + Math.sin(rad) * r, s = 4 * scale; ctx.strokeStyle = `rgba(215,255,47,${0.75 * rev})`; ctx.beginPath(); ctx.moveTo(px - s, py); ctx.lineTo(px + s, py); ctx.moveTo(px, py - s); ctx.lineTo(px, py + s); ctx.stroke(); }
         // タグ
-        const fs = Math.max(10, 12 * scale); ctx.font = `700 ${fs}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        const fs = Math.max(11, 13 * scale); ctx.font = `700 ${fs}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         const w = ctx.measureText(def.label).width + 16, h = fs + 10, ty = oy - r;
         ctx.globalAlpha = rev; ctx.fillStyle = PAPER; ctx.fillRect(ox - w / 2, ty - h / 2, w, h); ctx.fillStyle = INK; ctx.fillText(def.label, ox, ty + 0.5); ctx.globalAlpha = 1;
       });
@@ -647,29 +651,60 @@
       });
     }
 
-    function isActiveEdge(from, to) { return from.state !== 'LOCKED' && to.state !== 'LOCKED'; }
+    const NODE_K = 1.08;   // ノードの表示倍率（視認性）
+    const nodeR = n => (CONFIG.nodeSizes[n.importance] || 45) * (n.sizeMultiplier || 1) * NODE_K * getScale();
     function nodeHasSphere(n) { return hoveredSphereType && n.requirements?.some(r => r.type === hoveredSphereType); }
+    // DONE=進行済みの道 / NEXT=次に進める道 / FAR=まだ先の道
+    function edgeKind(from, to) {
+      if (to.state === 'ELIGIBLE' && (from.state === 'MASTERED' || from.state === 'UNLOCKED')) return 'NEXT';
+      return from.state !== 'LOCKED' && to.state !== 'LOCKED' ? 'DONE' : 'FAR';
+    }
+
+    function chevron(x, y, ux, uy, s, alpha) {
+      const px = -uy, py = ux;
+      ctx.globalAlpha *= alpha; ctx.beginPath();
+      ctx.moveTo(x - ux * s * 0.7 + px * s, y - uy * s * 0.7 + py * s); ctx.lineTo(x + ux * s * 0.7, y + uy * s * 0.7); ctx.lineTo(x - ux * s * 0.7 - px * s, y - uy * s * 0.7 - py * s);
+      ctx.stroke(); ctx.globalAlpha /= (alpha || 1);
+    }
 
     function drawEdges(it, time) {
-      const scale = getScale(), t = time * 0.0004;
+      const scale = getScale(), t = time * 0.001;
       CONFIG.edges.forEach((edge, ei) => {
         const from = nodeById(edge.from), to = nodeById(edge.to); if (!from || !to) return;
         const rev = easeOut(clamp01((it - 0.5 - ei * 0.06) / 1.1)); if (rev <= 0) return;
-        const p1 = getNodePos(from), full = getNodePos(to), p2 = { x: p1.x + (full.x - p1.x) * rev, y: p1.y + (full.y - p1.y) * rev };
-        const isPath = highlightedPathNodes.has(from.id) && highlightedPathNodes.has(to.id), active = isActiveEdge(from, to), isMain = edge.type === 'MAIN';
+        const a = getNodePos(from), b = getNodePos(to), dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy); if (L < 2) return;
+        const ux = dx / L, uy = dy / L, r1 = nodeR(from) * 0.85, r2 = nodeR(to) * 0.85;
+        const len = Math.max(0, L - r1 - r2) * rev, sx = a.x + ux * r1, sy = a.y + uy * r1, ex = sx + ux * len, ey = sy + uy * len;
+        const kind = edgeKind(from, to), isPath = highlightedPathNodes.has(from.id) && highlightedPathNodes.has(to.id), hot = isPath || kind === 'NEXT';
         const rel = isPath || nodeHasSphere(from) || nodeHasSphere(to);
-        ctx.globalAlpha = 1 - 0.78 * focus * (rel ? 0 : 1);
+        ctx.globalAlpha = 1 - 0.8 * focus * (rel ? 0 : 1);
+        const W = (edge.type === 'MAIN' ? 9 : 7) * scale;
+        const rail = hot ? ACC : kind === 'DONE' ? 'rgba(215,255,47,0.8)' : 'rgba(242,241,236,0.3)';
         ctx.lineCap = 'butt';
-        if (edge.type === 'OPTIONAL') ctx.setLineDash([6 * scale, 6 * scale]); else if (edge.type === 'CROSS_DOMAIN') ctx.setLineDash([1.5 * scale, 5 * scale]);
-        ctx.strokeStyle = isPath ? ACC : (active ? 'rgba(215,255,47,0.8)' : 'rgba(242,241,236,0.32)');
-        ctx.lineWidth = (isPath ? 3.2 : isMain ? 1.8 : 1.1) * scale; if (edge.type === 'CROSS_DOMAIN') ctx.lineWidth = 2 * scale;
-        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); ctx.setLineDash([]);
-        // 流れる四角
-        if ((isMain || isPath) && rev > 0.95) {
-          const n = isPath ? 3 : 1;
-          for (let k = 0; k < n; k++) {
-            const u = (t * (isPath ? 1.8 : 0.8) + k / n + ei * 0.17) % 1, x = p1.x + (full.x - p1.x) * u, y = p1.y + (full.y - p1.y) * u, s = (isPath ? 5 : 3.2) * scale;
-            ctx.fillStyle = isPath ? PAPER : (active ? ACC : 'rgba(242,241,236,0.7)'); ctx.fillRect(x - s / 2, y - s / 2, s, s);
+        // レール（外枠）→ 溝（内側を黒で抜く）
+        if (edge.type === 'OPTIONAL') ctx.setLineDash([9 * scale, 6 * scale]); else if (edge.type === 'CROSS_DOMAIN') ctx.setLineDash([3 * scale, 5 * scale]);
+        ctx.strokeStyle = rail; ctx.lineWidth = W + 1.8 * scale; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke(); ctx.setLineDash([]);
+        ctx.strokeStyle = INK; ctx.lineWidth = W - 0.4 * scale; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
+        // 溝の中身
+        const pulse = 0.5 + 0.5 * Math.sin(t * 3.4 + ei);
+        if (kind !== 'FAR' || isPath) {
+          ctx.strokeStyle = `rgba(215,255,47,${isPath ? 0.45 : kind === 'NEXT' ? 0.1 + 0.18 * pulse : 0.16})`; ctx.lineWidth = W - 2 * scale; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
+        }
+        if (rev > 0.6) {
+          if (kind === 'NEXT' && !isPath) {   // 次の一手：進行方向へ流れる矢印
+            const sp = 30 * scale, off = (t * 40 * scale) % sp, cs = Math.max(3.2, 4.2 * scale); ctx.strokeStyle = ACC; ctx.lineWidth = Math.max(1.5, 2 * scale); ctx.lineJoin = 'miter';
+            for (let d = off; d < len - 12 * scale; d += sp) chevron(sx + ux * d, sy + uy * d, ux, uy, cs, Math.min(1, d / (12 * scale), (len - d) / (16 * scale)));
+            if (rev > 0.95) { const ah = Math.max(6, 9 * scale), px = -uy, py = ux; ctx.fillStyle = ACC; ctx.beginPath(); ctx.moveTo(ex + ux * ah * 0.4, ey + uy * ah * 0.4); ctx.lineTo(ex - ux * ah * 0.9 + px * ah * 0.75, ey - uy * ah * 0.9 + py * ah * 0.75); ctx.lineTo(ex - ux * ah * 0.9 - px * ah * 0.75, ey - uy * ah * 0.9 - py * ah * 0.75); ctx.closePath(); ctx.fill(); }
+          } else {                             // 玉（ビーズ）：進行済み＝点灯 / 先＝中空
+            const gap = 20 * scale, n = Math.floor(len / gap), rr = Math.max(1.5, 2 * scale);
+            for (let i = 0; i <= n; i++) {
+              const x = sx + ux * (i + 0.5) * gap, y = sy + uy * (i + 0.5) * gap; ctx.beginPath(); ctx.arc(x, y, rr, 0, 6.2832);
+              if (kind === 'FAR') { ctx.fillStyle = 'rgba(242,241,236,0.38)'; ctx.fill(); }
+              else { ctx.fillStyle = isPath ? PAPER : ACC; ctx.fill(); }
+            }
+          }
+          if (isPath) {                         // 最短ルート：光が走る
+            for (let k = 0; k < 2; k++) { const u = ((t * 0.9 + k / 2 + ei * 0.13) % 1) * len, s = 7 * scale; ctx.fillStyle = PAPER; ctx.fillRect(sx + ux * u - s / 2, sy + uy * u - s / 2, s, s); }
           }
         }
         ctx.globalAlpha = 1;
@@ -684,9 +719,9 @@
     function drawNode(node, idx, it, time) {
       const scale = getScale(), pos = getNodePos(node), baseSize = CONFIG.nodeSizes[node.importance] || 45;
       const rev = easeOut(clamp01((it - 0.9 - idx * 0.07) / 0.8)), h = hoverAmt[node.id] || 0;
-      const size = baseSize * (node.sizeMultiplier || 1) * scale * (0.5 + 0.5 * rev) * (1 + 0.1 * h);
+      const size = baseSize * (node.sizeMultiplier || 1) * NODE_K * scale * (0.5 + 0.5 * rev) * (1 + 0.1 * h);
       const isSelected = selectedNodeId === node.id, isPath = highlightedPathNodes.has(node.id), hasSph = nodeHasSphere(node);
-      const hit = { x: pos.x, y: pos.y, size: baseSize * (node.sizeMultiplier || 1) * scale };
+      const hit = { x: pos.x, y: pos.y, size: baseSize * (node.sizeMultiplier || 1) * NODE_K * scale };
       if (rev <= 0.01) return hit;
       const inFocus = isPath || hasSph || node.id === hoverId;
       ctx.globalAlpha = rev * (1 - 0.72 * focus * (inFocus ? 0 : 1));
@@ -702,14 +737,14 @@
       ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size);
       ctx.fillStyle = node.state === 'MASTERED' ? ACC : node.state === 'UNLOCKED' ? PAPER : INK; ctx.fill();
       ctx.lineWidth = (node.state === 'ELIGIBLE' ? 2.4 : 1.3) * scale;
-      ctx.strokeStyle = node.state === 'ELIGIBLE' ? ACC : node.state === 'LOCKED' ? 'rgba(242,241,236,0.35)' : (node.state === 'MASTERED' ? ACC : PAPER); ctx.stroke();
+      ctx.strokeStyle = node.state === 'ELIGIBLE' ? ACC : node.state === 'LOCKED' ? 'rgba(242,241,236,0.7)' : (node.state === 'MASTERED' ? ACC : PAPER); ctx.stroke();
       if (node.state === 'LOCKED') { // 斜線ハッチ
         ctx.save(); ctx.beginPath(); shapePath(node.shape, pos.x, pos.y, size - 2); ctx.clip(); ctx.strokeStyle = 'rgba(242,241,236,0.07)'; ctx.lineWidth = 1;
         for (let k = -size * 2; k < size * 2; k += 7 * scale) { ctx.beginPath(); ctx.moveTo(pos.x + k, pos.y + size); ctx.lineTo(pos.x + k + size * 2, pos.y - size); ctx.stroke(); } ctx.restore();
       }
       // 番号
-      ctx.font = `700 ${Math.max(9, 12 * scale)}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = node.state === 'MASTERED' || node.state === 'UNLOCKED' ? INK : (node.state === 'ELIGIBLE' ? ACC : 'rgba(242,241,236,0.45)');
+      ctx.font = `700 ${Math.max(10, 13 * scale)}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = node.state === 'MASTERED' || node.state === 'UNLOCKED' ? INK : (node.state === 'ELIGIBLE' ? ACC : 'rgba(242,241,236,0.75)');
       ctx.fillText(node.id === 'CORE' ? 'WG' : pad2(idx), pos.x, pos.y + 0.5);
       // 選択ブラケット
       if (isSelected) {
@@ -724,19 +759,19 @@
     function drawLabel(node, pos, size, scale) {
       const text = node.label.replace(/\n/g, ' ');
       let dx = pos.x - (cx + panX), dy = pos.y - (cy + panY); const L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L;
-      if (node.id === 'CORE') { dx = 0; dy = 1; }
+      if (node.id === 'CORE') { dx = 0; dy = -1; }
       dx = dx * (1 - colA) + colA; dy = dy * (1 - colA);
-      const gap = size + 9 * scale, lx = pos.x + dx * gap, ly = pos.y + dy * gap;
+      const gap = size + 10 * scale, lx = pos.x + dx * gap, ly = pos.y + dy * gap;
       const align = dx > 0.35 ? 'left' : dx < -0.35 ? 'right' : 'center', base = Math.abs(dx) > 0.35 ? 'middle' : (dy > 0 ? 'top' : 'bottom');
-      const locked = node.state === 'LOCKED', fs = Math.max(10, 13.5 * scale);
-      ctx.font = `700 ${fs}px ${FONT}`; ctx.textAlign = align; ctx.textBaseline = base; ctx.lineJoin = 'round';
-      ctx.lineWidth = 5 * scale; ctx.strokeStyle = INK; ctx.strokeText(text, lx, ly); ctx.fillStyle = locked ? 'rgba(242,241,236,0.55)' : PAPER; ctx.fillText(text, lx, ly);
+      const locked = node.state === 'LOCKED', fs = Math.max(13, 16 * scale);
+      ctx.font = `600 ${fs}px ${FONT}`; ctx.textAlign = align; ctx.textBaseline = base; ctx.lineJoin = 'round';
+      ctx.lineWidth = Math.max(5, 6 * scale); ctx.strokeStyle = INK; ctx.strokeText(text, lx, ly); ctx.fillStyle = locked ? 'rgba(242,241,236,0.78)' : node.state === 'ELIGIBLE' ? ACC : PAPER; ctx.fillText(text, lx, ly);
       // 必要スフィアの四角
       const reqs = []; (node.requirements || []).forEach(r => { for (let k = 0; k < r.count && reqs.length < 14; k++) reqs.push(r.type); });
       if (!reqs.length) return;
-      const s = 6 * scale, g = 2 * scale, w = reqs.length * (s + g) - g;
+      const s = Math.max(6, 7.5 * scale), g = Math.max(2, 2 * scale), w = reqs.length * (s + g) - g;
       const sx = align === 'left' ? lx : align === 'right' ? lx - w : lx - w / 2;
-      const sy = base === 'bottom' ? ly - fs - 7 * scale : base === 'top' ? ly + fs + 5 * scale : ly + fs * 0.75 + 4 * scale;
+      const sy = base === 'bottom' ? ly - fs - 9 * scale : base === 'top' ? ly + fs + 6 * scale : ly + fs * 0.78 + 5 * scale;
       reqs.forEach((type, i) => {
         const dim = hoveredSphereType && type !== hoveredSphereType; ctx.globalAlpha *= dim ? 0.25 : (locked ? 0.7 : 1);
         ctx.fillStyle = CONFIG.sphereTypes[type]?.color || '#888'; ctx.fillRect(sx + i * (s + g), sy, s, s);
