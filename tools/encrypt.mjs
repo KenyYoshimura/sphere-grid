@@ -9,7 +9,7 @@ import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const KEY_FILE = join(ROOT, '.sphere-key'), DATA = join(ROOT, 'data.json'), OUT = join(ROOT, 'data.enc');
-export const VIEW_BASE = 'https://kenyyoshimura.github.io/sphere-grid/';
+export const VIEW_BASE = 'https://sphere-grid.vercel.app/';
 const b64 = buf => Buffer.from(buf).toString('base64');
 const b64u = buf => b64(buf).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 

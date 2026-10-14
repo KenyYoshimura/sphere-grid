@@ -1,14 +1,14 @@
 # 運用手順（スフィア盤）
 
 ## 仕組み
-- **公開版**（GitHub Pages）は閲覧専用。盤面データは暗号化された `data.enc` だけを配信し、URL の `#k=鍵` で復号して表示する。`#` 以降はサーバーに送られない。
+- **公開版**（Vercel。main に入ると自動で更新される。公開されるのは index.html と data.enc だけ）は閲覧専用。盤面データは暗号化された `data.enc` だけを配信し、URL の `#k=鍵` で復号して表示する。`#` 以降はサーバーに送られない。
 - **編集**はローカルだけ。`data.json`（平文）と `.sphere-key`（鍵）は手元にのみ存在し、`.gitignore` で除外している。
 - 公開側を更新できるのは、このリポジトリへの書き込み権限を持つ人だけ。
 
 ## 編集して公開する
 ```bash
 node tools/serve.mjs          # http://localhost:8765/ を開く → 編集モード → 保存
-git save "スフィア盤を更新"     # data.enc をコミット＆プッシュ（main に入ると Pages が更新）
+git save "スフィア盤を更新"     # data.enc をコミット＆プッシュ（main に入ると Vercel が更新）
 ```
 保存すると `data.json` の更新と `data.enc` の再暗号化が同時に行われる。
 
