@@ -1,0 +1,5 @@
+{
+  "installCommand": "echo skip",
+  "buildCommand": "mkdir -p dist && cp index.html data.enc dist/",
+  "outputDirectory": "dist"
+}
